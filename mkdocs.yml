@@ -1,0 +1,160 @@
+site_name: Tech Learning
+
+theme:
+  name: material
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  features:
+    - content.code.annotate
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    # - navigation.expand
+    - navigation.indexes
+    # - navigation.instant
+    # - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  palette:
+    - scheme: default
+      primary: cyan
+      accent: red
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - scheme: slate
+      primary: brown
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/favicon.png
+  icon:
+    logo: logo
+
+extra_css:
+  - stylesheets/extra.css
+
+# Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:materialx.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde  
+  - pymdownx.keys
+
+
+# Page tree
+nav:
+  - Home: index.md
+  - Vault:
+    - Docs:
+      - Auth Methods:
+        - Overview: vault/docs/auth/overview.md
+        - Kubernetes: vault/docs/auth/kubernetes.md
+        - Username & Password: vault/docs/auth/userpass.md
+      - Platform:
+        - Kubernetes:
+          - Overview: vault/docs/platform/index.md
+    - Tutorials:        
+      - Kubernetes:
+        - 通過 Vault Agent 容器將 Secret 注入 Kubernetes Pod: vault/kubernetes/kubernetes-sidecar.md
+        - 通過容器存儲接口 (CSI) 掛載 Vault Secret: vault/kubernetes/kubernetes-secret-store-driver.md
+        - Vault Agent 與 Kubernetes: vault/kubernetes/agent-kubernetes.md
+        - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
+  - Kubernetes:
+    - Minikube:
+      - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
+      - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
+    - Authentication:
+      - Kubernetes RBAC 介詔: kubernetes/authentication/rbac-intro.md
+      - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md
+    - API:
+      - 使用 K8S API: kubernetes/api/working-with-k8s-api.md
+      - K8S API 基礎: kubernetes/api/kubernetes-api-structure-and-terminology.md
+      - 用 HTTP 客戶端調用 K8S API: kubernetes/api/kubernetes-api-call-simple-http-client.md
+    - ArgoCD:
+      - ArgoCD 教程:
+        - ArgoCD 教程簡介: kubernetes/argocd/tutorial/index.md
+        - ArgoCD 安裝設定: kubernetes/argocd/tutorial/01-setup.md
+        - ArgoCD 入門: kubernetes/argocd/tutorial/02-getting_started.md
+        - Kustomize: kubernetes/argocd/tutorial/03-kustomize.md
+        - SyncWaves 與 Hooks: kubernetes/argocd/tutorial/04-syncwaves-hooks.md
+  - Ansible:
+    - 快速入門:
+      - Vagrant 快速入門: ansible/vagrant-intro.md
+      - Ansible 快速入門: ansible/ansible-intro.md
+      - Ansible 使用指南: ansible/ansible-cheatsheet.md
+    - Ansible Playbook 撰寫:
+      - 如何創建與運行: ansible/tutorial_playbook/creating-and-running-your-first-ansible-playbook.md
+      - 如何定義任務: ansible/tutorial_playbook/how-to-define-tasks-in-ansible-playbooks.md
+      - 如何使用變量: ansible/tutorial_playbook/how-to-use-variables-in-ansible-playbooks.md
+      - 如何訪問系統信息: ansible/tutorial_playbook/how-to-access-system-information-facts-in-ansible-playbooks.md
+      - 如何使用條件: ansible/tutorial_playbook/how-to-use-conditionals-in-ansible-playbooks.md
+      - 如何使用循環: ansible/tutorial_playbook/how-to-use-loops-in-ansible-playbooks.md
+      - 了解權限提升: ansible/tutorial_playbook/understanding-privilege-escalation-in-ansible-playbooks.md
+      - 如何安裝和管理系統包: ansible/tutorial_playbook/how-to-install-and-manage-system-packages-in-ansible-playbooks.md
+      - 如何創建和使用模板: ansible/tutorial_playbook/how-to-create-and-use-templates-in-ansible-playbooks.md
+      - 如何定義和使用處理程序: ansible/tutorial_playbook/how-to-define-and-use-handlers-in-ansible-playbooks.md
+      - 如何使用Nginx部署靜態HTML網站: ansible/tutorial_playbook/how-to-deploy-a-static-html-website-with-ansible-on-ubuntu-20-04-nginx.md
+    - Ansible AWX 教學:
+      - 如何在 Ubuntu 20.04 上安裝 Ansible AWX: ansible/tutorial_awx/how-to-install-ansible-awx.md
+      - Ansible AWX 基本使用和配置: ansible/tutorial_awx/ansible-awx-guide-basic-usage-and-configuration.md
+    - 教學:
+      - 如何在 Ubuntu 20.04 上安裝 Docker: ansible/tutorial/ubuntu-insall-docker.md
+      - 如何使用 Ansible 在 Ubuntu 20.04 上安裝和設置 Docker: ansible/tutorial/ansible-install-docker.md
+      - 如何在 Ubuntu 22.04 上安裝和配置 Ansible: ansible/tutorial/how-to-install-and-configure-ansible-on-ubuntu-22-04.md
+
+
