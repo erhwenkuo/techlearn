@@ -8,6 +8,9 @@ k8s 在 1.8 版之後，引用了 `Role-Base Access Control` (RBAC，基於角�
 
 因此，作為一個優秀的管理者，你應該適度的配置角色並決定不同角色可以允許操作什麼項目。
 
+![](./assets/k8s-rbac.png)
+
+
 ## Role vs ClusterRole
 
 `Role` 是用來定義在某個`命名空間`底下的`角色`，而 `ClusterRole` 則是屬於`叢集通用的角色`。另外 `ClusterRole` 除了可以配置 `Role` 的權限內容外，由於是 `Cluster` 範圍的角色，因此還能夠配置:

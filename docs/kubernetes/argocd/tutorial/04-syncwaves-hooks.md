@@ -1,5 +1,7 @@
 # SyncWaves 與 Hooks
 
+原文: https://redhat-scholars.github.io/argocd-tutorial/argocd-tutorial/04-syncwaves-hooks.html
+
 Argo CD 中使用 [Syncwave](https://argoproj.github.io/argo-cd/user-guide/sync-waves/) 來確定清單如何應用於集群。
 
 另一方面，[resource hooks](https://argoproj.github.io/argo-cd/user-guide/resource_hooks/)在不同階段分解了這些清單的交付。

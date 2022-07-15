@@ -1,5 +1,7 @@
 # Kustomize
 
+原文: https://redhat-scholars.github.io/argocd-tutorial/argocd-tutorial/03-kustomize.html
+
 [Kustomize](https://kustomize.io/) 遍歷 Kubernetes 清單來添加、刪除或更新配置選項，而無需 `fork`。它既可以作為獨立的二進製文件使用，也可以作為 kubectl 的原生擴展使用。
 
 kustomize 的原則是：

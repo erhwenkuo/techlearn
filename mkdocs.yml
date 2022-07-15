@@ -25,7 +25,7 @@ theme:
     # - toc.integrate
   palette:
     - scheme: default
-      primary: cyan
+      primary: indigo
       accent: red
       toggle:
         icon: material/toggle-switch
@@ -118,13 +118,13 @@ nav:
     - Minikube:
       - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
       - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
-    - Authentication:
-      - Kubernetes RBAC 介詔: kubernetes/authentication/rbac-intro.md
-      - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md
     - API:
       - 使用 K8S API: kubernetes/api/working-with-k8s-api.md
       - K8S API 基礎: kubernetes/api/kubernetes-api-structure-and-terminology.md
       - 用 HTTP 客戶端調用 K8S API: kubernetes/api/kubernetes-api-call-simple-http-client.md
+    - Authentication:
+      - Kubernetes RBAC 介詔: kubernetes/authentication/rbac-intro.md
+      - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md    
     - ArgoCD:
       - ArgoCD 教程:
         - ArgoCD 教程簡介: kubernetes/argocd/tutorial/index.md

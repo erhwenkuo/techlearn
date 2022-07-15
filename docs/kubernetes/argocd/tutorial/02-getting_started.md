@@ -1,5 +1,7 @@
 # ArgoCD 入門
 
+原文: https://redhat-scholars.github.io/argocd-tutorial/argocd-tutorial/02-getting_started.html
+
 確認 Argo CD 已啟動並運行後，讓我們探索如何訪問和管理 Argo CD。
 
 ## 連接到 ArgoCD

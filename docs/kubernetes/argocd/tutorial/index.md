@@ -1,5 +1,7 @@
 # 歡迎來到 ArgoCD 教程
 
+原文: https://redhat-scholars.github.io/argocd-tutorial/argocd-tutorial/index.html
+
 ## ArgoCD
 
 [Argo CD](https://argoproj.github.io/argo-cd/) 是用於 Kubernetes 的聲明式 GitOps 持續交付工具。

@@ -2,21 +2,40 @@
 
 原文: https://blog.dudaji.com/kubernetes/2019/05/01/k8s-authorization-of-sa-with-rbac.html
 
+想像一下，您的組織正在運行由多個工程團隊使用的單個 Kubernetes 集群。這些團隊中的每一個都獨立部署了相關的應用程序來開發和測試它。您希望每個團隊只處理他們自己的應用程序套件實例——每個團隊只想看到他們創建的對象，而不是其他團隊創建的對象。在單一個 Kubernetes 的集群裡可使用命名空間(`namespace`)來實現。
+
+使用多個`namespace`允許您將具有大量組件的複雜系統劃分為由不同團隊管理的區域。它們還可用於在`mult-tenant environment`的情境中來進行團隊的隔離。
+
+![](./assets/k8s-namespace.png)
+
+大多數 Kubernetes API 物件類型都有命名空間，但也有少數沒有。 `Pod`、`ConfigMaps`、`Secrets`、`PersistentVolumeClaims` 和 `Events` 都是命名空間。`Nodes`, `PersistentVolumes`, `StorageClasses`, 和 `Namespaces` 本身則不是。
+
+![](./assets/k8s-namespace-api-type.png)
+
+要查看`資源`是`命名空間還`是`集群範圍`，請在運行 `kubectl api-resources` 時檢查 `NAMESPACED` 列。
+
+```bash
+$ kubectl api-resources
+```
+
+
 ## 場景
 
 ![](./assets/auth-scenario.png)
 
-- `管理員`：擁有所有權限
+- `admin`：擁有所有權限
 
-- `部門領導`：對命名空間 team-a 和 team-b 擁有權限
+- `department-leader`：對命名空間 **team-a** 和 **team-b** 擁有權限
 
-- `team-a-user` : 擁有命名空間 team-a 的權限，而不是命名空間 team-b 的權限
+- `team-a-user` : 擁有命名空間 **team-a** 的權限，而沒有命名空間 **team-b** 的權限
 
-- `team-b-user` : 對命名空間 team-b 有權限，對命名空間 team-a 沒有權限
+- `team-b-user` : 擁有命名空間 **team-b** 的權限，對沒有命名空間 **team-a** 的權限
 
 ## 如何使用 Kubernetes 進行身份驗證
 
-Kubernetes中有多種認證方式，如token、proxy、webhook、ID/PW、OAuth2等。更多詳細信息可在此處獲得。除了服務帳戶令牌身份驗證之外，Kubernetes 建議使用一種或多種用戶身份驗證方法。在本文中，我們將通過服務帳戶（SA）身份驗證方法來測試 kubernetes api 調用。
+Kubernetes中有多種認證方式，如token、proxy、webhook、ID/PW、OAuth2等。更多詳細信息可在此處獲得。除了服務帳戶令牌身份驗證之外，Kubernetes 建議使用一種或多種用戶身份驗證方法。在本文中，我們將通過服務帳戶（`Service account`）身份驗證方法來測試 kubernetes api 調用。
+
+![](./assets/k8s-rbac.png)
 
 ### 創建命名空間
 
