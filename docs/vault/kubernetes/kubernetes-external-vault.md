@@ -2,16 +2,18 @@
 
 原文: https://learn.hashicorp.com/tutorials/vault/kubernetes-external-vault
 
-Vault 可以從集群外部管理 Kubernetes 應用程序 pod 的機密。這可能是 HashiCorp 雲平台 (HCP) Vault 或您組織內的另一個 Vault 服務。
+![](./assets/vault-k8s-external.png)
+
+Vault 可以管理 Kubernetes 應用程序 pod 的機密。通常這個 Vault 服務是被佈署在 Kubernetes 集群之外。
 
 !!! info
     在 Kubernetes 中運行 Vault：在 [Vault Installation to Minikube via Helm](https://learn.hashicorp.com/tutorials/vault/kubernetes-minikube-raft) 和 [Injecting Secrets into Kubernetes Pods via Vault Helm Sidecar](kubernetes-sidecar.md) 教程中探討了在 K8S 集群中運行 Vault 服務。
 
-在本教程中，您將在本地運行 Vault，使用 Minikube 啟動 Kubernetes 集群，部署一個應用程序，該應用程序可以通過 Kubernetes 服務直接從 Vault 檢索機密，並通過 Vault Agent Injector 進行機密注入。
+在本教程中，您將在本地運行 Vault，使用 K3D 啟動 Kubernetes 集群，部署一個應用程序，該應用程序可以通過 Kubernetes 服務直接從 Vault 檢索機密，並通過 Vault Agent Injector 進行機密注入。
 
 ## 先決條件
 
-本教程需要安裝 Kubernetes 命令行界面 (CLI) 和 Helm CLI、Minikube 以及其他配置以將它們組合在一起。
+本教程需要安裝 Kubernetes 命令行界面 (CLI) 和 Helm CLI、K3D 以及其他配置以將它們組合在一起。
 
 Docker version.
 
@@ -21,13 +23,13 @@ $ docker --version
 Docker version 20.10.17, build 100c701
 ```
 
-Minikube version.
+K3D version.
 
 ```bash
-$ minikube version
+$ k3d version
 
-minikube version: v1.25.2
-commit: 362d5fdc0a3dbee389b3d3f1034e8023e72bd3a7
+k3d version v5.4.1
+k3s version v1.22.7-k3s1 (default)
 ```
 
 Helm version.
@@ -42,7 +44,11 @@ version.BuildInfo{Version:"v3.9.0", GitCommit:"7ceeda6c585217a19a1131663d8cd1f7d
 
 接下來，通過從 GitHub 來 clone [hashcorp/vault-guides](https://github.com/hashicorp/vault-guides) 存儲庫，裡頭包含本教程用來驗證的範例 Web 應用程序和其他配置檔案。
 
-此存儲庫包含所有 Vault 學習指南的支持內容。本教程的特定內容可以在子目錄中找到。
+```bash
+$ git clone https://github.com/hashicorp/vault-guides.git
+```
+
+此存儲庫包含所有 Vault 學習指南的相關內容。本教程的相關文件可以在子目錄中找到。
 
 進入 `vault-guides/operations/provision-vault/kubernetes/minikube/external-vault` 目錄。
 
@@ -60,7 +66,7 @@ $ cd vault-guides/operations/provision-vault/kubernetes/minikube/external-vault
 
 **1. 啟動 Vault 服務**
 
-打開一個新終端，啟動一個以 root 作為 root 令牌的 Vault 開發服務器，它在 0.0.0.0:8200 處偵聽請求。**
+打開一個新終端，啟動一個以 `root` 作為 root 令牌的 Vault 開發服務器，它在 0.0.0.0:8200 處偵聽請求。
 
 ```bash
 $ vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
@@ -76,7 +82,10 @@ $ vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
 $ export VAULT_ADDR=http://0.0.0.0:8200
 ```
 
-您部署的 Web 應用程序需要 Vault 存儲用戶名和密碼，這些用戶名和密碼存儲在路徑 `secret/devwebapp/config` 中。要創建此密鑰，需要啟用鍵值密鑰引擎並將用戶名和密碼放在指定的路徑中。默認情況下，Vault 開發服務器以在以 `secret` 為前綴的路徑上啟用鍵值機密引擎啟動。
+您部署的 Web 應用程序需要取得儲存在 Vault 裡面的 `username` 和 `password`，這些用戶名和密碼的機敏資訊存儲在路徑 `secret/devwebapp/config` 中。要創建此密鑰，需要啟用鍵值密鑰引擎並將用戶名和密碼放在指定的路徑中。默認情況下，Vault 開發服務器以在以 `secret` 為前綴的路徑上啟用鍵值機密引擎啟動。
+
+![](./assets/vault-default-kv-secret.png)
+
 
 **3. 便用 root 令牌登入 Vault**
 
@@ -120,6 +129,8 @@ destroyed          false
 version            1
 ```
 
+![](./assets/vault-devwebapp-credentials.png)
+
 **5. 驗證 Secret**
 
 驗證密鑰是否存儲在路徑 `secret/devwebapp/config` 中。
@@ -133,153 +144,118 @@ $ vault kv get -format=json secret/devwebapp/config | jq ".data.data"
 }
 ```
 
-帶有密鑰的 Vault 服務器已準備好由 Kubernetes 集群和部署在其中的 pod 進行尋址。
+帶有密鑰的 Vault 服務器已準備好，接著讓我們配置來讓 Kubernetes 集群和部署在其中的 pod 可連接到這個外部的 Vault 服務。
 
+## 啟動 Kubernetes
 
-## 啟動 Minikube
+k3d 是一個輕量級的 kubernetes 包裝器，用於在 docker 中運行 k3s（Rancher Lab 的最小 Kubernetes 發行版）。
 
-Minikube 是一個 CLI 工具，用於配置和管理單節點 Kubernetes 集群的生命週期。這些集群在虛擬機 (VM) 中本地運行。
+k3d 使得在 docker 中創建單節點和多節點 k3s 集群變得非常容易，例如用於 Kubernetes 上的本地開發。
 
 啟動 Kubernetes 集群。
 
 ```bash
-$ minikube start
+$ mkdir -p /tmp/k3d/kubelet/pods
+$ k3d cluster create -v /tmp/k3d/kubelet/pods:/var/lib/kubelet/pods:shared
 
-😄  minikube v1.25.2 on Ubuntu 21.10
-🎉  minikube 1.26.0 is available! Download it: https://github.com/kubernetes/minikube/releases/tag/v1.26.0
-💡  To disable this notice, run: 'minikube config set WantUpdateNotification false'
-
-✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
-👍  Starting control plane node minikube in cluster minikube
-🚜  Pulling base image ...
-🔥  Creating docker container (CPUs=2, Memory=3900MB) ...
-🐳  Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
-    ▪ kubelet.housekeeping-interval=5m
-    ▪ Generating certificates and keys ...
-    ▪ Booting up control plane ...
-    ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-
+WARN[0000] No node filter specified                     
+INFO[0000] Prep: Network                                
+INFO[0000] Created network 'k3d-k3s-default'            
+INFO[0000] Created image volume k3d-k3s-default-images  
+INFO[0000] Starting new tools node...                   
+INFO[0000] Starting Node 'k3d-k3s-default-tools'        
+INFO[0001] Creating node 'k3d-k3s-default-server-0'     
+INFO[0001] Creating LoadBalancer 'k3d-k3s-default-serverlb' 
+INFO[0001] Using the k3d-tools node to gather environment information 
+INFO[0001] HostIP: using network gateway 172.29.0.1 address 
+INFO[0001] Starting cluster 'k3s-default'               
+INFO[0001] Starting servers...                          
+INFO[0001] Starting Node 'k3d-k3s-default-server-0'     
+INFO[0005] All agents already running.                  
+INFO[0005] Starting helpers...                          
+INFO[0006] Starting Node 'k3d-k3s-default-serverlb'     
+INFO[0012] Injecting records for hostAliases (incl. host.k3d.internal) and for 2 network members into CoreDNS configmap... 
+INFO[0014] Cluster 'k3s-default' created successfully!  
+INFO[0014] You can now use it like this:                
+kubectl cluster-info
 ```
 
-顯示 Kubernetes 集群的版本。
+驗證 K3D 集群的狀態。
 
 ```bash
-$ kubectl version --output=json
-
-{
-  "clientVersion": {
-    "major": "1",
-    "minor": "24",
-    "gitVersion": "v1.24.1",
-    "gitCommit": "3ddd0f45aa91e2f30c70734b175631bec5b5825a",
-    "gitTreeState": "clean",
-    "buildDate": "2022-05-24T12:26:19Z",
-    "goVersion": "go1.18.2",
-    "compiler": "gc",
-    "platform": "linux/amd64"
-  },
-  "kustomizeVersion": "v4.5.4",
-  "serverVersion": {
-    "major": "1",
-    "minor": "23",
-    "gitVersion": "v1.23.3",
-    "gitCommit": "816c97ab8cff8a1c72eccca1026f7820e93e0d25",
-    "gitTreeState": "clean",
-    "buildDate": "2022-01-25T21:19:12Z",
-    "goVersion": "go1.17.6",
-    "compiler": "gc",
-    "platform": "linux/amd64"
-  }
-}
+$ kubectl cluster-info
 ```
 
-驗證 Minikube 集群的狀態。
+結果:
 
 ```bash
-$ minikube status
-
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured  
+Kubernetes control plane is running at https://0.0.0.0:46339
+CoreDNS is running at https://0.0.0.0:46339/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://0.0.0.0:46339/api/v1/namespaces/kube-system/services/https:metrics-server:https/proxy
 ```
 
-主機、kubelet、apiserver 報告它們正在運行。 kubectl 是一個命令行界面 (CLI)，用於針對 Kubernetes 集群運行命令，它也被配置為與這個最近啟動的集群進行通信。
+!!! info
+    如果沒有特別定義 K3D 會在創建 Kubernetes 集群時自動找一個可用的 port 成 Kubernetes API server 使用的 port。
 
-
-```bash
-$ minikube status
-
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured  
-```
-
-主機、kubelet、apiserver 報告它們正在運行。 kubectl 是一個命令行界面 (CLI)，用於針對 Kubernetes 集群運行命令，它也被配置為與這個最近啟動的集群進行通信。
 
 ## 決定 Vault address
 
 正如您配置 Vault 一樣，綁定到主機上所有網絡的服務可以通過 Minikube 集群中的 pod 向 Kubernetes 集群的`網關`地址發送請求來尋址。
 
-**1. 啟動 minikube SSH 會話**
+**1. 取得本機的網絡位址**
 
-```bash
-$ minikube ssh
-## ... minikube ssh login
+```bash hl_lines="4"
+$ ifconfig
+
+wlp4s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.50.191  netmask 255.255.255.0  broadcast 192.168.50.255
+        inet6 fe80::3433:7b7c:e266:7a35  prefixlen 64  scopeid 0x20<link>
+        ether 88:b1:11:e5:6e:33  txqueuelen 1000  (Ethernet)
+        RX packets 473363  bytes 659034753 (659.0 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 96234  bytes 19111520 (19.1 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-**2. 檢索 Minikube 集群內部網關**
+在範例的機器上的網路位址是 `192.168.50.191` (這個 ip address 在不同的機器上都會是不同的) !! 
 
-```bash hl_lines="10"
-cat /etc/hosts
+**2. 驗證與 Vault 的網絡連接**
 
-127.0.0.1	localhost
-::1	localhost ip6-localhost ip6-loopback
-fe00::0	ip6-localnet
-ff00::0	ip6-mcastprefix
-ff02::1	ip6-allnodes
-ff02::2	ip6-allrouters
-192.168.49.2	minikube
-192.168.49.1	host.minikube.internal
-192.168.49.2	control-plane.minikube.internal
-```
-
-**3. 驗證與 Vault 的網絡連接**
+回到我們的 Kubernetes 集群並運行一個 Pod：
 
 ```bash
-docker@minikube:~$ curl -s http://host.minikube.internal:8200/v1/sys/seal-status
+$ kubectl run -i --tty --rm ca-test-pod --image=radial/busyboxplus:curl
+
+[ root@ca-test-pod:/ ]$ 
+```
+
+嘗試使用前一步驟所取的的 ip address 來呼叫 external Vault 的 API：
+
+```bash
+[ root@ca-test-pod:/ ]$  curl -s http://192.168.50.191:8200/v1/sys/seal-status
 
 {"type":"shamir","initialized":true,"sealed":false,"t":1,"n":1,"progress":0,"nonce":"","version":"1.11.0","build_date":"2022-06-17T15:48:44Z","migration":false,"cluster_name":"vault-cluster-494486db","cluster_id":"20c81ca5-5293-a454-2af1-aa1ba5825400","recovery_seal":false,"storage_type":"inmem"}
 ```
 
-輸出顯示 Vault 已初始化且未密封。這確認了集群中的 pod 能夠訪問 Vault，因為每個 pod 都配置為使用網關地址。
+輸出顯示 Vault 已初始化且未密封。這確認了集群中的 pod 能夠訪問到 external Vault。
 
-**4. 退出 Minikube SSH 會話**
-
-```bash
-$ exit
-```
-
-**5. 設定 EXTERNAL_VAULT_ADDR 環境**
-
-創建一個名為 EXTERNAL_VAULT_ADDR 的變量來捕獲 Minikube 網關地址。
+**3. 退出 pod 會話**
 
 ```bash
-$ EXTERNAL_VAULT_ADDR=192.168.49.1
+[ root@ca-test-pod:/ ]$ exit
 ```
 
-**6. 驗證變量**
+**4. 設定 EXTERNAL_VAULT_ADDR 環境**
 
-驗證變量是否包含您在 minikube shell 中執行時看到的 ip 地址。
+創建一個名為 EXTERNAL_VAULT_ADDR 的變量宣告 Vault 的網絡地址。
+
+```bash
+$ EXTERNAL_VAULT_ADDR=192.168.50.191
+```
+
+**5. 驗證變量**
+
+驗證變量。
 
 ```bash
 $ echo $EXTERNAL_VAULT_ADDR
@@ -287,7 +263,7 @@ $ echo $EXTERNAL_VAULT_ADDR
 
 ## 使用 hard-coded 的 Vault 地址佈署應用程序
 
-集群中的 pod 找尋 Vault 服務位址的最直接方法是使用在應用程序代碼中定義的hard-coded 網絡地址或作為環境變量提供。我們已經創建並發布了一個允許覆蓋 Vault 地址的 Web 應用程序。
+Kubernetes 集群中的 pods 找尋 外部 Vault 服務位址的最直接方法是直接在應用程式的程式碼中定義 (hard-coded) Valut 的網絡位址或把 Vault 的網絡位址用 **環境變量** 進行提供。我們已經創建並發布了一個允許設定 Vault 地址的 Web 應用程式。
 
 !!! example "exampleapp"
 
@@ -311,7 +287,7 @@ $ echo $EXTERNAL_VAULT_ADDR
         ```
     === "lib/service.rb"
 
-        ``` ruby hl_lines="34"
+        ``` ruby hl_lines="10 11 18"
         require "sinatra"
         require "faraday"
         require "json"
@@ -410,7 +386,7 @@ serviceaccount/internal-app created
 
 使用將 `VAULT_ADDR` 設置為 `EXTERNAL_VAULT_ADDR` 的 Web 應用程序定義一個名為 devwebapp 的 pod。
 
-```bash hl_lines="14-17"
+```bash hl_lines="9 14 16"
 $ cat > devwebapp.yaml <<EOF
 apiVersion: v1
 kind: Pod
@@ -439,6 +415,84 @@ $ kubectl apply --filename devwebapp.yaml
 pod/devwebapp created
 ```
 
+查看 `pod/devwebapp` 的規格:
+
+```bash
+$ kubectl get pod/devwebapp -o yaml
+```
+
+結果:
+
+```yaml hl_lines="15 17 37"
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    ...
+    ...
+    app: devwebapp
+  name: devwebapp
+  namespace: default
+  resourceVersion: "1045"
+  uid: c41d0da7-e2d7-41ad-b3e5-b31a7a0c387a
+spec:
+  containers:
+  - env:
+    - name: VAULT_ADDR
+      value: http://192.168.50.191:8200
+    - name: VAULT_TOKEN
+      value: root
+    image: burtlo/devwebapp-ruby:k8s
+    imagePullPolicy: IfNotPresent
+    name: app
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-nhtdj
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: minikube
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: internal-app
+  serviceAccountName: internal-app
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-nhtdj
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+```
+
 **4. 獲取 `default` 命名空間中的所有 pod**
 
 ```bash
@@ -464,15 +518,19 @@ $ kubectl exec devwebapp -- curl -s localhost:8080 ; echo
 
 Web 應用程序使用根令牌向外部 Vault 服務器進行身份驗證，並返回在 Vault 路徑 `secret/data/devwebapp/config` 中定義的密鑰。如果 Vault 服務器的地址不變，這種硬編碼方法是一種有效的解決方案。
 
-## 在 K8S 部署服務和端點來映射至外部 Vault
+## 在 K8S 部署 `service` 和 `endpoint` 來映射至 external Vault
 
-外部 Vault 可能沒有 K8S 集群的 Service 可以讓相關的 Pod 來依賴。當 Vault 的網路地址更改時，每個 Pod 也需要更改才能繼續運行。管理此網路地址的另一種方法是定義 Kubernetes 的 `service` 和 `endpoint`。
+外部 Vault 可能沒有 K8S 集群的 Service 可以讓相關的 Pod 來依賴。當 Vault 的網路地址更改時，每個 Pod 也需要更改才能繼續運行。管理此網路地址的另一種方法是在Kubernetes 中通過定義 `service` 和 `endpoint` 物件來指向 Vault。
 
-`Service` 物件是對 Kubernetes 外部服務的抽象。當在 pod 中運行的應用程序請求 `service` 時，該請求將被路由到共享 `service` 的 `endpoint`。
+`Service` 物件是對 Kubernetes 外部服務的抽象表示。當在 pod 中運行的應用程序請求 `service` 時，該請求將被路由到共享 `service` 的 `endpoint`。
+
+![](./assets/k8s-vault-service-endpoing.png)
 
 **1. 定義 `service` 與 `endpoint` 的物件**
 
 定義一個名為 `external-vault` 的服務和一個配置為尋址 `EXTERNAL_VAULT_ADDR` 的相應端點。
+
+相關的說明見 [Kubernetes Service Overview](https://godleon.github.io/blog/Kubernetes/k8s-Service-Overview/)。
 
 ```bash
 $ cat > external-vault.yaml <<EOF
@@ -661,7 +719,7 @@ vault-agent-injector-8679c9f654-trwvq   1/1     Running   0          14m
 
 等到 `vault-agent-injector` pod 報告它正在運行並準備就緒 (1/1)。
 
-Helm chart 創建保管庫服務帳戶。服務帳戶密碼是配置 Vault 的 Kubernetes 身份驗證方法所必需的。
+Helm chart 會創建一個 `vault` 的 service account。Service account 的 JWT 令牌是配置 Vault 的 Kubernetes 身份驗證方法所必需的設定項。
 
 **5. 描述 Vault 服務帳戶**
 
@@ -677,14 +735,14 @@ Labels:              app.kubernetes.io/instance=vault
 Annotations:         meta.helm.sh/release-name: vault
                      meta.helm.sh/release-namespace: default
 Image pull secrets:  <none>
-Mountable secrets:   <none>
-Tokens:              <none>
+Mountable secrets:   vault-token-kgdww
+Tokens:              vault-token-kgdww
 Events:              <none>
 ```
 
 **6. 僅限 Kubernetes 1.24+**
 
-`Mountable secrets` 的名稱顯示在 Kubernetes 1.23 中。在 Kubernetes 1.24+ 中，令牌不會自動創建，您必須顯式創建它。
+`Mountable secrets` 的名稱顯示在 Kubernetes 1.23 中。在 Kubernetes 1.24+ 中，JWT 令牌不會自動創建，您必須顯式創建它。
 
 ```bash
 cat > vault-secret.yaml <<EOF
@@ -719,7 +777,7 @@ Annotations:         meta.helm.sh/release-name: vault
                      meta.helm.sh/release-namespace: default
 Image pull secrets:  <none>
 Mountable secrets:   <none>
-Tokens:              vault-token-g955r
+Tokens:              vault-token-kgdww
 Events:              <none>
 ```
 
@@ -742,7 +800,7 @@ $ kubectl describe secret $VAULT_HELM_SECRET_NAME
 ```bash
 $ kubectl describe secret $VAULT_HELM_SECRET_NAME
 
-Name:         vault-token-g955r
+Name:         vault-token-kgdww
 Namespace:    default
 Labels:       <none>
 Annotations:  kubernetes.io/service-account.name: vault
@@ -800,14 +858,6 @@ $ vault write auth/kubernetes/config \
 Success! Data written to: auth/kubernetes/config
 ```
 
-```bash
-$ vault write auth/kubernetes/config \
-     token_reviewer_jwt="$TOKEN_REVIEW_JWT" \
-     kubernetes_host="$KUBE_HOST" \
-     kubernetes_ca_cert="$KUBE_CA_CERT" \
-     issuer="https://kubernetes.default.svc.cluster.local"
-```
-
 要讓 Vault 客戶端讀取 Start Vault 部分中定義的機密數據，需要為路徑 `secret/data/devwebapp/config` 授予讀取能力。
 
 **6. 定義 `devwebapp` 的策略，該策略在路徑 `secret/data/devwebapp/config` 處啟用對密鑰的讀取功能**
@@ -858,6 +908,12 @@ spec:
   containers:
     - name: app
       image: burtlo/devwebapp-ruby:k8s
+      env:
+      - name: VAULT_ADDR
+        value: "http://external-vault:8200"
+      - name: VAULT_TOKEN
+        value: root
+
 ```
 
 這些註釋定義了部署模式的部分結構，並以 `vault.hashicorp.com` 為前綴。
@@ -907,4 +963,4 @@ metadata: map[created_time:2022-06-06T18:26:14.070155Z custom_metadata:<nil> del
 !!! tip
     格式化數據：可以應用[模板](https://learn.hashicorp.com/tutorials/vault/kubernetes-sidecar#apply-a-template-to-the-injected-secrets)來格式化這些數據以滿足應用程序的需要。
 
-這個 pod 中的應用程序仍然直接檢索秘密，但現在註入器服務已部署並且能夠檢索應用程序的秘密，未來的更新可以刪除該應用程序邏輯。
+這個 pod 中的應用程序仍然直接檢索秘密，但現在注入器服務已部署並且能夠檢索應用程序的秘密，未來的更新可以刪除該應用程序邏輯。

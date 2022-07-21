@@ -38,79 +38,123 @@ $ helm version
 version.BuildInfo{Version:"v3.9.0", GitCommit:"7ceeda6c585217a19a1131663d8cd1f7d641b2a7", GitTreeState:"clean", GoVersion:"go1.17.5"}
 ```
 
-## 啟動 Minikube
+## 啟動 Kubernetes
 
-Minikube 是一個 CLI 工具，用於配置和管理單節點 Kubernetes 集群的生命週期。這些集群在虛擬機 (VM) 中本地運行。
+=== "Minikube"
 
-啟動 Kubernetes 集群。
+    Minikube 是一個 CLI 工具，用於配置和管理單節點 Kubernetes 集群的生命週期。這些集群在虛擬機 (VM) 中本地運行。
 
-```bash
-$ minikube start
+    啟動 Kubernetes 集群。
 
-😄  minikube v1.25.2 on Ubuntu 21.10
-🎉  minikube 1.26.0 is available! Download it: https://github.com/kubernetes/minikube/releases/tag/v1.26.0
-💡  To disable this notice, run: 'minikube config set WantUpdateNotification false'
+    ```bash
+    $ minikube start
 
-✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
-👍  Starting control plane node minikube in cluster minikube
-🚜  Pulling base image ...
-🔥  Creating docker container (CPUs=2, Memory=3900MB) ...
-🐳  Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
-    ▪ kubelet.housekeeping-interval=5m
-    ▪ Generating certificates and keys ...
-    ▪ Booting up control plane ...
-    ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+    😄  minikube v1.25.2 on Ubuntu 21.10
+    🎉  minikube 1.26.0 is available! Download it: https://github.com/kubernetes/minikube/releases/tag/v1.26.0
+    💡  To disable this notice, run: 'minikube config set WantUpdateNotification false'
 
-```
+    ✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
+    👍  Starting control plane node minikube in cluster minikube
+    🚜  Pulling base image ...
+    🔥  Creating docker container (CPUs=2, Memory=3900MB) ...
+    🐳  Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
+        ▪ kubelet.housekeeping-interval=5m
+        ▪ Generating certificates and keys ...
+        ▪ Booting up control plane ...
+        ▪ Configuring RBAC rules ...
+    🔎  Verifying Kubernetes components...
+        ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+    🌟  Enabled addons: storage-provisioner, default-storageclass
+    🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 
-顯示 Kubernetes 集群的版本。
+    ```
 
-```bash
-$ kubectl version --output=json
+    顯示 Kubernetes 集群的版本。
 
-{
-  "clientVersion": {
-    "major": "1",
-    "minor": "24",
-    "gitVersion": "v1.24.1",
-    "gitCommit": "3ddd0f45aa91e2f30c70734b175631bec5b5825a",
-    "gitTreeState": "clean",
-    "buildDate": "2022-05-24T12:26:19Z",
-    "goVersion": "go1.18.2",
-    "compiler": "gc",
-    "platform": "linux/amd64"
-  },
-  "kustomizeVersion": "v4.5.4",
-  "serverVersion": {
-    "major": "1",
-    "minor": "23",
-    "gitVersion": "v1.23.3",
-    "gitCommit": "816c97ab8cff8a1c72eccca1026f7820e93e0d25",
-    "gitTreeState": "clean",
-    "buildDate": "2022-01-25T21:19:12Z",
-    "goVersion": "go1.17.6",
-    "compiler": "gc",
-    "platform": "linux/amd64"
-  }
-}
-```
+    ```bash
+    $ kubectl version --output=json
 
-驗證 Minikube 集群的狀態。
+    {
+      "clientVersion": {
+        "major": "1",
+        "minor": "24",
+        "gitVersion": "v1.24.1",
+        "gitCommit": "3ddd0f45aa91e2f30c70734b175631bec5b5825a",
+        "gitTreeState": "clean",
+        "buildDate": "2022-05-24T12:26:19Z",
+        "goVersion": "go1.18.2",
+        "compiler": "gc",
+        "platform": "linux/amd64"
+      },
+      "kustomizeVersion": "v4.5.4",
+      "serverVersion": {
+        "major": "1",
+        "minor": "23",
+        "gitVersion": "v1.23.3",
+        "gitCommit": "816c97ab8cff8a1c72eccca1026f7820e93e0d25",
+        "gitTreeState": "clean",
+        "buildDate": "2022-01-25T21:19:12Z",
+        "goVersion": "go1.17.6",
+        "compiler": "gc",
+        "platform": "linux/amd64"
+      }
+    }
+    ```
 
-```bash
-$ minikube status
+    驗證 Minikube 集群的狀態。
 
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured  
-```
+    ```bash
+    $ minikube status
+
+    minikube
+    type: Control Plane
+    host: Runningk3d 是一個輕量級的包裝器，用於在 docker 中運行 k3s（Rancher Lab 的最小 Kubernetes 發行版）。
+    kubelet: Running
+    apiserver: Running
+    kubeconfig: Configured  
+    ```
+
+
+=== "K3D"
+
+    k3d 是一個輕量級的 kubernetes 包裝器，用於在 docker 中運行 k3s（Rancher Lab 的最小 Kubernetes 發行版）。
+
+    k3d 使得在 docker 中創建單節點和多節點 k3s 集群變得非常容易，例如用於 Kubernetes 上的本地開發。
+
+    啟動 Kubernetes 集群。
+
+    ```bash
+    $ mkdir -p /tmp/k3d/kubelet/pods
+    $ k3d cluster create -v /tmp/k3d/kubelet/pods:/var/lib/kubelet/pods:shared
+
+    WARN[0000] No node filter specified                     
+    INFO[0000] Prep: Network                                
+    INFO[0000] Created network 'k3d-k3s-default'            
+    INFO[0000] Created image volume k3d-k3s-default-images  
+    INFO[0000] Starting new tools node...                   
+    INFO[0000] Starting Node 'k3d-k3s-default-tools'        
+    INFO[0001] Creating node 'k3d-k3s-default-server-0'     
+    INFO[0001] Creating LoadBalancer 'k3d-k3s-default-serverlb' 
+    INFO[0001] Using the k3d-tools node to gather environment information 
+    INFO[0001] HostIP: using network gateway 172.29.0.1 address 
+    INFO[0001] Starting cluster 'k3s-default'               
+    INFO[0001] Starting servers...                          
+    INFO[0001] Starting Node 'k3d-k3s-default-server-0'     
+    INFO[0005] All agents already running.                  
+    INFO[0005] Starting helpers...                          
+    INFO[0006] Starting Node 'k3d-k3s-default-serverlb'     
+    INFO[0012] Injecting records for hostAliases (incl. host.k3d.internal) and for 2 network members into CoreDNS configmap... 
+    INFO[0014] Cluster 'k3s-default' created successfully!  
+    INFO[0014] You can now use it like this:                
+    kubectl cluster-info
+    ```
+
+    驗證 K3D 集群的狀態。
+
+    ```bash
+    $ kubectl cluster-info
+    ```
+
 
 主機、kubelet、apiserver 報告它們正在運行。 kubectl 是一個命令行界面 (CLI)，用於針對 Kubernetes 集群運行命令，它也被配置為與這個最近啟動的集群進行通信。
 

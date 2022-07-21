@@ -108,6 +108,8 @@ nav:
       - Platform:
         - Kubernetes:
           - Overview: vault/docs/platform/index.md
+          - Helm:
+            - Overview: vault/docs/platform/helm/index.md
     - Tutorials:        
       - Kubernetes:
         - 通過 Vault Agent 容器將 Secret 注入 Kubernetes Pod: vault/kubernetes/kubernetes-sidecar.md
@@ -124,7 +126,8 @@ nav:
       - 用 HTTP 客戶端調用 K8S API: kubernetes/api/kubernetes-api-call-simple-http-client.md
     - Authentication:
       - Kubernetes RBAC 介詔: kubernetes/authentication/rbac-intro.md
-      - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md    
+      - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md
+      - ServiceAccounts、JWT-tokens、身份驗證和 RBAC 授權: kubernetes/authentication/k8s-sa-jwt-rbac.md
     - ArgoCD:
       - ArgoCD 教程:
         - ArgoCD 教程簡介: kubernetes/argocd/tutorial/index.md

@@ -27,53 +27,95 @@
 
 本教程需要安裝 `Kubernetes 命令行界面 (CLI)` 和 `Helm CLI`、`Minikube` 以及其他配置以將它們組合在一起。
 
-## 啟動 Minikube
+## 啟動 Kubernetes
 
-Minikube 是一個 CLI 工具，可在系統上的虛擬機 (VM) 中本地配置和管理單節點 Kubernetes 集群的生命週期。
+=== "Minikube"
 
-啟動 Kubernetes 集群。
+    Minikube 是一個 CLI 工具，可在系統上的虛擬機 (VM) 中本地配置和管理單節點 Kubernetes 集群的生命週期。
 
-```bash
-$ minikube start
+    啟動 Kubernetes 集群。
 
-😄  minikube v1.19.0 on Darwin 11.2.3
-✨  Using the docker driver based on existing profile
-👍  Starting control plane node minikube in cluster minikube
-🔄  Restarting existing docker container for "minikube" ...
-🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.5 ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
+    ```bash
+    $ minikube start
 
-初始化過程需要幾分鐘，因為它會檢索任何必要的依賴項並執行各種容器映像。
+    😄  minikube v1.19.0 on Darwin 11.2.3
+    ✨  Using the docker driver based on existing profile
+    👍  Starting control plane node minikube in cluster minikube
+    🔄  Restarting existing docker container for "minikube" ...
+    🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.5 ...
+    🔎  Verifying Kubernetes components...
+        ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+    🌟  Enabled addons: storage-provisioner, default-storageclass
+    🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+    ```
 
-驗證 Minikube 集群的狀態。
+    初始化過程需要幾分鐘，因為它會檢索任何必要的依賴項並執行各種容器映像。
 
-```bash
-$ minikube status
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured
-```
+    驗證 Minikube 集群的狀態。
 
-主機、kubelet 和 apiserver 報告它們正在運行。 kubectl 是一個命令行界面 (CLI)，用於針對 Kubernetes 集群運行命令，它也被配置為與這個最近啟動的集群進行通信。
+    ```bash
+    $ minikube status
+    minikube
+    type: Control Plane
+    host: Running
+    kubelet: Running
+    apiserver: Running
+    kubeconfig: Configured
+    ```
 
-Minikube 在基於 Web 的儀表板中提供狀態的可視化表示。該界面在可視化界面中顯示集群活動，有助於深入研究影響它的問題。
+    主機、kubelet 和 apiserver 報告它們正在運行。 kubectl 是一個命令行界面 (CLI)，用於針對 Kubernetes 集群運行命令，它也被配置為與這個最近啟動的集群進行通信。
 
-在另一個終端中，啟動 minikube 儀表板。
+    Minikube 在基於 Web 的儀表板中提供狀態的可視化表示。該界面在可視化界面中顯示集群活動，有助於深入研究影響它的問題。
 
-```bash
-$ minikube dashboard
-```
+    在另一個終端中，啟動 minikube 儀表板。
 
-操作系統的默認瀏覽器打開並顯示儀表板。
+    ```bash
+    $ minikube dashboard
+    ```
 
-![](./assets/k8s-dashboard.png)
+    操作系統的默認瀏覽器打開並顯示儀表板。
+
+    ![](./assets/k8s-dashboard.png)
+
+=== "K3D"
+
+    k3d 是一個輕量級的 kubernetes 包裝器，用於在 docker 中運行 k3s（Rancher Lab 的最小 Kubernetes 發行版）。
+
+    k3d 使得在 docker 中創建單節點和多節點 k3s 集群變得非常容易，例如用於 Kubernetes 上的本地開發。
+
+    啟動 Kubernetes 集群。
+
+    ```bash
+    $ mkdir -p /tmp/k3d/kubelet/pods
+    $ k3d cluster create -v /tmp/k3d/kubelet/pods:/var/lib/kubelet/pods:shared
+
+    WARN[0000] No node filter specified                     
+    INFO[0000] Prep: Network                                
+    INFO[0000] Created network 'k3d-k3s-default'            
+    INFO[0000] Created image volume k3d-k3s-default-images  
+    INFO[0000] Starting new tools node...                   
+    INFO[0000] Starting Node 'k3d-k3s-default-tools'        
+    INFO[0001] Creating node 'k3d-k3s-default-server-0'     
+    INFO[0001] Creating LoadBalancer 'k3d-k3s-default-serverlb' 
+    INFO[0001] Using the k3d-tools node to gather environment information 
+    INFO[0001] HostIP: using network gateway 172.29.0.1 address 
+    INFO[0001] Starting cluster 'k3s-default'               
+    INFO[0001] Starting servers...                          
+    INFO[0001] Starting Node 'k3d-k3s-default-server-0'     
+    INFO[0005] All agents already running.                  
+    INFO[0005] Starting helpers...                          
+    INFO[0006] Starting Node 'k3d-k3s-default-serverlb'     
+    INFO[0012] Injecting records for hostAliases (incl. host.k3d.internal) and for 2 network members into CoreDNS configmap... 
+    INFO[0014] Cluster 'k3s-default' created successfully!  
+    INFO[0014] You can now use it like this:                
+    kubectl cluster-info
+    ```
+
+    驗證 K3D 集群的狀態。
+
+    ```bash
+    $ kubectl cluster-info
+    ```
 
 ## 安裝 Vault Helm chart
 

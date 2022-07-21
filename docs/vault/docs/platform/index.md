@@ -1,11 +1,15 @@
 # Kubernetes
 
-可以使用官方 `HashiCorp Vault Helm chart` 將 Vault 部署到 Kubernetes 中。 Helm chart 允許用戶以各種配置部署 Vault：
+![](./assets/vault-kubernetes.png)
 
-- Dev：用於測試 Vault 的單個內存 Vault 服務器
-- Standalone (default)：單個 Vault 服務器使用文件存儲後端持久保存到卷
-- High-Availability (HA)：使用 HA 存儲後端（如 Consul）的 Vault 服務器集群（默認）
-- External：依賴於外部 Vault 服務器的 Vault Agent Injector 服務器
+本章節介紹在 Kubernetes上運行 Vault，並解釋架構、配置、安裝和安全注意事項。
+
+Hashicorp 建議使用官方 `HashiCorp Vault Helm chart` 將 Vault 部署到 Kubernetes 中。 Helm chart 允許用戶以各種配置部署 Vault：
+
+- **Dev**：用於測試 Vault 的單個內存 Vault 服務器
+- **Standalone (default)**：單個 Vault 服務器使用文件存儲後端持久保存到卷
+- **High-Availability (HA)**：使用 HA 存儲後端（如 Consul）的 Vault 服務器集群（默認）
+- **External**：依賴於外部 Vault 服務器的 Vault Agent Injector 服務器
 
 ## 用例
 
