@@ -4,7 +4,7 @@
 
 ## ArgoCD
 
-[Argo CD](https://argoproj.github.io/argo-cd/) 是用於 Kubernetes 的聲明式 GitOps 持續交付工具。
+[Argo CD](https://argoproj.github.io/argo-cd/) 是用於 Kubernetes 的宣告式 GitOps 持續交付工具。
 
 它遵循 GitOps 模式，使用 Git 存儲庫作為定義所需應用程序狀態的事實來源。
 

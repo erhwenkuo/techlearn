@@ -10,8 +10,7 @@
 | ----------- | ------------------------------------ |
 | `Git`             | [Download](https://git-scm.com/download/linux)  |
 | `Docker`          | [Download](https://git-scm.com/download/linux)  |
-| `VirtualBox`      | [Download](https://www.virtualbox.org/wiki/Linux_Downloads)  |
-| `Minikube v1.20.0`| [Download](https://github.com/kubernetes/minikube/releases/download/v1.20.0/minikube-linux-amd64)  |
+| `K3D v5.4.4`      | [Download](https://k3d.io/v5.4.3/#installation)  |
 | `kubectl v1.20.2` | [Download](https://storage.googleapis.com/kubernetes-release/release/v1.20.2/bin/linux/amd64/kubectl)  |
 | `argocd v2.0.0`   | [Download](https://github.com/argoproj/argo-cd/releases/download/v2.0.0/argocd-linux-amd64)  |
 | `kustomize v4.1.2`| [Download](https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.1.2/kustomize_v4.1.2_linux_amd64.tar.gz)  |
@@ -20,7 +19,7 @@
 
 ## 取得教程資源
 
-在開始設置環境之前，讓我們 clone 教程源並將 `TUTORIAL_HOME` 環境變量設置為指向教程的根目錄：
+在開始設置環境之前，讓我們 clone 教程源碼並將 `TUTORIAL_HOME` 環境變量設置為指向教程的根目錄：
 
 ```bash
 $ git clone https://github.com/redhat-scholars/argocd-tutorial.git gitops
@@ -32,50 +31,21 @@ $ cd $TUTORIAL_HOME
 
 ## 設置 Kubernetes 集群
 
-安裝 minikube 並在您的 PATH 中，然後運行：
+在此教程中，我們將部署 argocd 並使其可通過 `ingress` 來訪問。因此，我們必須以某種方式創建 Kubernetes 集群，使內部端口 80（traefik ingress controller 正在監聽的地方）暴露在主機系統上。
 
 ```bash
-$ minikube start --memory=8192 --cpus=3
+$ k3d cluster create [Cluster Name] -p "8081:80@loadbalancer"
 ```
 
-結果:
-
-```bash
-😄  minikube v1.25.2 on Ubuntu 21.10
-✨  Automatically selected the docker driver. Other choices: virtualbox, ssh
-❗  Your cgroup does not allow setting memory.
-    ▪ More information: https://docs.docker.com/engine/install/linux-postinstall/#your-kernel-does-not-support-cgroup-swap-limit-capabilities
-👍  Starting control plane node minikube in cluster minikube
-🚜  Pulling base image ...
-🔥  Creating docker container (CPUs=3, Memory=8192MB) ...
-🐳  Preparing Kubernetes v1.23.3 on Docker 20.10.12 ...
-    ▪ kubelet.housekeeping-interval=5m
-    ▪ Generating certificates and keys ...
-    ▪ Booting up control plane ...
-    ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
+!!! info
+    `-p "8081:80@loadbalancer"` 意味著：
+    
+    - “將主機的 8081 端口映射至 `loadbalancer` 容器上的 `80` 端口
+Argo CD Vault 插件並非專門用於秘密。它還可以用於部署、configMaps 或任何其他 Kubernetes 資源。
 
 接著讓我們在 Kubernetes 上安裝 ArgoCD。
 
 ## ArgoCD 安裝
-
-在 minikube 指南中，將安裝和使用 ArgoCD 上游部署。
-
-為 Minikube 啟用 Ingress 插件：
-
-```bash
-minikube addons enable ingress
-
-    ▪ Using image k8s.gcr.io/ingress-nginx/controller:v1.1.1
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
-🔎  Verifying ingress addon...
-🌟  The 'ingress' addon is enabled
-```
 
 安裝 ArgoCD 並檢查 `argocd` 命名空間中的每個 pod 是否正常運行：
 
@@ -148,7 +118,7 @@ networkpolicy.networking.k8s.io/argocd-server-network-policy created
     ```bash
     watch kubectl get pods -n argocd
     ```
-    你可以使用 Ctrl+c 來終止 `watch`
+    你可以使用 ++ctrl+c++ 來終止 `watch`
 
 成功部署 ArgoCD 將顯示以下 pod：
 
@@ -161,24 +131,4 @@ argocd-repo-server-6c495f858f-p5267   1/1     Running   0          2m18s
 argocd-server-859b4b5578-cv2qx        1/1     Running   0          2m18s
 ```
 
-將 ArgoCD 服務從 ClusterIP 改換成 LoadBalancer：
-
-```bash
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-```
-
-現在使用 minikube 服務列表，您可以檢查暴露的 argocd 服務：
-
-```bash
-$ minikube service list | grep argocd
-
-| argocd        | argocd-applicationset-controller        | No node port |
-| argocd        | argocd-dex-server                       | No node port |
-| argocd        | argocd-metrics                          | No node port |
-| argocd        | argocd-notifications-controller-metrics | No node port |
-| argocd        | argocd-redis                            | No node port |
-| argocd        | argocd-repo-server                      | No node port |
-| argocd        | argocd-server                           | http/80      | http://192.168.49.2:30990 |
-| argocd        | argocd-server-metrics                   | No node port |
-```
 

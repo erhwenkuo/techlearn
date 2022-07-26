@@ -98,7 +98,10 @@ markdown_extensions:
 
 # Page tree
 nav:
-  - Home: index.md
+  - Home: 
+    - CICD 路線圖: index.md
+    - CI/CD:
+      - GitOps 的概念: cicd/gitops.md
   - Vault:
     - Docs:
       - Auth Methods:
@@ -117,6 +120,8 @@ nav:
         - Vault Agent 與 Kubernetes: vault/kubernetes/agent-kubernetes.md
         - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
   - Kubernetes:
+    - K3D:
+      - 使用 K3D 設置 Kubernetes 集群: kubernetes/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
     - Minikube:
       - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
       - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
@@ -135,6 +140,8 @@ nav:
         - ArgoCD 入門: kubernetes/argocd/tutorial/02-getting_started.md
         - Kustomize: kubernetes/argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: kubernetes/argocd/tutorial/04-syncwaves-hooks.md
+      - ArgoCD 插件:
+        - 使用 Argo CD Vault 插件進行 Secret 管理: kubernetes/argocd/argocd-vault-plugin/secret-management-argocd-vault.md
   - Ansible:
     - 快速入門:
       - Vagrant 快速入門: ansible/vagrant-intro.md
