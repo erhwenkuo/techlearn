@@ -41,7 +41,6 @@ $ k3d cluster create [Cluster Name] -p "8081:80@loadbalancer"
     `-p "8081:80@loadbalancer"` 意味著：
     
     - “將主機的 8081 端口映射至 `loadbalancer` 容器上的 `80` 端口
-Argo CD Vault 插件並非專門用於秘密。它還可以用於部署、configMaps 或任何其他 Kubernetes 資源。
 
 接著讓我們在 Kubernetes 上安裝 ArgoCD。
 
