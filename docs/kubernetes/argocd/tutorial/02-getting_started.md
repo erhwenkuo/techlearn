@@ -4,9 +4,11 @@
 
 確認 Argo CD 已啟動並運行後，讓我們探索如何訪問和管理 Argo CD。
 
+![](./assets/argocd-interact.png)
+
 ## 曝露 ArgoCD 服務
 
-為了簡化學習，我們使用 `kubectl port-forward` 來將 `argocd` 的服務曝露出來。打開一個新的 `terminal` 並輸入下列的命令：
+為了簡化學習，我們使用 `kubectl port-forward` 來將 `argocd` 的 Web UI 服務曝露出來。打開一個新的 `terminal` 並輸入下列的命令：
 
 ```bash
 $ kubectl port-forward svc/argocd-server -n argocd 8443:443 --address='0.0.0.0'
@@ -273,7 +275,7 @@ $ kubectl get all -n bgd
 
 輸出應如下所示：
 
-```bash
+```
 NAME                       READY   STATUS    RESTARTS   AGE
 pod/bgd-788cb756f7-kz448   1/1     Running   0          10m
 
@@ -294,20 +296,76 @@ deployment "bgd" successfully rolled out
 
 然後訪問您的應用程序：
 
+由於我們使用了 Kubernetes `Ingress` 的 Domain Name (Hostname) 設定來進行對不同 Web 服務的映射。我們必須利用某種Name resolving的服務來解析 `bgd.devnation` 的網域名到本機的 IP Address。最簡易的方法就是在主機的hosts 檔裡頭手動設定網址與 IP 映射。
+
+!!! info
+    ![](./assets/windows-hosts-file-configuration-8.png)
+
+
 將跑 K3D 的主機 IP 和 Ingress 裡定義的主機名 `bgd.devnation` 添加到你的主機文件中，例如 `/etc/hosts`。
 
-``` title="/etc/hosts" hl_lines="3"
-127.0.0.1	localhost
-127.0.1.1	dxlab-ThinkPad-T580
-0.0.0.0 bgd.devnation bgdk.devnation 
+=== "Windows"
 
-# The following lines are desirable for IPv6 capable hosts
-::1     ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-```
+    Windows 系統的 hosts 設定檔路徑是：
+    ```
+    C:\WINDOWS\system32\drivers\etc\hosts
+    ```
+    ![](./assets/windows-hosts-file-configuration-1.png)
+
+    這個 hosts 設定檔的內容預設應該都只有註解（# 開頭的就是註解），沒有什麼特別的內容，我們可以在檔案的最後加上自己的設定，第一個欄位是 IP 位址，然後使用空白或 Tab 分隔，第二個欄位就放主機的 FQDN（也就是網址）。
+
+    ```hl_lines="23"
+    # Copyright (c) 1993-2009 Microsoft Corp.
+    #
+    # This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+    #
+    # This file contains the mappings of IP addresses to host names. Each
+    # entry should be kept on an individual line. The IP address should
+    # be placed in the first column followed by the corresponding host name.
+    # The IP address and the host name should be separated by at least one
+    # space.
+    #
+    # Additionally, comments (such as these) may be inserted on individual
+    # lines or following the machine name denoted by a '#' symbol.
+    #
+    # For example:
+    #
+    #      102.54.94.97     rhino.acme.com          # source server
+    #       38.25.63.10     x.acme.com              # x client host
+
+    # localhost name resolution is handled within DNS itself.
+    #	127.0.0.1       localhost
+    #	::1             localhost
+
+    0.0.0.0 bgd.devnation bgdk.devnation 
+    ```
+
+=== "Linux"
+
+    在 Linux 系統上 hosts 設定檔放在
+
+    ```
+    /etc/hosts
+    ```
+
+    如果要修改它，要使用 root 管理者權限修改：
+
+    ```bash
+    sudo vi /etc/hosts
+    ```
+
+    ``` title="/etc/hosts" hl_lines="3"
+    127.0.0.1	localhost
+    127.0.1.1	dxlab-ThinkPad-T580
+    0.0.0.0 bgd.devnation bgdk.devnation 
+
+    # The following lines are desirable for IPv6 capable hosts
+    ::1     ip6-localhost ip6-loopback
+    fe00::0 ip6-localnet
+    ff00::0 ip6-mcastprefix
+    ff02::1 ip6-allnodes
+    ff02::2 ip6-allrouters
+    ```
 
 !!! info
     由於我們要使用 `Ingress` 來接入佈署在 Kubernetes 集群裡的 application。在 Kubernetes 中主要有兩種模式:

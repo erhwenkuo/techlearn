@@ -2,6 +2,8 @@
 
 原文: https://redhat-scholars.github.io/argocd-tutorial/argocd-tutorial/01-setup.html
 
+![](./assets/argocd-gitops.png)
+
 ## 相關需要的 CLI 工具
 
 運行本教程中的練習需要以下 CLI 工具。在開始學習任何教程章節之前，請先安裝和配置它們。
