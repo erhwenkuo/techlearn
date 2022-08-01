@@ -470,4 +470,4 @@ $ kubectl patch application/bgd-app -n argocd --type=merge -p='{"spec":{"syncPol
 
 此外，GitOps 的過程中，任何人都不應該直接對 Kubernetes Cluster 直接操作，因此也不需要將 KUBECONFIG 這個檔案給分享出去，因此安全性的隱憂也就迎刃而解。
 
-![](./assets/cicd-normal.png)
+![](./assets/cicd-gitops.png)

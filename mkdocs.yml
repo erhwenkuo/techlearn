@@ -100,6 +100,11 @@ markdown_extensions:
 nav:
   - Home: 
     - CICD 路線圖: index.md
+    - Networking Basics:
+      - 無類別區隔路由 CIDR: networking/cidr/cidr-intro.md
+    - YAML:
+      - YAML 入門教程: yaml/yaml-intro.md
+      - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
   - Vault:
@@ -120,11 +125,17 @@ nav:
         - Vault Agent 與 Kubernetes: vault/kubernetes/agent-kubernetes.md
         - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
   - Kubernetes:
+    - Introduction:
+        - K8S 容器平臺介詔: kubernetes/introduction/k8s-intro.md
+        - K8S 容器平臺架構: kubernetes/introduction/k8s-architecture.md
     - K3D:
       - 使用 K3D 設置 Kubernetes 集群: kubernetes/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
     - Minikube:
       - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
       - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
+    
+    - Networking:
+      - K8S 網絡通信介紹: kubernetes/networking/k8s-network-intro.md
     - API:
       - 使用 K8S API: kubernetes/api/working-with-k8s-api.md
       - K8S API 基礎: kubernetes/api/kubernetes-api-structure-and-terminology.md
@@ -140,6 +151,7 @@ nav:
         - ArgoCD 入門: kubernetes/argocd/tutorial/02-getting_started.md
         - Kustomize: kubernetes/argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: kubernetes/argocd/tutorial/04-syncwaves-hooks.md
+        - ApplicationSet 控制器: kubernetes/argocd/tutorial/argo-cd-applicationset-controller.md
       - ArgoCD 插件:
         - 使用 Argo CD Vault 插件進行 Secret 管理: kubernetes/argocd/argocd-vault-plugin/secret-management-argocd-vault.md
   - Ansible:
