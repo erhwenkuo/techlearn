@@ -126,20 +126,32 @@ nav:
         - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
   - Kubernetes:
     - Introduction:
-        - K8S 容器平臺介詔: kubernetes/introduction/k8s-intro.md
-        - K8S 容器平臺架構: kubernetes/introduction/k8s-architecture.md
-    - K3D:
-      - 使用 K3D 設置 Kubernetes 集群: kubernetes/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
-    - Minikube:
-      - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
-      - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
-    
+      - K8S 介詔: kubernetes/introduction/k8s-intro.md
+      - 學習環境安裝:
+        - K3D:
+          - 使用 K3D 設置 Kubernetes 集群: kubernetes/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
+        - Minikube:
+          - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/minikube/how-to-install-minikube-on-ubuntu.md
+          - 配置 Pod 的 Service Account: kubernetes/minikube/onfigure-pod-service-account.md
+      - 教程:
+        - 你好, K3D: kubernetes/introduction/tutorials/hello-k3d.md
+        - 學習 Kubernetes 基礎知識: 
+          - 簡介: kubernetes/introduction/tutorials/kubernetes-basics/index.md
+          - 創建集群: kubernetes/introduction/tutorials/kubernetes-basics/create-cluster.md
+          - 部署應用: kubernetes/introduction/tutorials/kubernetes-basics/deploy-app.md
+          - 了解應用: kubernetes/introduction/tutorials/kubernetes-basics/explore.md
+          - 公開曝露應用: kubernetes/introduction/tutorials/kubernetes-basics/expose.md
+          - 縮放你的應用: kubernetes/introduction/tutorials/kubernetes-basics/scale.md
+          - 更新你的應用: kubernetes/introduction/tutorials/kubernetes-basics/update.md
+    - Architecture:
+      - K8S 架構解析: kubernetes/introduction/k8s-architecture.md
+    - Objects:
+      - API:
+        - 使用 K8S API: kubernetes/api/working-with-k8s-api.md
+        - K8S API 基礎: kubernetes/api/kubernetes-api-structure-and-terminology.md
+        - 用 HTTP 客戶端調用 K8S API: kubernetes/api/kubernetes-api-call-simple-http-client.md    
     - Networking:
-      - K8S 網絡通信介紹: kubernetes/networking/k8s-network-intro.md
-    - API:
-      - 使用 K8S API: kubernetes/api/working-with-k8s-api.md
-      - K8S API 基礎: kubernetes/api/kubernetes-api-structure-and-terminology.md
-      - 用 HTTP 客戶端調用 K8S API: kubernetes/api/kubernetes-api-call-simple-http-client.md
+      - K8S 網絡通信介紹: kubernetes/networking/k8s-network-intro.md    
     - Authentication:
       - Kubernetes RBAC 介詔: kubernetes/authentication/rbac-intro.md
       - 使用 RBAC 設置服務帳戶權限: kubernetes/authentication/k8s-authorization-of-sa-with-rbac.md

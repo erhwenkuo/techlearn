@@ -75,9 +75,14 @@ Kubernetes 最小排程 Pod 的 Container 分類及啟動過程
 
 ### Volume 儲存卷，Kubernetes 複雜的儲存架構
 
-![](./assets/k8s-volume.png)
+![](./assets/k8s-volumes-solution.webp)
+
+
 
 儲存非常重要關鍵，同時也是生態與技術都比較複雜的領域，就 linux、window 兩個生態支援的檔案系統就多達20+。對於 Kubernete 儲存架構設計一直在持續演進完善，為了儘可能多地相容各種儲存平臺，Kubernetes 以 in-tree plugin 的形式預設對接很多不同型別的儲存系統；同時也支援基於 FlexVolume 和 CSI 外掛以 out-of-tree plugin 來實現自定義儲存服務。
+
+![](./assets/k8s-volume.png)
+
 
 對 Kubernetes 儲存，主要有 **應用的基本配置檔案讀取、密碼金鑰管理；應用的儲存狀態、資料存取，不同應用間資料共享** 等三大使用場景。目前 Kubernetes 支援的 Volume Plugins 如下表：
 
@@ -102,6 +107,19 @@ Kubernetes 最小排程 Pod 的 Container 分類及啟動過程
 引入 **PV、PVC、StorageClass** 之後，資源管控更加靈活，團隊職責更加明確，研發人員只需考慮儲存需求（IO、容量、訪問模式等），不需要關注底層儲存細節；底層複雜的細節都由專業的叢集管理與儲存管理員來完成。
 
 **CSI** 是 Kubernetes 1.9 版本開始引入，建立一套標準的儲存管理介面，通過該介面為容器提供儲存服務。從而實現 Kubernetes 平臺與儲存服務驅動完全解耦。CSI 主要包含 **CSI Controller Server** 與 **CSI Node Server** 兩個部分, **Controller Server** 主要實現建立、刪除、掛載、解除安裝等控制功能； **Node Server** 主要實現的是 Node 節點上的 mount、unmount的操作。
+
+![](./assets/k8s-volume-solution2.webp)
+
+基於 CSI 實現的持久化 Volume 的創建和掛載流程如下：
+
+1. 用戶提交 PVC，Kubernetes 平台自動創建出 PV
+2. Kubernetes 平台將 PV 和 PVC 進行綁定
+3. 部署 Pod 並使用已創建的 PVC，Kubernetes 將 Pod 調度到某宿主機
+4. Kubernetes 將 PVC 對應的 Volume 進行 Attach 到對應宿主機
+5. 宿主機上的 kubelet 完成 Volume 的 Mount 操作
+
+![](./assets/k8s-volume-mount.webp)
+
 
 ![CSI實現Kubernetes平臺與儲存服務驅動完全解耦](./assets/k8s-csi-layers.png)
 
