@@ -337,8 +337,11 @@ deployment "bgd" successfully rolled out
     #	127.0.0.1       localhost
     #	::1             localhost
 
-    0.0.0.0 bgd.devnation bgdk.devnation 
+    xxx.xxx.xxx.xxx bgd.devnation bgdk.devnation 
     ```
+
+    !!! tip
+        請將 `xxx.xxx.xxx.xxx` 替換成跑 K3D 服務的主機 IP!
 
 === "Linux"
 
@@ -357,7 +360,7 @@ deployment "bgd" successfully rolled out
     ``` title="/etc/hosts" hl_lines="3"
     127.0.0.1	localhost
     127.0.1.1	dxlab-ThinkPad-T580
-    0.0.0.0 bgd.devnation bgdk.devnation 
+    xxx.xxx.xxx.xxx bgd.devnation bgdk.devnation 
 
     # The following lines are desirable for IPv6 capable hosts
     ::1     ip6-localhost ip6-loopback
@@ -366,6 +369,9 @@ deployment "bgd" successfully rolled out
     ff02::1 ip6-allnodes
     ff02::2 ip6-allrouters
     ```
+
+    !!! tip
+        請將 `xxx.xxx.xxx.xxx` 替換成跑 K3D 服務的主機 IP!
 
 !!! info
     由於我們要使用 `Ingress` 來接入佈署在 Kubernetes 集群裡的 application。在 Kubernetes 中主要有兩種模式:
