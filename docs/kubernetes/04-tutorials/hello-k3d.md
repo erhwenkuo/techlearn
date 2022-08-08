@@ -2,10 +2,12 @@
 
 原文: [Hello Minikube](https://kubernetes.io/docs/tutorials/hello-minikube/)
 
+![](./assets/k3d.png)
+
 本教程向你展示如何使用 K3D 在 Kubernetes 上運行一個應用示例。
 
 !!! info
-    說明： 如果你已在本地安裝 K3D，也可以按照本教程操作。安裝指南參閱 [使用 K3D 設置 Kubernetes 集群](../../k3d/k3s-kubernetes-cluster-setup-with-k3d.md) 。
+    說明： 如果你已在本地安裝 K3D，也可以按照本教程操作。安裝指南參閱 [使用 K3D 設置 Kubernetes 集群](../01-getting-started/learning-env/k3d/k3s-kubernetes-cluster-setup-with-k3d.md) 。
 
 ## 教程目標
 

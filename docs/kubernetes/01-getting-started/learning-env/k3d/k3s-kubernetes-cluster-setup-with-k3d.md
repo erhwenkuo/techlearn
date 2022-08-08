@@ -2,6 +2,8 @@
 
 原文: https://kartaca.com/en/k3s-kubernetes-cluster-setup-with-k3d/
 
+![](./assets/k3d.png)
+
 在本文中，將討論如何使用 Rancher 的工具 K3D 在基於 Linux 的操作系統中創建 Kubernetes 集群。
 
 ## K3S (輕量級 Kubernetes)

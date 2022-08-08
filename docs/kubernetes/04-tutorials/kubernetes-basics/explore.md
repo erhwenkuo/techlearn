@@ -12,7 +12,7 @@
 
 [模塊 2](deploy-app.md) 時，Kubernetes 添加了一個 Pod 在這些容器中來創建這些部署的應用實例。是 Kubernetes 部署的，表示一個或多個應用程序），以及容器的一些共享資源。資源包括：
 
-在[模塊 2]((deploy-app.md)) 創建 Deployment 時, Kubernetes 添加了一個 Pod 來託管你的應用實例。 Pod 是 Kubernetes 抽象出來的，表示一組一個或多個應用程序容器（如 Docker），以及這些容器的一些共享資源。這些資源包括:
+在[模塊 2](deploy-app.md) 創建 Deployment 時, Kubernetes 添加了一個 Pod 來託管你的應用實例。 Pod 是 Kubernetes 抽象出來的，表示一組一個或多個應用程序容器（如 Docker），以及這些容器的一些共享資源。這些資源包括:
 
 - 共享存儲 Volume
 - 網絡，作為唯一的集群 IP 地址
