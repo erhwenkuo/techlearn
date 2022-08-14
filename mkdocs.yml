@@ -120,7 +120,10 @@ nav:
       - 集群架構:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
       - Serivce, 負載均衡與網路:
-        - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md 
+        - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
+      - 存儲:
+        - 簡介: kubernetes/02-concepts/06-storage/index.md
+
     - Tasks:
       - 管理 Kubernetes 对象:
         - 使用 Kustomize 對 Kubernetes 對象進行聲明式管理: kubernetes/03-tasks/manage-kubernetes-objects/kustomization.md
@@ -134,6 +137,10 @@ nav:
         - 公開曝露應用: kubernetes/04-tutorials/kubernetes-basics/expose.md
         - 縮放你的應用: kubernetes/04-tutorials/kubernetes-basics/scale.md
         - 更新你的應用: kubernetes/04-tutorials/kubernetes-basics/update.md
+      - 配置:
+        - ConfigMap 與 Secret: kubernetes/04-tutorials/configuration/configmap-secrets.md
+      - 存儲:
+        - 存儲管理 volume、PV/PVC: kubernetes/04-tutorials/volume/volume-pv-pvc.md
 
     - Reference:
       - API 概述:
@@ -145,6 +152,7 @@ nav:
         - 使用 RBAC 設置服務帳戶權限: kubernetes/05-reference/access-authn-authz/k8s-authorization-of-sa-with-rbac.md
         - ServiceAccounts、JWT-tokens、身份驗證和 RBAC 授權: kubernetes/05-reference/access-authn-authz/k8s-sa-jwt-rbac.md
     - Tools:
+      - 簡介: kubernetes/package/index.md
       - Packaging 管理:
           - Helm:
             - Helm 入門教學: kubernetes/package/helm-intro.md
