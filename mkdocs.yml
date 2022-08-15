@@ -48,6 +48,14 @@ extra_css:
 
 # Plugins
 plugins:
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
   - search
   - minify:
       minify_html: true
@@ -123,6 +131,10 @@ nav:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
       - 存儲:
         - 簡介: kubernetes/02-concepts/06-storage/index.md
+      - 配置:
+        - 配置最佳實踐: kubernetes/02-concepts/07-configuration/overview.md
+        - ConfigMap: kubernetes/02-concepts/07-configuration/configmap.md
+        - Secret: kubernetes/02-concepts/07-configuration/secret.md
 
     - Tasks:
       - 管理 Kubernetes 对象:
@@ -170,6 +182,8 @@ nav:
       - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
     - ArgoCD 插件:
       - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
+    - ApplicationSet Controller:
+      - 簡介: argocd/applicationset/intro.md
   - Vault:
     - Docs:
       - Auth Methods:
