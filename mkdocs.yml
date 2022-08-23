@@ -125,7 +125,7 @@ nav:
     - Concepts:
       - 概述:
         - K8S 介詔: kubernetes/02-concepts/01-overview/k8s-intro.md
-      - 集群架構:
+      - Kubernetes 架構:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
       - Serivce, 負載均衡與網路:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
@@ -135,10 +135,19 @@ nav:
         - 配置最佳實踐: kubernetes/02-concepts/07-configuration/overview.md
         - ConfigMap: kubernetes/02-concepts/07-configuration/configmap.md
         - Secret: kubernetes/02-concepts/07-configuration/secret.md
+      - 集群管理:
+        - 日誌架構: kubernetes/02-concepts/11-cluster-adm/logging.md
+        - 日誌完整指南: kubernetes/02-concepts/11-cluster-adm/kubernetes-logging.md
 
     - Tasks:
       - 管理 Kubernetes 对象:
         - 使用 Kustomize 對 Kubernetes 對象進行聲明式管理: kubernetes/03-tasks/manage-kubernetes-objects/kustomization.md
+      - 監控、日誌和除錯:
+        - 應用程序故障排查:
+          - 簡介: kubernetes/03-tasks/debug/debug-application/index.md
+        - 集群故障排查:
+          - 簡介: kubernetes/03-tasks/debug/debug-cluster/index.md
+
     - Tutorials:
       - 你好, K3D: kubernetes/04-tutorials/hello-k3d.md
       - 學習 Kubernetes 基礎知識: 
@@ -163,6 +172,13 @@ nav:
         - Kubernetes RBAC 介詔: kubernetes/05-reference/access-authn-authz/rbac-intro.md
         - 使用 RBAC 設置服務帳戶權限: kubernetes/05-reference/access-authn-authz/k8s-authorization-of-sa-with-rbac.md
         - ServiceAccounts、JWT-tokens、身份驗證和 RBAC 授權: kubernetes/05-reference/access-authn-authz/k8s-sa-jwt-rbac.md
+    - Observability:
+      - 概念:
+        - Kubernetes 可觀察性: kubernetes/observability/concept/fullstack-monitoring.md
+        - 監控 Kubernetes 的挑戰: kubernetes/observability/concept/kubernetes-observability-for-humans.md
+      - 日誌:
+        - Loki:
+          - 使用 Loki 做為 Kubernetes 的日誌聚合亓件: kubernetes/observability/logging/loki/logging-with-loki-and-plg.md
     - Tools:
       - 簡介: kubernetes/package/index.md
       - Packaging 管理:
@@ -184,6 +200,14 @@ nav:
       - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
     - ApplicationSet Controller:
       - 簡介: argocd/applicationset/intro.md
+      - 用例: argocd/applicationset/use-cases.md
+      - ApplicationSet 控制器與 Argo CD 整合: argocd/applicationset/argo-cd-integration.md
+      - Generator 生成器:
+        - 生成器簡介: argocd/applicationset/generators/index.md
+        - List Generator: argocd/applicationset/generators/generators-list.md
+        - Cluster Generator: argocd/applicationset/generators/generators-cluster.md
+        - Git Generator: argocd/applicationset/generators/generators-git.md
+      - 範本 fields: argocd/applicationset/template.md
   - Vault:
     - Docs:
       - Auth Methods:
