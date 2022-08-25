@@ -51,7 +51,7 @@
     $ sudo apt install software-properties-common
     $ sudo add-apt-repository --yes --update ppa:ansible/ansible
     $ sudo apt install ansible
-        ```
+    ```
 
 === "CentOS/RHEL"
 
@@ -65,14 +65,14 @@
 ```bash
 $ ansible --version
 
-ansible [core 2.12.6]
+ansible [core 2.12.7]
   config file = /etc/ansible/ansible.cfg
   configured module search path = ['/home/dxlab/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /usr/lib/python3/dist-packages/ansible
   ansible collection location = /home/dxlab/.ansible/collections:/usr/share/ansible/collections
   executable location = /usr/bin/ansible
-  python version = 3.9.7 (default, Sep 10 2021, 14:59:43) [GCC 11.2.0]
-  jinja version = 3.1.1
+  python version = 3.10.4 (main, Jun 29 2022, 12:14:53) [GCC 11.2.0]
+  jinja version = 3.0.3
   libyaml = True
 ```
 

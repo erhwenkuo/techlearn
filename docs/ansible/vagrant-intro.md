@@ -342,6 +342,70 @@ vagrant box remove ubuntu/focal64
 Removing box 'ubuntu/focal64' (v20220523.0.0) with provider 'virtualbox'...
 ```
 
+### (補充) 創建新的帳戶與修改 root 密碼
+
+如果不想要使用 Vagrant 預建的 `vagrant` 帳號來登入 VM。接下來讓我們進到 VM 裡頭去修改 `root` 帳號或是新增加使用者帳號。
+
+首先使用 `vagrant ssh` 登入:
+
+```bash
+$ vagrant ssh
+```
+
+在 Linux 中可使用下列方式切換到 `root` 帳號:
+
+- 使用 `sudo su`: 此方式是假設有一個帳號為 tom，使用 tom 登入後可以切換身分到 root，但仍然還是用 tom 的角色，僅需輸入 tom 密碼。
+- 使用 `sudo su -`: 此方式則是將帳號換成 root 的角色，因此同時具備 root 的權限，僅需輸入 tom 密碼。
+- 使用 `su root`: 此方式是換成 root 也同時具備 root 的權限，但前提是要輸入 root 密碼。
+
+讓我們使用 `sudo su` 來切換成 `root` 帳號:
+
+```bash
+$ sudo su
+```
+
+現在你是 `root` 用戶。您可以更新 root 密碼，如下所示：
+
+```bash
+$ sudo -i
+$ passwd
+```
+
+**允許使用 password 來登入**:
+
+現在編輯文件 `/etc/ssh/sshd_config` 中的以下的內容:
+
+```
+...
+PermitRootLogin yes
+...
+PasswordAuthentication yes
+...
+```
+
+**創建自己的用戶帳戶**：
+
+```bash
+$ adduser {new_user}
+```
+
+等到它要求輸入密碼。
+
+**將使用者加入 `sudo` 群組**:
+
+```bash
+$ sudo usermod -aG sudo {user}
+```
+
+**把 Vagrant 打的 VM 重新載入**:
+
+回到宿主機的 terminal 並執行下列命令:
+
+```bash
+$ vagrant reload
+```
+
+
 ## 結論
 
 你已經成功地創建了你的第一個 Vagrant 環境並與之互動！

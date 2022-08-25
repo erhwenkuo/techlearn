@@ -229,6 +229,7 @@ nav:
     - 快速入門:
       - Vagrant 快速入門: ansible/vagrant-intro.md
       - Ansible 快速入門: ansible/ansible-intro.md
+      - Ansible 使用基於 SSH 密碼登入: ansible/use_sshpass_to_login_for_ansible.md
       - Ansible 使用指南: ansible/ansible-cheatsheet.md
     - Ansible Playbook 撰寫:
       - 如何創建與運行: ansible/tutorial_playbook/creating-and-running-your-first-ansible-playbook.md
