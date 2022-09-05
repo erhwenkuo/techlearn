@@ -179,6 +179,7 @@ nav:
       - 日誌:
         - Loki:
           - 使用 Loki 做為 Kubernetes 的日誌聚合亓件: kubernetes/observability/logging/loki/logging-with-loki-and-plg.md
+          - 使用 Logging Operator 將 Nginx 日誌存儲在 Grafana Loki: kubernetes/observability/logging/loki/loki-nginx.md
     - Tools:
       - 簡介: kubernetes/package/index.md
       - Packaging 管理:
