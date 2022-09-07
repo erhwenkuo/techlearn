@@ -67,6 +67,97 @@ helm upgrade --install --wait --create-namespace --namespace logging logging-dem
 
 ## 部署 Logging operator 和演示應用程序
 
+### 創建日誌 `Logging` 資源。
+
+```bash
+kubectl -n logging apply -f - <<"EOF"
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: default-logging-simple
+spec:
+  fluentd: {}
+  fluentbit: {}
+  controlNamespace: logging
+EOF
+```
+
+!!! info
+    注意：您只能在 `controlNamespace` 中使用 `ClusterOutput` 和 `ClusterFlow` 資源。
+
+### 創建 Loki `Output` 定義。
+
+```bash
+kubectl -n logging apply -f - <<"EOF"
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Output
+metadata:
+ name: loki-output
+spec:
+ loki:
+   url: http://loki:3100
+   configure_kubernetes_labels: true
+   buffer:
+     flush_mode: interval
+     flush_interval: 5s
+     timekey: 1m
+     timekey_wait: 30s
+     timekey_use_utc: true
+EOF
+```
+
+!!! info
+    注意：在生產環境中，使用較長的 timekey 間隔以避免生成過多的對象。
+
+### 創建 `Flow` 資源。
+
+```bash
+kubectl -n logging apply -f - <<"EOF"
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+  name: loki-flow
+spec:
+  filters:
+    - tag_normaliser: {}
+    - parser:
+        remove_key_name_field: true
+        reserve_data: true
+        parse:
+          type: nginx
+  match:
+    - select:
+        labels:
+          app.kubernetes.io/name: log-generator
+  localOutputRefs:
+    - loki-output
+EOF
+```
+
+### 安裝演示應用程序
+
+```bash
+kubectl -n logging apply -f - <<"EOF"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: log-generator
+spec:
+ selector:
+   matchLabels:
+     app.kubernetes.io/name: log-generator
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       app.kubernetes.io/name: log-generator
+   spec:
+     containers:
+     - name: nginx
+       image: banzaicloud/log-generator:0.3.2
+EOF
+```
+
 ### 驗證部署
 
 **Grafana Dashboard**
@@ -93,94 +184,9 @@ kubectl -n logging port-forward svc/grafana 3000:80
 
 ![](./assets/grafana-loki-exploer.png)
 
-創建日誌記錄資源。
 
-```bash
-kubectl -n logging apply -f - <<"EOF"
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: Logging
-metadata:
-  name: default-logging-simple
-spec:
-  fluentd: {}
-  fluentbit: {}
-  controlNamespace: logging
-EOF
-```
 
-!!! info
-    注意：您只能在 `controlNamespace` 中使用 `ClusterOutput` 和 `ClusterFlow` 資源。
 
-創建 Loki 輸出定義。
-
-```bash
-kubectl -n logging apply -f - <<"EOF"
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: Output
-metadata:
- name: loki-output
-spec:
- loki:
-   url: http://loki:3100
-   configure_kubernetes_labels: true
-   buffer:
-     timekey: 1m
-     timekey_wait: 30s
-     timekey_use_utc: true
-EOF
-```
-
-!!! info
-    注意：在生產環境中，使用較長的 timekey 間隔以避免生成過多的對象。
-
-創建 `flow` 資源。
-
-```bash
-kubectl -n logging apply -f - <<"EOF"
-apiVersion: logging.banzaicloud.io/v1beta1
-kind: Flow
-metadata:
-  name: loki-flow
-spec:
-  filters:
-    - tag_normaliser: {}
-    - parser:
-        remove_key_name_field: true
-        reserve_data: true
-        parse:
-          type: nginx
-  match:
-    - select:
-        labels:
-          app.kubernetes.io/name: log-generator
-  localOutputRefs:
-    - loki-output
-EOF
-```
-
-安裝演示應用程序。
-
-```bash
-kubectl -n logging apply -f - <<"EOF"
-apiVersion: apps/v1
-kind: Deployment
-metadata:
- name: log-generator
-spec:
- selector:
-   matchLabels:
-     app.kubernetes.io/name: log-generator
- replicas: 1
- template:
-   metadata:
-     labels:
-       app.kubernetes.io/name: log-generator
-   spec:
-     containers:
-     - name: nginx
-       image: banzaicloud/log-generator:0.3.2
-EOF
-```
 
 
 

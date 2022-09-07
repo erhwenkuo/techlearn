@@ -176,10 +176,15 @@ nav:
       - 概念:
         - Kubernetes 可觀察性: kubernetes/observability/concept/fullstack-monitoring.md
         - 監控 Kubernetes 的挑戰: kubernetes/observability/concept/kubernetes-observability-for-humans.md
-      - 日誌:
+      - 日誌 Logging:
         - Loki:
           - 使用 Loki 做為 Kubernetes 的日誌聚合亓件: kubernetes/observability/logging/loki/logging-with-loki-and-plg.md
           - 使用 Logging Operator 將 Nginx 日誌存儲在 Grafana Loki: kubernetes/observability/logging/loki/loki-nginx.md
+        - Operator:
+          - Logging Operator 日誌管理方案: kubernetes/observability/logging/operator/logging-operator.md
+      - 指標 Metrics:
+        - Prometheus:
+          - Prometheus-operator 介绍和配置解析: kubernetes/observability/metrics/kube-prometheus-stack/setup-prometheus-and-grafana-on-kubernetes.md
     - Tools:
       - 簡介: kubernetes/package/index.md
       - Packaging 管理:
