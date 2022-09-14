@@ -176,14 +176,24 @@ nav:
       - 概念:
         - Kubernetes 可觀察性: kubernetes/observability/concept/fullstack-monitoring.md
         - 監控 Kubernetes 的挑戰: kubernetes/observability/concept/kubernetes-observability-for-humans.md
+      - Observability 學習指南:
+        - Part 1. 學習指南說明: kubernetes/observability/concept/observability-prometheus-guide-part1.md
+        - Part 2. Prometheus, Alertmanager & Grafana 架構介詔: kubernetes/observability/concept/observability-prometheus-guide-part2.md
+        - Part 3. Prometheus & Alertmanager 基本概念: kubernetes/observability/concept/observability-prometheus-guide-part3.md
+        - Part 4. PromQL 介詔: kubernetes/observability/concept/observability-prometheus-guide-part4.md
+        - Part 5. Alerts 最佳實踐: kubernetes/observability/concept/observability-prometheus-guide-part5.md
       - 日誌 Logging:
         - Loki:
           - 使用 Loki 做為 Kubernetes 的日誌聚合亓件: kubernetes/observability/logging/loki/logging-with-loki-and-plg.md
           - 使用 Logging Operator 將 Nginx 日誌存儲在 Grafana Loki: kubernetes/observability/logging/loki/loki-nginx.md
-        - Operator:
+          - Loki 查詢語言 LogQL: kubernetes/observability/logging/loki/loki-ql.md
+        - Logging Operator:
           - Logging Operator 日誌管理方案: kubernetes/observability/logging/operator/logging-operator.md
+          - Logging Operator 的擴展: kubernetes/observability/logging/operator/logging-operator-extensions.md
+          - Rancher 2.6 全新 Logging 快速入門: kubernetes/observability/logging/operator/rancher-logging-quickstart-01.md
+          - Rancher 2.6 全新 Logging 快速入門(2): kubernetes/observability/logging/operator/rancher-logging-quickstart-02.md
       - 指標 Metrics:
-        - Prometheus:
+        - Prometheus Operator:
           - Prometheus-operator 介绍和配置解析: kubernetes/observability/metrics/kube-prometheus-stack/setup-prometheus-and-grafana-on-kubernetes.md
     - Tools:
       - 簡介: kubernetes/package/index.md

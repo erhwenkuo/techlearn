@@ -732,7 +732,7 @@ spec:
 
 #### outputRefs
 
-OutputRefs 定義了日誌的輸出路徑。它分為 `locallOutputRefs` 和 `globallOutputRefs`。故名思義，`locallOutputRefs` 是跟 flow 一樣作用在 namespace 級別，其他命名空間下的 Flow 看不到當前命名空間下的 output 定義。 `globallOutputRefs` 為集群級別的日誌輸出聲明，它能被所有命名空間下的 Flow 和 ClusterFlow 引用。
+OutputRefs 定義了日誌的輸出路徑。它分為 `localOutputRefs` 和 `globalOutputRefs`。故名思義，`localOutputRefs` 是跟 flow 一樣作用在 namespace 級別，其他命名空間下的 Flow 看不到當前命名空間下的 output 定義。 `globalOutputRefs` 為集群級別的日誌輸出聲明，它能被所有命名空間下的 Flow 和 ClusterFlow 引用。
 
 ### Output 與 ClusterOutput CRD
 
