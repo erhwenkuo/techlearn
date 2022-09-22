@@ -115,6 +115,10 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - Coding:
+    - C#:
+      - 後端 API:
+        -  使用 ASP.NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
@@ -173,6 +177,10 @@ nav:
         - 使用 RBAC 設置服務帳戶權限: kubernetes/05-reference/access-authn-authz/k8s-authorization-of-sa-with-rbac.md
         - ServiceAccounts、JWT-tokens、身份驗證和 RBAC 授權: kubernetes/05-reference/access-authn-authz/k8s-sa-jwt-rbac.md
     - Observability:
+      - Day2 運營:
+        - Day2 的定義: kubernetes/observability/day2-ops/day2-definition.md
+        - Day2 的挑戰: kubernetes/observability/day2-ops/day2-challenges.md
+        - Kubernetes Day2 運營: kubernetes/observability/day2-ops/k8s-day2-problem.md
       - 概念:
         - Kubernetes 可觀察性: kubernetes/observability/concept/fullstack-monitoring.md
         - 監控 Kubernetes 的挑戰: kubernetes/observability/concept/kubernetes-observability-for-humans.md
@@ -182,6 +190,7 @@ nav:
         - Part 3. Prometheus & Alertmanager 基本概念: kubernetes/observability/concept/observability-prometheus-guide-part3.md
         - Part 4. PromQL 介詔: kubernetes/observability/concept/observability-prometheus-guide-part4.md
         - Part 5. Alerts 最佳實踐: kubernetes/observability/concept/observability-prometheus-guide-part5.md
+        - Part 6. Kubernetes 中安裝設定 Prometheus 指南: kubernetes/observability/concept/observability-prometheus-guide-part6.md
       - 日誌 Logging:
         - Loki:
           - 使用 Loki 做為 Kubernetes 的日誌聚合亓件: kubernetes/observability/logging/loki/logging-with-loki-and-plg.md
@@ -195,6 +204,12 @@ nav:
       - 指標 Metrics:
         - Prometheus Operator:
           - Prometheus-operator 介绍和配置解析: kubernetes/observability/metrics/kube-prometheus-stack/setup-prometheus-and-grafana-on-kubernetes.md
+      - 追踪 Traces:
+        - 開發語言:
+          - Java:
+            - SpringBoot: kubernetes/observability/tracing/java/spring-boot-opentelemetry.md
+          - Dotnet:
+            - 可觀測性(Observability): kubernetes/observability/tracing/dotnet/modern-monitoring-using-openTelemetry-with-Observability.md
     - Tools:
       - 簡介: kubernetes/package/index.md
       - Packaging 管理:
@@ -204,6 +219,20 @@ nav:
       - Config 管理:
           - Kustomize:
             - Kustomize 入門教學: kubernetes/package/helm-intro.md
+  
+  - Prometheus:
+    - 基礎:
+      - Prometheus 簡介: prometheus/prometheus/overview.md
+      - Prometheus 安裝配置: prometheus/prometheus/install.md
+    - PromQL:
+      - 查詢基礎: prometheus/promql/theory.md
+      - 選擇時間序列: prometheus/promql/select-series.md
+      - 變化率: prometheus/promql/rates.md
+      - 聚合: prometheus/promql/aggregate.md
+      - 運算: prometheus/promql/operate.md
+      - 閾值: prometheus/promql/threshold.md
+      - 數據對比: prometheus/promql/compare.md
+
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
