@@ -119,19 +119,19 @@ Prometheus 存儲時間序列，即在持續時間戳處採樣的數值流：
 
 ## 查詢語言
 
-為了利用收集到的數據，Prometheus 實現了自己的查詢語言 PromQL。 PromQL 是一種函數式語言，經過優化，可以評估對時間序列數據進行靈活高效的計算。與類似 SQL 的語言相比，PromQL 僅用於讀取數據，而不用於插入、更新或刪除數據（這發生在查詢引擎之外）。
+為了利用收集到的數據，Prometheus 實現了自己的查詢語言 **PromQL**。 **PromQL** 是一種函數式語言，經過優化，可以評估對時間序列數據進行靈活高效的計算。與類似 SQL 的語言相比，**PromQL** 僅用於讀取數據，而不用於插入、更新或刪除數據（這發生在查詢引擎之外）。
 
 ![](./assets/prometheus-architecture-promql.svg)
 
 我們將在這裡看幾個簡單的例子。
 
-給定一組具有度量名稱 http_requests_total 的 HTTP 請求計數器時間序列、一個指示響應狀態代碼的狀態標籤和一個指示 HTTP 路徑的路徑標籤，以下查詢選擇所有已處理 HTTP 請求的總數，結果為 500 狀態碼：
+給定一組具有度量名稱 `http_requests_total` 的 HTTP 請求計數器時間序列、一個指示響應狀態代碼的狀態標籤和一個指示 HTTP 路徑的路徑標籤，以下查詢選擇所有已處理 HTTP 請求的總數，結果為 500 狀態碼：
 
 ```promql
 http_requests_total{status="500"}
 ```
 
-由於絕對計數很少有用，以下查詢會告訴您每個選定計數器系列的每秒增長率，即 5 分鐘窗口內的平均值：
+由於絕對計數很少有用，以下查詢會告訴您每個選定計數器序列的每秒增長率，即 5 分鐘窗口內的平均值：
 
 ```promql
 rate(http_requests_total{status="500"}[5m])
@@ -227,7 +227,7 @@ Prometheus 是用 [Go](https://golang.org/) 編寫的，靜態發布二進製文
 
 ![](./assets/prometheus-ha-architecture.svg)
 
-當然，Prometheus 的大規模部署或有特殊需求的設置仍然會變得複雜。 Prometheus 還提供接口來解決其外部的一些限制，例如持久的長期存儲。但是構建塊很簡單。
+當然，Prometheus 的大規模部署或有特殊需求的設置仍然會變得複雜。 Prometheus 還提供接口來解決其外部的一些限制，例如持久的長期存儲。
 
 ## 高效實施
 

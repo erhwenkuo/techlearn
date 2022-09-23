@@ -225,13 +225,23 @@ nav:
       - Prometheus 簡介: prometheus/prometheus/overview.md
       - Prometheus 安裝配置: prometheus/prometheus/install.md
     - PromQL:
-      - 查詢基礎: prometheus/promql/theory.md
-      - 選擇時間序列: prometheus/promql/select-series.md
-      - 變化率: prometheus/promql/rates.md
-      - 聚合: prometheus/promql/aggregate.md
-      - 運算: prometheus/promql/operate.md
-      - 閾值: prometheus/promql/threshold.md
-      - 數據對比: prometheus/promql/compare.md
+      - 基礎:
+        - PromQL 簡介: prometheus/promql/intro.md
+        - 數據模型: prometheus/promql/data-model.md
+        - 指標類型: prometheus/promql/metric-type.md
+        - 演示服務: prometheus/promql/demo-service.md
+      - 查詢:
+        - 查詢基礎: prometheus/promql/theory.md
+        - 選擇時間序列: prometheus/promql/select-series.md
+        - 變化率: prometheus/promql/rates.md
+        - 聚合: prometheus/promql/aggregate.md
+        - 運算: prometheus/promql/operate.md
+        - 閾值: prometheus/promql/threshold.md
+        - 集合操作: prometheus/promql/set.md
+        - 排序: prometheus/promql/sort.md
+        - 直方圖: prometheus/promql/histograms.md
+        - 數據對比: prometheus/promql/compare.md
+        - 檢測: prometheus/promql/check.md
 
   - ArgoCD:
     - ArgoCD 教程:
