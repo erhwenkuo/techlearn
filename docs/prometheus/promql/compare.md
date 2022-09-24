@@ -26,7 +26,7 @@ rate(demo_items_shipped_total{instance="demo-service-0:10000"}[1m])
   rate(demo_items_shipped_total{instance="demo-service-0:10000"}[1m] offset 35m)
 ```
 
-通常情況下，該比率約為 1，但噹噹天或前一天是假期時，我們得到的比率比正常情況下要略低或高。
+通常情況下，該比率約為 1，但若當天或前一天是假期時，我們得到的比率比正常情況下要略低或高。
 
 ![](./assets/promql-compare3.png)
 

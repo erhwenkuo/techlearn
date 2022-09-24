@@ -57,5 +57,3 @@ count by(job) (up{job="demo"} == 0)
     ```promql
     absent_over_time(up{job="non-existent"}[1h])
     ```
-
-https://wistron.webhook.office.com/webhookb2/c283298c-1460-4526-8c68-ab18a7691d41@de0795e0-d7c0-4eeb-b9bb-bc94d8980d3b/IncomingWebhook/d5524a67e4d34741a7123a55e5c6acf6/ddaec1ea-a778-4a54-a930-ba53127d7ee6

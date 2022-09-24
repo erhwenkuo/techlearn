@@ -49,7 +49,7 @@ sum by(instance, path, job) (rate(demo_api_request_duration_seconds_count{job="d
 - quantile(φ，...)：計算維度上的 φ-分位數(0≤φ≤1)
 - group(...)：只是按標籤分組，並將樣本值設為 1。
 
-!!! "練習"
+!!! info "練習"
     1.按 `job` 分組聚合，計算我們正在監控的所有進程的總內存使用量（`process_resident_memory_bytes` 指標）：
 
     ```promql
@@ -59,7 +59,7 @@ sum by(instance, path, job) (rate(demo_api_request_duration_seconds_count{job="d
     2.計算 `demo_cpu_usage_seconds_total` 指標有多少不同的 CPU 模式：
 
     ```promql
-    count (group by(mode) (demo_cpu_usage_seconds_total))
+    count (group by (mode)(demo_cpu_usage_seconds_total))
     ```
 
     3.計算每個 job 任務和指標名稱的時間序列數量：
@@ -107,7 +107,7 @@ avg_over_time(go_goroutines{job="demo"}[10m])
 
 ## 子查詢
 
-上面所有的 `_over_time()` 函數都需要一個範圍向量作為輸入，通常情況下只能由一個區間向量選擇器來產生，比如 `my_metric[5m]`。但是如果現在我們想使用例如 `max_over_time()` 函數來找出過去一天中 demo 服務的最大請求率應該怎麼辦呢？
+上面所有的 `_over_time()` 函數都需要一個"區間向量"作為輸入，通常情況下只能由一個區間向量選擇器來產生，比如 `my_metric[5m]`。但是如果現在我們想使用例如 `max_over_time()` 函數來找出過去一天中 demo 服務的最大請求率應該怎麼辦呢？
 
 請求率 `rate` 並不是一個我們可以直接選擇時間的原始值，而是一個計算後得到的值，比如：
 
@@ -126,7 +126,10 @@ max_over_time(
 )
 ```
 
-實際上 Prometheus 是支持子查詢的，它允許我們首先以指定的步長在一段時間內執行內部查詢，然後根據子查詢的結果計算外部查詢。子查詢的表示方式類似於區間向量的持續時間，但需要冒號後添加了一個額外的步長參數：`[<duration>:<resolution>]`。
+實際上 Prometheus 是支持子查詢的，它允許我們首先以指定的 **步長** 在 **一段時間內** 執行內部查詢，然後根據子查詢的結果計算外部查詢。子查詢的表示方式類似於區間向量的持續時間，但需要冒號後添加了一個額外的步長參數：`[<duration>:<resolution>]`。
+
+!!! tip "步長 step 說明"
+    有關區間查詢的 步長(step) 參數的說明，請參閱: [詳解 Prometheus range query 中的 step 參數](./range-query-step.md)
 
 這樣我們可以重寫上面的查詢語句，告訴 Prometheus 在一天的範圍內評估內部表達式，步長分辨率為 15s：
 
@@ -150,7 +153,7 @@ max_over_time(
 
 這樣就可以得到過去一天中 demo 服務最大的 5 分鐘請求率，不過冒號仍然是需要的，以明確表示運行子查詢。子查詢還允許添加一個偏移修飾符 `offset` 來對內部查詢進行時間偏移，類似於瞬時和區間向量選擇器。
 
-但是也需要注意長時間計算子查詢代價也是非常昂貴的，我們可以使用記錄規則（後續會講解）預先記錄中間的表達式，而不是每次運行外部查詢時都實時計算它。
+但是也需要注意 ==長時間計算子查詢代價也是非常昂貴的==，我們可以使用記錄規則（後續會講解）預先記錄中間的表達式，而不是每次運行外部查詢時都實時計算它。
 
 !!! info "練習"
     輸出過去一小時內 demo 服務的最大 95 分位數延遲值（1 分鐘內平均），按 path 劃分：

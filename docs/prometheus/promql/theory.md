@@ -94,6 +94,10 @@ PromQL 查詢中對時間的引用只有相對引用，比如 `[5m]`，表示過
 - 結束時間
 - 評估步長
 
+!!! tip "步長 step 說明"
+    有關區間查詢的 步長(step) 參數的說明，請參閱: [詳解 Prometheus range query 中的 step 參數](./range-query-step.md)
+
+
 在開始時間和結束時間之間的每個評估步長上評估表達式後，單獨評估的時間片被拼接到一個單一的區間向量中。區間查詢允許傳入瞬時向量類型或標量類型的表達式，但始終返回一個範圍向量（標量或瞬時向量在一個時間範圍內被評估的結果）。
 
 在 Prometheus 的 WebUI 界面中圖形視圖中的查詢就是區間查詢，API 接口 `/api/v1/query_range?query=xxx&start=xxxxxx&end=xxxx&step=14` 中的 `query` 參數就是 PromQL 表達式，`start` 為開始時間，`end` 為結束時間，`step` 為評估的步長。
