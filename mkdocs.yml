@@ -224,6 +224,10 @@ nav:
     - 基礎:
       - Prometheus 簡介: prometheus/prometheus/overview.md
       - Prometheus 安裝配置: prometheus/prometheus/install.md
+    - Node Exporter:
+      - Exporter 簡介: prometheus/node-exporter/overview.md
+      - 安裝配置: prometheus/node-exporter/install.md
+      - 常用監控指標: prometheus/node-exporter/metrics.md
     - PromQL:
       - 基礎:
         - PromQL 簡介: prometheus/promql/intro.md
@@ -244,7 +248,11 @@ nav:
         - 檢測: prometheus/promql/check.md
         - 補充:
           - Range query 的 step 參數說明: prometheus/promql/range-query-step.md
-
+    - Alertmanager:
+      - Alertmanager 安裝: prometheus/alertmanager/deploy.md
+      - 報警規則: prometheus/alertmanager/rules.md
+      - 報警接收器: prometheus/alertmanager/receiver.md
+      - 報警過濾: prometheus/alertmanager/filter.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
