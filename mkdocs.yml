@@ -246,7 +246,7 @@ nav:
         - 直方圖: prometheus/promql/histograms.md
         - 數據對比: prometheus/promql/compare.md
         - 檢測: prometheus/promql/check.md
-        - 補充:
+      - 補充:
           - Range query 的 step 參數說明: prometheus/promql/range-query-step.md
     - Alertmanager:
       - Alertmanager 安裝: prometheus/alertmanager/deploy.md

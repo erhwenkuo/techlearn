@@ -58,7 +58,17 @@ groups:
 - **firing**: 表示超過設置的閾值時間被激活了
 - **inactive**: 報警規則沒有得到滿足或者已經過期（還沒觸發或者已經修復）
 
+![](./assets/alert-state.png)
+
+![](./assets/alert-overview.jpg)
+
 這裡的 `pending` 狀態是說報警規則已經得到滿足了，但是持續時間還不夠，這裡的持續時間是通過配置文件中的 `for` 來設置的，如果沒有設置，那麼就不存在 pending 狀態，而是報警規則一得到滿足就會發送報警，如果設置了這個字段，那麼就會進入 `pending` 狀態，並且在持續時間足夠的時候，才會發送出去。
+
+![](./assets/alertmanager-alert-pending.png)
+
+![](./assets/alertmanager-alert-firing.png)
+
+![](./assets/alertmanager-alert-inactive.png)
 
 同時對於已經 `pending` 或者 `firing` 的告警，Prometheus 也會將它們存儲到時間序列 `ALERTS{}` 中。當然我們也可以通過表達式去查詢告警實例：
 
