@@ -11,8 +11,6 @@ Node Exporter 是用於暴露 *NIX 主機指標的 Exporter，比如採集 CPU�
 由於 Node Exporter 是一個獨立的二進製文件，可以直接從 [Prometheus 下載頁面](https://prometheus.io/download/#node_exporter) 下載解壓運行：
 
 ```bash
-node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
-
 $ wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0-rc.0/node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
 $ tar -xvf node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
 
@@ -225,7 +223,7 @@ scrape_configs:
   - job_name: "prometheus"
     static_configs:
       - targets: ["localhost:9090"]
-  - job_name: "node_exporter" # 新增 node_exporter 任務
+  - job_name: "node-exporter" # 新增 node_exporter 任務
     static_configs:
       - targets: ["localhost:9100"]
 ...

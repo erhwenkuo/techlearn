@@ -6,7 +6,8 @@
 
 ## CPU 監控
 
-對於節點我們首先能想到的就是要先對 CPU 進行監控，因為 CPU 是處理任務的核心，根據 CPU 的狀態可以分析出當前系統的健康狀態。要對節點進行 CPU 監控，需要用到 `node_cpu_seconds_total` 這個監控指標，在 metrics 接口中該指標內容如下所示：
+對於節點我們首先能想到的就是要先對 CPU 進行監控，因為 CPU 是處理任務的核心，根據 CPU 的狀態可以分析出當前系統的健康狀態。要對節點進行 CPU 監控，需要用到 `node_cpu_seconds_total` 這個監控指標，在 Node export 的 `~/metrics` 接口中該指標內容如下所示：
+
 
 ```bash
 # HELP node_cpu_seconds_total Seconds the CPUs spent in each mode.
@@ -44,6 +45,9 @@ node_cpu_seconds_total{cpu="3",mode="steal"} 0
 node_cpu_seconds_total{cpu="3",mode="system"} 305.86
 node_cpu_seconds_total{cpu="3",mode="user"} 78.17
 ```
+
+![](./assets/node_cpu_seconds_total.png)
+
 
 從接口中描述可以看出該指標是用來統計 CPU 每種模式下所花費的時間，是一個 `Counter` 類型的指標，也就是會一直增長，這個數值其實是 CPU 時間片的一個累積值，意思就是從操作系統啟動起來 CPU 開始工作，就開始記錄自己總共使用的時間，然後保存下來。
 

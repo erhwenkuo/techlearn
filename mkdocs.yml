@@ -253,6 +253,17 @@ nav:
       - 報警規則: prometheus/alertmanager/rules.md
       - 報警接收器: prometheus/alertmanager/receiver.md
       - 報警過濾: prometheus/alertmanager/filter.md
+      - 補充:
+          - Promtheus 到底啥時候報警?: prometheus/alertmanager/prometheus-alert-why.md
+    - Grafana:
+      - Grafana 簡介: prometheus/grafana/overview.md
+      - 面板介詔: prometheus/grafana/panel.md
+      - 圖形面板: prometheus/grafana/graph.md
+      - 圖形定制: prometheus/grafana/graph-custom.md
+      - 表格面板: prometheus/grafana/table.md
+      - 儀錶盤面板: prometheus/grafana/gauge.md
+      - 統計面板: prometheus/grafana/stat.md
+      - 文本面板: prometheus/grafana/text.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
