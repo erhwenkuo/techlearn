@@ -116,6 +116,8 @@ nav:
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
   - Coding:
+    - 12 Factors:
+      - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
     - C#:
       - 後端 API:
         -  使用 ASP.NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
@@ -257,13 +259,16 @@ nav:
           - Promtheus 到底啥時候報警?: prometheus/alertmanager/prometheus-alert-why.md
     - Grafana:
       - Grafana 簡介: prometheus/grafana/overview.md
-      - 面板介詔: prometheus/grafana/panel.md
-      - 圖形面板: prometheus/grafana/graph.md
-      - 圖形定制: prometheus/grafana/graph-custom.md
-      - 表格面板: prometheus/grafana/table.md
-      - 儀錶盤面板: prometheus/grafana/gauge.md
-      - 統計面板: prometheus/grafana/stat.md
-      - 文本面板: prometheus/grafana/text.md
+      - 視覺化面板:
+        - 面板介詔: prometheus/grafana/panel.md
+        - 圖形面板: prometheus/grafana/graph.md
+        - 圖形定制: prometheus/grafana/graph-custom.md
+        - 表格面板: prometheus/grafana/table.md
+        - 儀錶盤面板: prometheus/grafana/gauge.md
+        - 統計面板: prometheus/grafana/stat.md
+        - 文本面板: prometheus/grafana/text.md
+    - Prometheus Operator:
+      - Prometheus Operator 簡介: prometheus/operator/install.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
