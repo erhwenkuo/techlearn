@@ -1,5 +1,8 @@
 # Prometheus Operator
 
+原文: [Prometheus Operator](https://p8s.io/docs/operator/install/)
+
+
 在 Kubernetes 的集群中，我們可手動的佈署相關的監控組件(Prometheus, Alertmanager, Grafana...)來進行監控，基本上這樣的作法己經能夠完成監控報警的需求了。但實際上對上 Kubernetes 來說，還有更簡單方式來運營監控報警的手法，那就是使用 Prometheus Operator。 
 
 Prometheus Operator 為監控 Kubernetes 資源和 Prometheus 實例的管理提供了簡單的定義，簡化在 Kubernetes 上部署、管理和運行 Prometheus 和 Alertmanager 集群。
@@ -17,7 +20,7 @@ Prometheus Operator 為 Kubernetes 提供了對 Prometheus 機器相關監控組
 
 首先我們先來了解下 Prometheus Operator 的架構圖：
 
-![](./assets/prometheus-operator-architecture.png)
+![](./assets/prometheus-stack-architecture.png)
 
 上圖是 Prometheus-Operator 官方提供的架構圖，各組件以不同的方式運行在 Kubernetes 集群中，其中 Operator 是最核心的部分，作為一個控制器，他會去創建 `Prometheus`、`ServiceMonitor`、`AlertManager` 以及 `PrometheusRule` 等 CRD 資源對象，然後會一直 Watch 並維持這些資源對象的狀態。
 
@@ -137,43 +140,154 @@ kube-prometheus 會安裝以下元件：
 !!! info
     註 - [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) 專案其實僅提供 YAML 的方式安裝。而 [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) 專案將 kube-prometheus 包裝成 helm chart。
 
-### 安裝 kube-prometheus-stack
+### 創建監控命名空間
 
-用 helm 安裝：
+在繼續下去之前請先創建一個 Kubernetes 的環境:
+  - [使用 K3D 設置 Kubernetes 集群](../../kubernetes/01-getting-started/learning-env/k3d/k3s-kubernetes-cluster-setup-with-k3d.md)
+
+在 Kubernetes 中，命名空間提供了一種在單個集群中隔離資源組的機制。我們創建一個名為 `monitoring` 的命名空間來準備新的部署：
+
+```bash
+$ kubectl create namespace monitoring
+```
+
+### 使用 Helm 安裝 kube-prometheus-stack
+
+添加 Prometheus 圖表存儲庫並更新本地緩存：
 
 ```bash
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-$ helm repo update
-$ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+$ helm repo update 
 ```
 
-參考: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-
-### 檢視 Web UI
-
-當安裝完畢後，有 3 個 Web UI 可以使用，參考如下：
-
-**Prometheus-UI**
+使用 Helm 在命名空間監控中部署 kube-stack-prometheus chart：
 
 ```bash
-kubectl port-forward service/prometheus-kube-prometheus-prometheus 9090
+helm upgrade --install --wait --create-namespace --namespace monitoring  \
+ kube-stack-prometheus prometheus-community/kube-prometheus-stack \
+ --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false \
+ --set defaultRules.runbookUrl=https://cloud-guidebook.wistron.com/runbooks
 ```
 
-**Alert Manager UI**
+??? tip
+    默認情況下，Prometheus 會在其命名空間內發現 PodMonitors 和 ServiceMonitors，但是這些 PodMonitor 與 ServiceMonitor的標籤必需與 prometheus-operator 版本相同。
+    
+    讓我們查看一下 CRD "prometheus" 的設定:
+
+    ```bash
+    $ kubectl get prometheus -n monitoring
+    ```
+
+    結果:
+
+    ```yaml hl_lines="5 6 9 10"
+    ...
+    ...
+    podMonitorNamespaceSelector: {}
+    podMonitorSelector:
+      matchLabels:
+        release: kube-stack-prometheus
+    serviceMonitorNamespaceSelector: {}
+    serviceMonitorSelector:
+      matchLabels:
+        release: kube-stack-prometheus
+    ...
+    ...
+    ```
+
+    一般來說，我們都需要允許使用著可自定義 PodMonitors/ServiceMonitors，例如用於從第三方應用程序或是自行開發的應用程式中抓取指標數據。在不影響默認 PodMonitors/ServiceMonitors 發現的情況下，一種簡單的方法是允許 ​​Prometheus 發現其命名空間內的所有 PodMonitors/ServiceMonitors，而無需應用標籤過濾。
+
+    為此，我們可以將 `prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues` 和 `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues` 設置為 `false`。
+
+CRD 現在安裝在命名空間中。您可以使用以下 kubectl 命令進行驗證：
 
 ```bash
-kubectl port-forward svc/prometheus-kube-prometheus-alertmanager 9093
+$ kubectl get -n monitoring crds    
+
+NAME                                        CREATED AT
+alertmanagerconfigs.monitoring.coreos.com   2022-03-15T10:54:41Z
+alertmanagers.monitoring.coreos.com         2022-03-15T10:54:42Z
+podmonitors.monitoring.coreos.com           2022-03-15T10:54:42Z
+probes.monitoring.coreos.com                2022-03-15T10:54:42Z
+prometheuses.monitoring.coreos.com          2022-03-15T10:54:42Z
+prometheusrules.monitoring.coreos.com       2022-03-15T10:54:42Z
+servicemonitors.monitoring.coreos.com       2022-03-15T10:54:42Z
+thanosrulers.monitoring.coreos.com          2022-03-15T10:54:42Z
 ```
 
-**Grafana**
+這是我們現在在命名空間中運行的內容：
 
 ```bash
-kubectl port-forward deployment/prometheus-grafana 3000
+$ kubectl get pods -n monitoring            
+
+NAME                                                       READY   STATUS    RESTARTS   AGE
+alertmanager-kube-stack-prometheus-kube-alertmanager-0     2/2     Running   0          2m36s
+kube-stack-prometheus-grafana-6994bd6c69-h6s9z             3/3     Running   0          13h
+kube-stack-prometheus-kube-operator-86667b5cdf-cqndt       1/1     Running   0          13h
+kube-stack-prometheus-kube-state-metrics-fc9878699-dpgh6   1/1     Running   0          13h
+kube-stack-prometheus-prometheus-node-exporter-vrjsl       1/1     Running   0          13h
+prometheus-kube-stack-prometheus-kube-prometheus-0         2/2     Running   0          13h
 ```
 
-Grafana 預設的帳號、密碼如下：
+該 Helm chart 安裝了 Prometheus 組件和 Operator、Grafana 以及以下 exporters：
 
+- [prometheus-node-exporter](https://github.com/prometheus/node_exporter) 暴露底層硬件和操作系統的相關指標
+- [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) 監聽 Kubernetes API 服務器並生成有關對象狀態的指標
+
+我們的 Prometheus 和 Grafana 監控堆棧已經準備就緒！
+
+### 連接到 Prometheus Web 界面
+
+Prometheus Web UI 可通過以下命令通過端口轉發訪問：
+
+```bash
+$ kubectl port-forward --namespace monitoring svc/kube-stack-prometheus-kube-prometheus 9090:9090 --address="0.0.0.0"
 ```
-user: admin
-pwd: prom-operator
+
+在 http://localhost:9090 上打開瀏覽器選項卡會顯示 Prometheus Web UI。我們可以檢索從不同指標 Exporters 所收集回來的指標：
+
+![](./assets/prometheus-ui.png)
+
+轉到“Status>Targets”，您可以看到 Prometheus 服務器發現的所有指標端點：
+
+![](./assets/prometheus-ui3.png)
+
+![](./assets/prometheus-ui2.png)
+
+### 連接到 AlertManager
+
+AlertManager Web UI 可通過以下命令通過端口轉發訪問：
+
+```bash
+kubectl port-forward svc/kube-stack-prometheus-kube-alertmanager 9093:9093 --address="0.0.0.0"
 ```
+
+### 連接到 Grafana
+
+連接到 Grafana Web 界面的帳密存儲在 Kubernetes Secret 中並以 base64 編碼。我們使用以下兩個命令檢索用戶名/密碼：
+
+```bash
+$ kubectl get secret --namespace monitoring kube-stack-prometheus-grafana -o jsonpath='{.data.admin-user}' | base64 -d
+$ kubectl get secret --namespace monitoring kube-stack-prometheus-grafana -o jsonpath='{.data.admin-password}' | base64 -d
+```
+
+我們使用以下命令創建到 Grafana 的端口轉發：
+
+```bash
+$ kubectl port-forward --namespace monitoring svc/kube-stack-prometheus-grafana 3000:80 --address="0.0.0.0"
+```
+
+打開瀏覽器並轉到 http://localhost:3000 並填寫前一個命令所取得的用戶名/密碼。預設的帳號是:
+
+- `username`: admin
+- `password`: prom-operator
+
+
+![](./assets/grafana-ui.png)
+
+kube-stack-prometheus 在部署時也同時配置了許多監控用的 Grafana 儀表板：
+
+![](./assets/grafana-ui2.png)

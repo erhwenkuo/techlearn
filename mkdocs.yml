@@ -220,8 +220,7 @@ nav:
             - K8S 應用部署之 Helm 初探: kubernetes/package/helm-app-deploy.md
       - Config 管理:
           - Kustomize:
-            - Kustomize 入門教學: kubernetes/package/helm-intro.md
-  
+            - Kustomize 入門教學: kubernetes/package/helm-intro.md  
   - Prometheus:
     - 基礎:
       - Prometheus 簡介: prometheus/prometheus/overview.md
@@ -269,6 +268,7 @@ nav:
         - 文本面板: prometheus/grafana/text.md
     - Prometheus Operator:
       - Prometheus Operator 簡介: prometheus/operator/install.md
+      - 自定義監控報警: prometheus/operator/custom.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
