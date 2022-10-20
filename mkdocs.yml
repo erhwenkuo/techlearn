@@ -136,6 +136,7 @@ nav:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
       - Serivce, 負載均衡與網路:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
+        - 應用程序向外部公開服務手法:　kubernetes/02-concepts/05-svc-lb-network/app-service-type.md.md
         - 在 K3D 設定 Metallb: kubernetes/02-concepts/05-svc-lb-network/k3d-metallb-starter-kit.md
       - 存儲:
         - 簡介: kubernetes/02-concepts/06-storage/index.md
