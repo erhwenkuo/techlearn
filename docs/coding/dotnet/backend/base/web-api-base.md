@@ -169,7 +169,7 @@ curl -k https://localhost:<port>/weatherforecast | jq
 
 使用以下代碼將 `TodoItem.cs` 文件添加到 `Models` 文件夾：
 
-```csharp title="TodoItem.cs"
+```csharp title="Models/TodoItem.cs"
 namespace TodoApi.Models
 {
     public class TodoItem
@@ -189,7 +189,7 @@ namespace TodoApi.Models
 
 數據庫上下文是協調數據模型的 Entity Framework 功能的主要類別。此類是通過派生自 Microsoft.EntityFrameworkCore.DbContext 類別而創建的。
 
-```csharp title="TodoContext.cs"
+```csharp title="Models/TodoContext.cs"
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
@@ -289,7 +289,7 @@ ASP.NET Core 模板用於：
 
 更新 PostTodoItem 中的 return 語句來使用 `nameof` 運算符：
 
-```csharp
+```csharp title="Controllers/TodoItemsController.cs"
 [HttpPost]
 public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
 {
@@ -313,7 +313,7 @@ CreatedAtAction 方法：
 
 ### 修改啟動配置
 
-程式啟動時設定API要聆聽的 tcp 埠號 (port: 5000):
+程式啟動時設定API要聆聽的 tcp 埠號 (port: 8080):
 
 ```json title="appsettings.json" hl_lines="9-15"
 {
@@ -327,7 +327,7 @@ CreatedAtAction 方法：
   "Kestrel": {
     "Endpoints": {
       "Http": {
-        "Url": "http://*:5000"
+        "Url": "http://*:8080"
       }
     }
   }
@@ -349,7 +349,7 @@ Building...
 warn: Microsoft.AspNetCore.Server.Kestrel[0]
       Overriding address(es) 'https://localhost:7255, http://localhost:5298'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
 info: Microsoft.Hosting.Lifetime[14]
-      Now listening on: http://[::]:5000
+      Now listening on: http://[::]:8080
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
@@ -358,9 +358,9 @@ info: Microsoft.Hosting.Lifetime[0]
       Content root path: /home/dxlab/opt/ws_dotnet/TodoApi/
 ```
 
-使用瀏覽器來連接到 Swagger UI來進行簡易測試 `http://localhost:5000/swagger`
+使用瀏覽器來連接到 Swagger UI來進行簡易測試 `http://localhost:8080/swagger`
 
-![](./assets/swagger-ui2.png)
+![](./assets/swagger-ui3.png)
 
 ## 容器化 ASP.NET Application
 
@@ -406,7 +406,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-EXPOSE 5000
+# Expose web api port number
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "TodoApi.dll"]
 ```
@@ -416,15 +417,16 @@ ENTRYPOINT ["dotnet", "TodoApi.dll"]
 從您的終端，運行以下命令：
 
 ```
-docker build -t donet-todoapi -f Dockerfile .
+docker build -t dotnet-todoapi:base -f Dockerfile .
 ```
 
 Docker 將處理 Dockerfile 中的每一行指令。 在 `docker build` 命令中設置鏡像的構建上下文。 `-f` 旗標指向 Dockerfile 的路徑。此命令構建映像並創建一個名為 donet-todoapi 的本地存儲庫，該存儲庫指向該映像。此命令完成後，運行 `docker images` 以查看已安裝的容器鏡像列表：
 
 ```bash
 $ docker images
-REPOSITORY                                         TAG                       IMAGE ID       CREATED              SIZE
-dotnet-todoapi                                     latest                    822362ee2a75   About a minute ago   276MB
+
+REPOSITORY                                         TAG                       IMAGE ID       CREATED          SIZE
+dotnet-todoapi                                     base                      7e16da295b77   34 seconds ago   276MB
 ```
 
 ### 啟動 Docker 容器
@@ -432,5 +434,72 @@ dotnet-todoapi                                     latest                    822
 端口映射用於訪問在 Docker 容器內運行的服務。我們打開一個主機端口，讓我們可以訪問 Docker 容器內相應的開放端口。然後所有對主機端口的請求都可以重定向到 Docker 容器中。
 
 ```bash
-docker run -it --rm -p 5000:5000 dotnet-todoapi:latest
+docker run -it --rm -p 8080:8080 dotnet-todoapi:base
 ```
+
+### 推送容器鏡像到 Dockerhub
+
+要把容器鏡像推到 Dockerhub 的前題是要先到 Docker Hub 上註冊帳號，本教程假設大家己經都有了帳號。
+
+首先使用 `docker login` 指令登入到 Docker Hub:
+
+```bash
+$ docker login
+
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: witlab
+Password: 
+WARNING! Your password will be stored unencrypted in /home/dxlab/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+```
+
+要把 Docker Image Push 到 Docker Hub 上，需要把 Docker Image 加上 Dockerhub 的 `Username`，如下指令:
+
+```bash
+$ docker build -t witlab/dotnet-todoapi:base -f Dockerfile .
+```
+
+接著使用下列命令來推送容器鏡像:
+
+```bash
+$ docker push witlab/dotnet-todoapi:base
+
+The push refers to repository [docker.io/witlab/dotnet-todoapi]
+6007b133d0ec: Pushed 
+16ab2fb3fd71: Pushed 
+efccb7d95dee: Pushed 
+64d665f70cc1: Pushed 
+e487c4dad54c: Pushed 
+5ec686cbc3c7: Pushed 
+b45078e74ec9: Pushed 
+base: digest: sha256:54322ab39ce67b3d7a728f66935c3c4797b00c9c21bc9e71e457f94465c5aaf5 size: 1789
+```
+
+成功之後到 Docker Hub 去檢查看看容器鏡像是否己經成功上傳:
+
+![](./assets/upload_to_dockerhub.png)
+
+使用 `docker rm` 指令把 local 的 Image 刪除掉:
+
+```bash
+$ docker rmi -f witlab/dotnet-todoapi:base
+```
+
+測試從 Docker Hub pull Docker Image 下來，指令如下:
+
+```bash
+$ docker pull witlab/dotnet-todoapi:base
+```
+
+啟動 Docker Container，指令如下:
+
+```bash
+docker run -it --rm -p 8080:8080 witlab/dotnet-todoapi:base
+```
+
+啟動完成之後就可以使用 Browser 查看結果，輸入 URL 位址為 http://localhost:8080/swagger 可以看到如下畫面:
+
+![](./assets/swagger-ui3.png)

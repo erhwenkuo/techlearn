@@ -120,7 +120,8 @@ nav:
       - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
     - C#:
       - 後端 API:
-        -  使用 ASP.NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
+        - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
+        - 儀器化 Net Core 應用程序: coding/dotnet/backend/metric/web-api-metric.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
@@ -135,6 +136,7 @@ nav:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
       - Serivce, 負載均衡與網路:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
+        - 在 K3D 設定 Metallb: kubernetes/02-concepts/05-svc-lb-network/k3d-metallb-starter-kit.md
       - 存儲:
         - 簡介: kubernetes/02-concepts/06-storage/index.md
       - 配置:
@@ -144,7 +146,6 @@ nav:
       - 集群管理:
         - 日誌架構: kubernetes/02-concepts/11-cluster-adm/logging.md
         - 日誌完整指南: kubernetes/02-concepts/11-cluster-adm/kubernetes-logging.md
-
     - Tasks:
       - 管理 Kubernetes 对象:
         - 使用 Kustomize 對 Kubernetes 對象進行聲明式管理: kubernetes/03-tasks/manage-kubernetes-objects/kustomization.md
@@ -249,6 +250,8 @@ nav:
         - 檢測: prometheus/promql/check.md
       - 補充:
           - Range query 的 step 參數說明: prometheus/promql/range-query-step.md
+          - 搞懂 Prometheus 的直方圖: prometheus/promql/metric-histogram.md
+          - 簡單理解 Summary 和 Histogram 指標: prometheus/promql/metric-histogram-summary.md
     - Alertmanager:
       - Alertmanager 安裝: prometheus/alertmanager/deploy.md
       - 報警規則: prometheus/alertmanager/rules.md
@@ -267,8 +270,10 @@ nav:
         - 統計面板: prometheus/grafana/stat.md
         - 文本面板: prometheus/grafana/text.md
     - Prometheus Operator:
-      - Prometheus Operator 簡介: prometheus/operator/install.md
+      - Prometheus Operator 簡介: prometheus/operator/tns-demo.md
       - 自定義監控報警: prometheus/operator/custom.md
+    - 整合範例:
+      - Observability 應用程式範例: prometheus/tns/custom.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md

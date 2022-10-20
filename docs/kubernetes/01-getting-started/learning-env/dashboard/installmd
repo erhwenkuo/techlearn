@@ -1,0 +1,29 @@
+# Kubernetes Dashboard
+
+```bash
+helm upgrade --install --wait --create-namespace --namespace monitoring  \
+ kube-stack-prometheus prometheus-community/kube-prometheus-stack \
+ --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false \
+ --set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false \
+ --set defaultRules.runbookUrl=https://cloud-guidebook.wistron.com/runbooks
+```
+
+```bash
+helm upgrade --install --wait \
+kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+-f values-dashboard.yaml
+
+```
+
+```yaml title="values-dashboard.yaml"                                          
+extraArgs:
+  - --enable-skip-login
+  - --enable-insecure-login
+  - --system-banner="Welcome to Satellite Cloud"
+
+rbac:
+  clusterReadOnlyRole: true
+```
+
