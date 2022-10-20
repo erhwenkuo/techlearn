@@ -2,6 +2,8 @@
 
 原文:[k3d-metallb-starter-kit](https://github.com/keunlee/k3d-metallb-starter-kit)
 
+![](./assets/metallb.jpg)
+
 ## 概述
 
 本地本地 Kubernetes 集群環境進行安裝 Load Balancer 以便學習與驗證 Service (type: loadbalancer) 的應用部署。
