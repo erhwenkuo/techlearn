@@ -350,7 +350,137 @@ replicaset.apps/demo-7bd58c7c66    1         1         1       32s
 ![](./assets/demo-web-lb.png)
 
 
-## 拆除本機環境
+## Ｍetallb CRD
+
+### IPAddressPool
+
+IPAddressPool 表示可以分配給 LoadBalancer 服務的 IP 地址池。
+
+|欄位|型別|說明|
+|---|---|---|
+|spec.addresses|[ ]string|MetalLB 擁有權限的 IP 地址範圍列表。您可以在單個池中列出多個範圍，它們都將共享相同的設置。每個範圍可以是 CIDR 前綴，也可以是 IP 的顯式起始結束範圍。|
+|spec.autoAssign|bool|AutoAssign 標誌用於防止 MetallB 自動分配IP 地址池。(optional)|
+|spec.avoidBuggyIPs|bool|AvoidBuggyIPs 防止IP 地址池使用以 .0 和 .255 結尾的地址。(optional)|
+
+```yaml title="IPAddressPool 範例"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ip-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 172.25.1.1-172.25.1.100
+  autoAssign: false
+  avoidBuggyIPs: true
+```
+
+### L2Advertisement
+
+[L2Advertisement](https://metallb.universe.tf/apis/#metallb.io/v1beta1.L2Advertisement) 允許通過 L2 Advertisement 設定特定的IP 地址池來提供 LoadBalancer IP。
+
+|欄位|型別|說明|
+|---|---|---|
+|spec.ipAddressPools|[ ]string|通過此宣告要使用的 IPAddressPool 列表。(optional)|
+|spec.ipAddressPoolSelectors|[ ]Kubernetes meta/v1.LabelSelector|IPAddressPools 的選擇器。如果此或列表未選擇 IPAddressPool，則將使用所有 IPAddressPool。(optional)|
+|spec.nodeSelectors|[ ]Kubernetes meta/v1.LabelSelector|NodeSelectors 允許限制節點宣佈為 LoadBalancer IP 的下一個躍點。當為空時，所有擁有的節點都被宣佈為下一hop。(optional)|
+|spec.interfaces|[ ]string|要宣布的接口列表。 LB IP 將僅從這些接口公佈。如果未設置該字段，我們會從主機上的所有接口進行通告。(optional)|
+
+```yaml title="L2Advertisement 範例"
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2advertise
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - ip-pool
+```
+
+## 配置服務以使用 MetalLB
+
+作為集群管理員，當使用者設定 `LoadBalancer` 類型的 `Service` 對象的時候，可以使用下列的手法來控制 MetalLB 如何分配 IP 地址。
+
+###　請求特定的 IP 地址
+
+與其他一些負載均衡器實現一樣，MetalLB 接受服務規範中的 `spec.loadBalancerIP` 字段設定。
+
+如果請求的 IP 地址在任何地址池的範圍內，MetalLB　就會分配所請求的 IP 地址。如果請求的 IP 地址不在任何範圍內，MetalLB 會給予警告。
+
+```yaml title="範例"
+apiVersion: v1
+kind: Service
+metadata:
+  name: <service_name>
+  annotations:
+    metallb.universe.tf/address-pool: <address_pool_name>
+spec:
+  selector:
+    <label_key>: <label_value>
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer
+  #　指定在 IP Address Pool 裡頭的 IP
+  loadBalancerIP: <ip_address>
+```
+
+如果 MetalLB 無法分配請求的 IP 地址，則 Service 的狀態會是 <pending> ，運行 `kubectl describe service <service_name>` 的命令時會觀察到類似以下範例的事件。
+
+```bash
+  ...
+Events:
+  Type     Reason            Age    From                Message
+  ----     ------            ----   ----                -------
+  Warning  AllocationFailed  3m16s  metallb-controller  Failed to allocate IP for "default/invalid-request": "4.3.2.1" is not allowed in config
+```
+
+### 從特定池請求 IP 地址
+
+如果要從特定池請求 IP 地址，但不關心特定 IP 地址，則可以使用 `metallb.universe.tf/address-pool` 註解從指定地址池中請求 IP 地址。
+
+```yaml title="範例"
+apiVersion: v1
+kind: Service
+metadata:
+  name: <service_name>
+  annotations:
+    metallb.universe.tf/address-pool: <address_pool_name>
+spec:
+  selector:
+    <label_key>: <label_value>
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer
+```
+
+如果你為 <address_pool_name> 指定的地址池不存在，MetalLB 會嘗試從允許自動分配的任何池中分配 IP 地址。
+
+###　接受任何 IP 地址
+
+默認情況下，地址池配置為允許自動分配。 MetalLB 從這些地址池中分配一個 IP 地址。
+
+要從配置為自動分配的任何池中接受任何 IP 地址，不需要特殊的註釋或配置。
+
+```yaml title="範例"
+apiVersion: v1
+kind: Service
+metadata:
+  name: <service_name>
+spec:
+  selector:
+    <label_key>: <label_value>
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer
+```
+
+## 拆除本機驗證環境
 
 銷毀集群:
 

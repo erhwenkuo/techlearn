@@ -136,7 +136,7 @@ nav:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
       - Serivce, 負載均衡與網路:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
-        - 應用程序向外部公開服務手法:　kubernetes/02-concepts/05-svc-lb-network/app-service-type.md
+        - 應用程序向外部公開服務手法: kubernetes/02-concepts/05-svc-lb-network/app-service-type.md
         - 在 K3D 設定 Metallb: kubernetes/02-concepts/05-svc-lb-network/k3d-metallb-starter-kit.md
       - 存儲:
         - 簡介: kubernetes/02-concepts/06-storage/index.md
@@ -273,8 +273,6 @@ nav:
     - Prometheus Operator:
       - Prometheus Operator 簡介: prometheus/operator/tns-demo.md
       - 自定義監控報警: prometheus/operator/custom.md
-    - 整合範例:
-      - Observability 應用程式範例: prometheus/tns/custom.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
