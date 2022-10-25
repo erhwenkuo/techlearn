@@ -388,6 +388,7 @@ spec:
         max_over_time(prometheus_config_last_reload_successful{job="kube-stack-prometheus-kube-prometheus",namespace="monitoring"}[5m]) == 0
       for: 10m
       labels:
+
         severity: critical
     - alert: PrometheusNotificationQueueRunningFull
       annotations:

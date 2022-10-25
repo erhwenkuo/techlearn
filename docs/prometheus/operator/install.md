@@ -172,6 +172,12 @@ helm upgrade --install --wait --create-namespace --namespace monitoring  \
  --set defaultRules.runbookUrl=https://cloud-guidebook.wistron.com/runbooks
 ```
 
+|參數|型別|說明|範例|
+|---|---|---|---|
+|defaultRules|string|Prefix for runbook URLs. Use this to override the first part of the runbookURLs that is common to all rules.|runbookUrl:https://cloud-guidebook.wistron.com/runbooks|
+
+
+
 ??? tip
     默認情況下，Prometheus 會在其命名空間內發現 PodMonitors 和 ServiceMonitors，但是這些 PodMonitor 與 ServiceMonitor的標籤必需與 prometheus-operator 版本相同。
     

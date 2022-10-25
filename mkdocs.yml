@@ -271,7 +271,7 @@ nav:
         - 統計面板: prometheus/grafana/stat.md
         - 文本面板: prometheus/grafana/text.md
     - Prometheus Operator:
-      - Prometheus Operator 簡介: prometheus/operator/tns-demo.md
+      - Prometheus Operator 簡介: prometheus/operator/install.md
       - 自定義監控報警: prometheus/operator/custom.md
   - ArgoCD:
     - ArgoCD 教程:
