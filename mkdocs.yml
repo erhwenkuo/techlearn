@@ -273,6 +273,19 @@ nav:
     - Prometheus Operator:
       - Prometheus Operator 簡介: prometheus/operator/install.md
       - 自定義監控報警: prometheus/operator/custom.md
+  - OpenTelemetry:
+    - Instrumentation:
+      - 簡介: opentelemetry/instrumentation/index.md
+      - Java:
+        - 簡介: opentelemetry/instrumentation/java/index.md
+        - Automatic:
+          - 簡介: opentelemetry/instrumentation/java/automatic/index.md
+    - Collector:
+      - 簡介: opentelemetry/collector/index.md
+    - K8s Operator:
+      - 簡介: opentelemetry/k8s-operator/index.md
+    - 範例:
+      - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
