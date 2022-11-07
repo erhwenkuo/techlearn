@@ -269,10 +269,12 @@ nav:
         - 表格面板: prometheus/grafana/table.md
         - 儀錶盤面板: prometheus/grafana/gauge.md
         - 統計面板: prometheus/grafana/stat.md
-        - 文本面板: prometheus/grafana/text.md
+        - 文本面板: prometheus/grafana/text.md      
     - Prometheus Operator:
       - Prometheus Operator 簡介: prometheus/operator/install.md
       - 自定義監控報警: prometheus/operator/custom.md
+      - Dashboard 的 GitOps 方式: prometheus/operator/consistent-dashboard-gitops-way.md
+      - 使用 ConfigMap 管理 Grafana 儀表板: prometheus/operator/dashboard-using-configmap.md
     - Operation Runbook:
       - Operation Runbook 簡介: prometheus/runbook/operations-runbook.md
   - OpenTelemetry:
@@ -310,7 +312,14 @@ nav:
       - 範本 fields: argocd/applicationset/template.md
   - Istio:
     - 簡介: istio/index.md
-
+    - 安裝: 
+      - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
+    - 示例:
+      - Bookinfo 應用: istio/examples/bookinfo.md
+      - 開箱 Istio 服務網格: istio/examples/unboxing-istio-service-mesh.md
+    - 參考:
+      - 應用程序部署策略: istio/reference/deployment-strategies.md
+      
   - Vault:
     - Docs:
       - Auth Methods:
