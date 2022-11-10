@@ -311,12 +311,16 @@ nav:
         - Git Generator: argocd/applicationset/generators/generators-git.md
       - 範本 fields: argocd/applicationset/template.md
   - Istio:
+    - 概念:
+      - Istio 是什麼？: istio/concepts/what-is-istio.md
+      - 流量管理: istio/concepts/traffic-management.md
+      - 可觀測性: istio/concepts/observability.md
+      - 安全: istio/concepts/security.md
     - 簡介: istio/index.md
     - 安裝: 
       - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
     - 示例:
       - Bookinfo 應用: istio/examples/bookinfo.md
-      - 開箱 Istio 服務網格: istio/examples/unboxing-istio-service-mesh.md
     - 參考:
       - 應用程序部署策略: istio/reference/deployment-strategies.md
       
