@@ -75,7 +75,7 @@ Metrics-server is running at https://0.0.0.0:6443/api/v1/namespaces/kube-system/
 
     或是把啟動客製設定參數加上:
 
-     ```bash
+    ```bash
     istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout" --set meshConfig.accessLogEncoding="JSON" -y 
     ```
 
