@@ -760,6 +760,7 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 
     請注意，不管刷新多少次，頁面的評論部分都不會顯示評價星級的內容。這是因為 Istio 被配置為將星級評價的服務的所有流量都路由到了 reviews:v1 版本，而該版本的服務不訪問帶評價星級的服務。
 
+
 3. 使用下面的命令把 50% 的流量從 reviews:v1 轉移到 reviews:v3：
 
     ```bash
@@ -794,6 +795,22 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
     ```bash
     kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
     ```
+
+    ??? example
+        ```yaml
+        apiVersion: networking.istio.io/v1alpha3
+        kind: VirtualService
+        metadata:
+        name: reviews
+        spec:
+        hosts:
+            - reviews
+        http:
+        - route:
+            - destination:
+                host: reviews
+                subset: v3
+        ```
 
     現在，當您刷新 `/productpage` 時，您將始終看到帶有 **紅色** 星級評分的書評。
 
