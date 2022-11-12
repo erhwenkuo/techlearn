@@ -2,6 +2,8 @@
 
 原文: [Tutorial: Create a web API with ASP.NET Core](https://learn.microsoft.com/zh-tw/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
 
+![](./assets/dotnet-core.png)
+
 本教程教授使用 ASP.NET Core 構建 Web API 的基礎知識。
 
 在本教程中，您將學習如何：

@@ -2,6 +2,7 @@
 
 原文: [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 
+![](./assets/java-sprintboot.jpg)
 
 ## 概述
 
@@ -47,9 +48,13 @@ todoapi
     │   │       └── wistron
     │   │           └── todoapi
     │   │               ├── controller
-    │   │               │   └── GreetingController.java
+    │   │               │   ├── TodoItemController.java
+    │   │               │   └── WeatherForecastController.java
     │   │               ├── model
-    │   │               │   └── Greeting.java
+    │   │               │   ├── TodoItem.java
+    │   │               │   └── WeatherForecast.java
+    │   │               ├── repository
+    │   │               │   └── TodoItemRepository.java
     │   │               └── TodoapiApplication.java
     │   └── resources
     │       ├── application.properties
