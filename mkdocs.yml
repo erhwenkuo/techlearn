@@ -118,10 +118,13 @@ nav:
   - Coding:
     - 12 Factors:
       - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
-    - C#:
+    - C#: 
       - 後端 API:
         - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
         - 儀器化 Net Core 應用程序: coding/dotnet/backend/metric/web-api-metric.md
+    - Java:
+      - 後端 API:
+        - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
