@@ -1,4 +1,4 @@
-# 簡單理解　Summary 和 Histogram 指標
+# 簡單理解 Summary 和 Histogram 指標
 
 原文: [prometheus的summary和histogram指標的簡單理解](https://www.twblogs.net/a/5d1e33fcbd9eee1ede05fd82)
 

@@ -6,7 +6,7 @@
 
 ![](./assets/java-performance.png)
 
-## Micrometer
+## Micrometer 函式庫說明
 
 Micrometer 為 Java 平台上的性能數據收集提供了一個通用的 API，它提供了多種度量指標類型（Timers、Guauges、Counters等），同時支持接入不同的監控系統，例如 Influxdb、Graphite、Prometheus 等。我們可以通過 Micrometer 收集 Java 性能數據，配合 Prometheus 監控系統實時獲取數據，並最終在 Grafana 上展示出來，從而很容易實現應用的監控。
 
@@ -102,11 +102,159 @@ management.metrics.enable.jvm=true
 
 ![](./assets/swagger-ui.png)
 
+## 公開指標
 
-接著切換到 `https://localhost:8080/actuator/prometheus`:
+上述的設定會將 Springboot 的相關指標暴露到 `https://localhost:8080/actuator/prometheus`:
 
 ![](./assets/java-sprintboot-metrics.png)
 
+指標的元數據列表如下:
+
+|指標名稱	|型別	|說明|
+|---------|-------|---|
+|application_ready_time_seconds|gauge|Time taken (ms) for the application to be ready to service requests<br>應用程序準備好為請求提供服務所需的時間（毫秒）|
+|application_started_time_seconds|gauge|Time taken (ms) to start the application<br>啟動應用程序所用時間（毫秒）|
+|disk_free_bytes|gauge|Usable space for path<br>路徑的可用空間|
+|disk_total_bytes|gauge|Total space for path<br>路徑的總空間|
+|executor_active_threads|gauge|The approximate number of threads that are actively executing tasks<br>正在主動執行任務的線程的大致數量|
+|executor_completed_tasks_total|counter|The approximate total number of tasks that have completed execution<br>已完成執行的大致任務總數|
+|executor_pool_core_threads|gauge|The core number of threads for the pool<br>池的核心線程數|
+|executor_pool_max_threads|gauge|The maximum allowed number of threads in the pool<br>池中允許的最大線程數|
+|executor_pool_size_threads|gauge|The current number of threads in the pool<br>池中的當前線程數|
+|executor_queue_remaining_tasks|gauge|The number of additional elements that this queue can ideally accept without blocking<br>此隊列理想情況下可以在不阻塞的情況下接受的附加元素的數量|
+|executor_queued_tasks|gauge|The approximate number of tasks that are queued for execution<br>排隊等待執行的任務的大致數量|
+|hikaricp_connections|gauge|Total connections<br>總連接數|
+|hikaricp_connections_acquire_seconds|summary|Connection acquire time<br>連接獲取時間|
+|hikaricp_connections_acquire_seconds_max|gauge|Connection acquire time<br>連接獲取時間|
+|hikaricp_connections_active|gauge|Active connections<br>活動連接|
+|hikaricp_connections_creation_seconds|summary|Connection creation time<br>連接創建時間|
+|hikaricp_connections_creation_seconds_max|gauge|Connection creation time<br>連接創建時間|
+|hikaricp_connections_idle|gauge|Idle connections<br>空閒連接|
+|hikaricp_connections_max|gauge|Max connections<br>最大連接數|
+|hikaricp_connections_min|gauge|Min connections<br>最小連接數|
+|hikaricp_connections_pending|gauge|Pending threads<br>待處理線程|
+|hikaricp_connections_timeout_total|counter|Connection timeout total count<br>連接超時總計數|
+|hikaricp_connections_usage_seconds|summary|Connection usage time<br>連接使用時間|
+|hikaricp_connections_usage_seconds_max|gauge|Connection usage time<br>連接使用時間|
+|http_server_requests_seconds|histogram|Duration of HTTP server request handling<br>HTTP 服務器請求處理的持續時間|
+|http_server_requests_seconds_max|gauge|Duration of HTTP server request handling<br>HTTP 服務器請求處理的持續時間|
+|jdbc_connections_max|gauge|Maximum number of active connections that can be allocated at the same time.<br>可以同時分配的最大活動連接數。|
+|jdbc_connections_min|gauge|Minimum number of idle connections in the pool.<br>池中的最小空閒連接數。|
+|jvm_buffer_count_buffers|gauge|An estimate of the number of buffers in the pool<br>池中緩衝區數量的估計|
+|jvm_buffer_memory_used_bytes|gauge|An estimate of the memory that the Java virtual machine is using for this buffer pool<br>Java 虛擬機用於此緩衝池的內存估計值|
+|jvm_buffer_total_capacity_bytes|gauge|An estimate of the total capacity of the buffers in this pool<br>此池中緩衝區總容量的估計值|
+|jvm_classes_loaded_classes|gauge|The number of classes that are currently loaded in the Java virtual machine<br>當前在 Java 虛擬機中加載的類的數量|
+|jvm_classes_unloaded_classes_total|counter|The total number of classes unloaded since the Java virtual machine has started execution<br>自 Java 虛擬機開始執行以來卸載的類總數|
+|jvm_gc_live_data_size_bytes|gauge|Size of long-lived heap memory pool after reclamation<br>回收後長壽命堆內存池的大小|
+|jvm_gc_max_data_size_bytes|gauge|Max size of long-lived heap memory pool<br>長壽命堆內存池的最大大小|
+|jvm_gc_memory_allocated_bytes_total|counter|Incremented for an increase in the size of the (young) heap memory pool after one GC to before the next<br>在一次 GC 到下一次 GC 之前增加（年輕）堆內存池的大小|
+|jvm_gc_memory_promoted_bytes_total|counter|Count of positive increases in the size of the old generation memory pool before GC to after GC<br>GC前到GC後老年代內存池大小的正增長計數|
+|jvm_gc_overhead_percent|gauge|An approximation of the percent of CPU time used by GC activities over the last lookback period or since monitoring began, whichever is shorter, in the range [0..1]<br>GC 活動在上一個回溯期或自監控開始以來使用的 CPU 時間百分比的近似值，以較短者為準，範圍 [0..1]|
+|jvm_gc_pause_seconds|summary|Time spent in GC pause<br>GC 暫停所花費的時間|
+|jvm_gc_pause_seconds_max|gauge|Time spent in GC pause<br>GC 暫停所花費的時間|
+|jvm_memory_committed_bytes|gauge|The amount of memory in bytes that is committed for the Java virtual machine to use<br>提交給 Java 虛擬機以使用的內存量（以字節為單位）|
+|jvm_memory_max_bytes|gauge|The maximum amount of memory in bytes that can be used for memory management<br>可用於內存管理的最大內存量（以字節為單位）|
+|jvm_memory_usage_after_gc_percent|gauge|The percentage of long-lived heap pool used after the last GC event, in the range [0..1]<br>上次 GC 事件後使用的長壽命堆池的百分比，範圍 [0..1]|
+|jvm_memory_used_bytes|gauge|The amount of used memory<br>已用內存量|
+|jvm_threads_daemon_threads|gauge|The current number of live daemon threads<br>當前實時守護線程數|
+|jvm_threads_live_threads|gauge|The current number of live threads including both daemon and non-daemon threads<br>當前活動線程的數量，包括守護線程和非守護線程|
+|jvm_threads_peak_threads|gauge|The peak live thread count since the Java virtual machine started or peak was reset<br>自 Java 虛擬機啟動或峰值被重置以來的峰值活動線程數|
+|jvm_threads_states_threads|gauge|The current number of threads<br>當前線程數|
+|logback_events_total|counter|Number of events that made it to the logs<br>進入日誌的事件數|
+|process_cpu_usage|gauge|The "recent cpu usage" for the Java Virtual Machine process<br>Java 虛擬機進程的“最近 cpu 使用情況”|
+|process_files_max_files|gauge|The maximum file descriptor count<br>最大文件描述符計數|
+|process_files_open_files|gauge|The open file descriptor count<br>打開的文件描述符計數|
+|process_start_time_seconds|gauge|Start time of the process since unix epoch.<br>自 unix 紀元以來進程的開始時間。|
+|process_uptime_seconds|gauge|The uptime of the Java virtual machine<br>Java 虛擬機的正常運行時間|
+|spring_data_repository_invocations_seconds|summary|Duration of repository invocations<br>存儲庫調用的持續時間|
+|spring_data_repository_invocations_seconds_max|gauge|Duration of repository invocations<br>存儲庫調用的持續時間|
+|system_cpu_count|gauge|The number of processors available to the Java virtual machine<br>Java 虛擬機可用的處理器數量|
+|system_cpu_usage|gauge|The "recent cpu usage" of the system the application is running in<br>運行應用程序的系統的“最近 cpu 使用情況”|
+|system_load_average_1m|gauge|The sum of the number of runnable entities queued to available processors and the number of runnable entities running on the available processors averaged over a period of time<br>在一段時間內平均排隊到可用處理器的可運行實體數和在可用處理器上運行的可運行實體數的總和|
+|tomcat_sessions_active_current_sessions|gauge| |
+|tomcat_sessions_active_max_sessions|gauge| |
+|tomcat_sessions_alive_max_seconds|gauge| |
+|tomcat_sessions_created_sessions_total|counter| |
+|tomcat_sessions_expired_sessions_total|counter| |
+|tomcat_sessions_rejected_sessions_total|counter| |
+
+### 指標監控
+
+參考:
+
+- [The RED Method](https://grafana.com/files/grafanacon_eu_2018/Tom_Wilkie_GrafanaCon_EU_2018.pdf)
+- [PromQL 教程](../../../../prometheus/promql/intro.md)
+- [搞懂 Prometheus 的直方圖](../../../../prometheus/promql/metric-histogram.md)
+- [簡單理解 Summary 和 Histogram 指標](./../../../prometheus/promql/metric-histogram-summary.md)
+
+#### 資源監控 - USE Method
+
+對於每個資源，監控：
+
+- Utilization (% time that the resource was busy)
+- Saturation (amount of work resource has to do, often queue length)
+- Errors (count of error events)
+
+舉例來說 **餐廳服務員** 對 **餐廳老闆** 來說是一種 **資源**:
+
+- Utilization (% time that the resource was busy): 在一個工作小時裡服務員在忙碌工作的比例
+- Saturation (amount of work resource has to do, often queue length): 等待服務員去點餐的餐數
+- Errors (count of error events): 服務員執行工件出錯的次數
+
+使用 Pod 在 Kubernetes 裡的指標來計算:
+
+```bash
+# CPU Utilisation:
+
+1 - avg(rate(node_cpu{job="default/node-exporter",mode="idle"}[1m]))
+
+# CPU Saturation:
+
+sum(node_load1{job="default/node-exporter"}) / sum(node:node_num_cpu:sum)
+
+# Memory Utilisation: 
+
+1 - sum(node_memory_MemFree{job="…"} +
+        node_memory_Cached{job="…"}  +
+        node_memory_Buffers{job="…"}
+    ) / sum(node_memory_MemTotal{job="…"})
+
+# Memory Saturation:
+
+1e3 * sum(rate(node_vmstat_pgpgin{job="…"}[1m]) + rate(node_vmstat_pgpgout{job="…"}[1m])))
+```
+
+
+#### 服務監控 - RED Method
+
+對於每個服務，監控：
+
+- Rate (the number of requests per second)
+- Errors (the number of those requests that are failing)
+- Duration (the amount of time those requests take)
+
+舉例來說 **點餐** 對 **來餐廳用餐的客人** 來說是一種 **服務**:
+
+- Rate (the number of requests per second): 在單位時間裡客人會呼叫點餐的次數
+- Errors (the number of those requests that are failing): 客人點餐但結果出錯的比率
+- Duration (the amount of time those requests take): 客人點餐到餐點到桌的時間長度
+
+使用 `http_server_requests_seconds` 這個 `histogram` 的指標來計算:
+
+```bash
+# Rate:
+
+sum(rate(http_server_requests_seconds_count{job="…"}[1m]))
+
+# Errors:
+
+sum(rate(http_server_requests_seconds_count{job="…",status_code!~"2.."}[1m]))
+
+
+# Duration:
+
+histogram_quantile(0.99,sum(rate(http_server_requests_seconds_bucket{job="…"}[1m])) by (le))
+```
 
 ## 容器化 Sprintboot 應用
 
