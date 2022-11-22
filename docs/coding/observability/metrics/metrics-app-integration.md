@@ -158,10 +158,10 @@ kubectl port-forward --namespace monitoring svc/kube-stack-prometheus-grafana 30
 
 儀器化應用程序的手法主要可區分成兩種類型:
 
-1. 非侵入式的強化 - 使用 sidecar 的模式, 例如使用 Istio 的 envoy sidecard
+1. 非侵入式的強化 - 使用 sidecar 的模式, 例如使用 Istio 的 envoy sidecar
 2. 侵入式的強化 - 使用 library 的模式
 
-本教程主要說明如何使用不同程式語言的第三方套件來進行應用程序的儀器化(instrument)。
+本教程主要說明如何使用不同程式語言的第三方套件(侵入式的強化)來進行應用程序的儀器化(instrument)。
 
 === "Dotnet"
 
