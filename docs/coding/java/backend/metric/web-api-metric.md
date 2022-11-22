@@ -136,7 +136,7 @@ management.metrics.enable.jvm=true
 |hikaricp_connections_timeout_total|counter|Connection timeout total count<br>連接超時總計數|
 |hikaricp_connections_usage_seconds|summary|Connection usage time<br>連接使用時間|
 |hikaricp_connections_usage_seconds_max|gauge|Connection usage time<br>連接使用時間|
-|http_server_requests_seconds|histogram|Duration of HTTP server request handling<br>HTTP 服務器請求處理的持續時間|
+|{==http_server_requests_seconds==}|histogram|Duration of HTTP server request handling<br>HTTP 服務器請求處理的持續時間|
 |http_server_requests_seconds_max|gauge|Duration of HTTP server request handling<br>HTTP 服務器請求處理的持續時間|
 |jdbc_connections_max|gauge|Maximum number of active connections that can be allocated at the same time.<br>可以同時分配的最大活動連接數。|
 |jdbc_connections_min|gauge|Minimum number of idle connections in the pool.<br>池中的最小空閒連接數。|
