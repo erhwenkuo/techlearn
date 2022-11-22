@@ -75,7 +75,7 @@ $ helm status istiod -n istio-system
 
 ### 更新 Istio 配置
 
-你可以用自己的安裝參數，覆蓋掉前面用到的 Istio Helm chart 的默認行為， 然後按照 Helm 升級流程來定制安裝你的 Istio 網格系統。至於可用的配置項，你可以通過使用 `helm show values istio/<chart>` 來找到配置。例如： `helm show values istio/gateway`。
+你可以用自己的安裝參數，覆蓋掉前面用到的 Istio Helm chart 的默認行為，然後按照 Helm 升級流程來定制安裝你的 Istio 網格系統。至於可用的配置項，你可以通過使用 `helm show values istio/<chart>` 來找到配置。例如： `helm show values istio/gateway`。
 
 ### 卸載
 
