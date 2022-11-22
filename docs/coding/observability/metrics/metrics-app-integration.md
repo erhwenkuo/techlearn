@@ -8,6 +8,11 @@
 
 ### Kubernetes
 
+本教程使用 K3D 來構建實驗 K8S 集群, 詳細說明請參考: 
+
+- [使用 K3D 設置 Kubernetes 集群](../../../kubernetes/01-getting-started/learning-env/k3d/k3s-kubernetes-cluster-setup-with-k3d.md)
+
+
 執行下列命令來創建實驗 Kubernetes 集群:
 
 ```bash
@@ -29,6 +34,11 @@ Metrics-server is running at https://0.0.0.0:6443/api/v1/namespaces/kube-system/
 ```
 
 ### kube-prometheus-stack
+
+本教程使用 `kube-prometheus-stack` 來構建可觀測性的相關元件, 詳細說明請參考:
+
+- [Prometheus 簡介](../../../prometheus/prometheus/overview.md)
+- [Prometheus Operator 簡介](../../../prometheus/operator/install.md)
 
 添加 Prometheus-Community helm 存儲庫並更新本地緩存：
 
