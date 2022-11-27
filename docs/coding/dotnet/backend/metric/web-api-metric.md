@@ -2,6 +2,8 @@
 
 原文: https://blog.csdn.net/sD7O95O/article/details/124009720
 
+![](./assets/dotnet-prometheus.png)
+
 ## 引入函式庫
 
 [prometheus-net](https://github.com/prometheus-net/prometheus-net#aspnet-core-http-request-metrics) 是一個 .NET 庫，用於檢測應用程序並將指標暴露出來給 Prometheus 捉取。

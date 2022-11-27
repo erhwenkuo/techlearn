@@ -121,6 +121,8 @@ nav:
     - Observability:
       - 指標 Metrics:
         - 應用程序可觀測性實戰: coding/observability/metrics/metrics-app-integration.md
+      - 日誌 Logs:
+        - Structured Logging: coding/observability/logs/structured-logging.md
     - C#: 
       - 後端 API:
         - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
@@ -129,6 +131,7 @@ nav:
       - 後端 API:
         - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
         - 儀器化 Springboot 應用程序: coding/java/backend/metric/web-api-metric.md
+        - 結構化日誌 Sprintboot 應用程序: coding/java/backend/logging/web-api-logging.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
