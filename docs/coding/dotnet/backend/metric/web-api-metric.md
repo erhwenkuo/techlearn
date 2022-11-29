@@ -4,6 +4,15 @@
 
 ![](./assets/dotnet-prometheus.png)
 
+## 可觀測性 - Metrics
+
+日誌、指標和鏈路追踪通常被稱為可觀察性的三大支柱。雖然可以訪問日誌、指標和跟踪並不一定會使系統更易於觀察，但這些都是強大的工具，如果理解得當，可以釋放構建更好系統的能力。
+
+本教程主要著眼於如何儀器化 ASP.NET Core 應用程序，然後將應用程式內部的狀態使用 **指標** 曝露出來。
+
+![](./assets/three-pillars-metrics.png)
+
+
 ## 引入函式庫
 
 [prometheus-net](https://github.com/prometheus-net/prometheus-net#aspnet-core-http-request-metrics) 是一個 .NET 庫，用於檢測應用程序並將指標暴露出來給 Prometheus 捉取。

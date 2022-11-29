@@ -4,6 +4,22 @@
 
 ![](./assets/spring-logging.png)
 
+## 可觀測性 - Logging
+
+日誌、指標和鏈路追踪通常被稱為可觀察性的三大支柱。雖然可以訪問日誌、指標和跟踪並不一定會使系統更易於觀察，但這些都是強大的工具，如果理解得當，可以釋放構建更好系統的能力。
+
+本教程主要著眼於如何儀器化 Sprintboot 應用程序，然後將應用程式運行的 **結構化日誌** 打印到 stdout 出來。
+
+![](./assets/three-pillars-logging.png)
+
+## 什麼是結構化日誌記錄？
+
+**結構化日誌記錄** 是為應用程序日誌提供標準化的、預先確定的消息格式的過程，使它們能夠作為 **數據集** 而不是 **文本** 來處理。結構化日誌記錄的目標是獲取現在作為文本字符串提供的應用程序日誌，並將其轉化為易於搜索和分析的數據集合。
+
+結構化日誌記錄組織記錄的數據，使其易於搜索、過濾和處理以進行更複雜的分析。JSON 是結構化日誌記錄的首選格式，但也可以接受其他格式例如在 CNCF 專案中常見的 [logfmt](https://brandur.org/logfmt)。最佳實踐是使用可以與日誌管理解決方案交互並支持自定義字段的日誌記錄框架來提供結構化日誌記錄。
+
+詳細解釋見:[Structured Logging](../../../observability/logs/structured-logging.md)
+
 ## Logstash Logback Encoder 函式庫說明
 
 提供 logback 編碼器、佈局和附加器以記錄 JSON 和 Jackson 支持的其他日誌格式。
@@ -510,7 +526,7 @@ docker run -it --rm -p 8080:8080 witlab/java-todoapi:logging
 
 ## 結論
 
-始終對複雜的應用程序使用 Structure Logging (JSON) 日誌輸出，並將它們收集到日誌聚合器（如 Grafana loki, Elasticsearch）中。
+儘可能地對應用程序使用 Structure Logging (JSON) 來輸出日誌，並將它們收集到日誌聚合器（如 Grafana loki, Elasticsearch）中。
 
 結構化參數使得使用 Spring Boot 的默認日誌記錄框架 Logback 向索引添加額外數據變得容易。
 

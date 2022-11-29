@@ -6,6 +6,15 @@
 
 ![](./assets/java-performance.png)
 
+## 可觀測性 - Metrics
+
+日誌、指標和鏈路追踪通常被稱為可觀察性的三大支柱。雖然可以訪問日誌、指標和跟踪並不一定會使系統更易於觀察，但這些都是強大的工具，如果理解得當，可以釋放構建更好系統的能力。
+
+本教程主要著眼於如何儀器化 Sprintboot 應用程序，然後將應用程式內部的狀態使用 **指標** 曝露出來。
+
+![](./assets/three-pillars-metrics.png)
+
+
 ## Micrometer 函式庫說明
 
 Micrometer 為 Java 平台上的性能數據收集提供了一個通用的 API，它提供了多種度量指標類型（Timers、Guauges、Counters等），同時支持接入不同的監控系統，例如 Influxdb、Graphite、Prometheus 等。我們可以通過 Micrometer 收集 Java 性能數據，配合 Prometheus 監控系統實時獲取數據，並最終在 Grafana 上展示出來，從而很容易實現應用的監控。
