@@ -15,6 +15,8 @@
 - 使用 http-repl 調用 Web API。
 - 最後，您有一個 Web API，可以管理存儲在數據庫中的“待辦事項”項目。
 
+![](./assets/GitHub-logo.resized.png) 範例源碼: [dotnet/todoapi-base/TodoApi/](https://github.com/erhwenkuo/techlearn_coding/tree/main/dotnet/todoapi-base/TodoApi)
+
 ## 概述
 
 本教程會創建以下 API：

@@ -12,6 +12,10 @@
 
 ![](./assets/three-pillars-logging.png)
 
+本教程主要使用了下列的專案作為基底然後開始相關的編修來結構化應用程式日誌(Logging)。請先下載下列的專案源碼再 Step-by-Step 跟隨本教程的相關步驟。
+
+![](./assets/GitHub-logo.resized.png) 範例源碼: [java/todoapi-base/todoapi/](https://github.com/erhwenkuo/techlearn_coding/tree/main/java/todoapi-base/todoapi)
+
 ## 什麼是結構化日誌記錄？
 
 **結構化日誌記錄** 是為應用程序日誌提供標準化的、預先確定的消息格式的過程，使它們能夠作為 **數據集** 而不是 **文本** 來處理。結構化日誌記錄的目標是獲取現在作為文本字符串提供的應用程序日誌，並將其轉化為易於搜索和分析的數據集合。
@@ -531,3 +535,7 @@ docker run -it --rm -p 8080:8080 witlab/java-todoapi:logging
 結構化參數使得使用 Spring Boot 的默認日誌記錄框架 Logback 向索引添加額外數據變得容易。
 
 結構化的日誌語句使得使用 Grafana 或　Kibana 等日誌分析工具更容易找到相關日誌。
+
+修改後的源碼可在下列的鏈結中取得。
+
+![](./assets/GitHub-logo.resized.png) 範例源碼: [java/todoapi-logging/todoapi/](https://github.com/erhwenkuo/techlearn_coding/tree/main/java/todoapi-logging/todoapi)

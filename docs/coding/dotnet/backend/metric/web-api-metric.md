@@ -12,6 +12,9 @@
 
 ![](./assets/three-pillars-metrics.png)
 
+本教程主要使用了下列的專案作為基底然後開始相關的編修來儀器化應用程式(Metrics)。請先下載下列的專案源碼再 Step-by-Step 跟隨本教程的相關步驟。
+
+![](./assets/GitHub-logo.resized.png) 範例源碼: [techlearn_coding/dotnet/todoapi-base/TodoApi/](https://github.com/erhwenkuo/techlearn_coding/tree/main/dotnet/todoapi-base/TodoApi)
 
 ## 引入函式庫
 
@@ -265,3 +268,9 @@ docker run -it --rm -p 8080:8080 witlab/dotnet-todoapi:metric
 啟動完成之後就可以使用 Browser 查看結果，輸入 URL 位址為 http://localhost:8080/swagger 可以看到如下畫面:
 
 ![](./assets/swagger-ui3.png)
+
+## 結論
+
+修改後的源碼可在下列的鏈結中取得。
+
+![](./assets/GitHub-logo.resized.png) 範例源碼: [dotnet/todoapi-metric/TodoApi](https://github.com/erhwenkuo/techlearn_coding/tree/main/dotnet/todoapi-metric/TodoApi)

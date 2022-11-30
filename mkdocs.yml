@@ -120,9 +120,10 @@ nav:
       - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
     - Observability:
       - 指標 Metrics:
-        - 應用程序可觀測性實戰: coding/observability/metrics/metrics-app-integration.md
+        - 可觀測性(metrics)實戰: coding/observability/metrics/metrics-app-integration.md
       - 日誌 Logs:
         - Structured Logging: coding/observability/logs/structured-logging.md
+        - 可觀測性(logging)實戰: coding/observability/logs/logging-app-integration.md
     - C#: 
       - 後端 API:
         - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
