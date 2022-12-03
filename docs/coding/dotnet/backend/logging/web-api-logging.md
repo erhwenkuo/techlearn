@@ -1,7 +1,7 @@
 # 結構化日誌 ASP.NET Core 應用程序
 
-參考: [.NET 6.0 如何使用 Serilog 對應用程式事件進行結構化紀錄](https://blog.miniasp.com/post/2021/11/29/How-to-use-Serilog-with-NET-6)
-參考: [.NET 6 應用程式如何設定 Serilog](https://dotblogs.com.tw/yc421206/2022/09/04/serilog_config_in_asp_net_core)
+- 參考: [.NET 6.0 如何使用 Serilog 對應用程式事件進行結構化紀錄](https://blog.miniasp.com/post/2021/11/29/How-to-use-Serilog-with-NET-6)
+- 參考: [.NET 6 應用程式如何設定 Serilog](https://dotblogs.com.tw/yc421206/2022/09/04/serilog_config_in_asp_net_core)
 
 ![](./assets/dotnet-serilog.png)
 
@@ -219,7 +219,7 @@ Log.Information("Hello, {Name}!", "world");
 docker build -t witlab/dotnet-todoapi:logging -f Dockerfile .
 ```
 
-Docker 將處理 Dockerfile 中的每一行指令。 在 `docker build` 命令中設置鏡像的構建上下文。 `-f` 旗標指向 Dockerfile 的路徑。此命令構建映像並創建一個名為 donet-todoapi 的本地存儲庫，該存儲庫指向該映像。此命令完成後，運行 `docker images` 以查看已安裝的容器鏡像列表：
+Docker 將處理 Dockerfile 中的每一行指令。 在 `docker build` 命令中設置鏡像的構建上下文。`-f` 旗標指向 Dockerfile 的路徑。此命令構建映像並創建一個名為 donet-todoapi 的本地存儲庫，該存儲庫指向該映像。此命令完成後，運行 `docker images` 以查看已安裝的容器鏡像列表：
 
 ```bash
 $  docker images

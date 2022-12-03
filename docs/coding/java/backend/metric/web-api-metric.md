@@ -197,7 +197,7 @@ management.metrics.enable.jvm=true
 - [The RED Method](https://grafana.com/files/grafanacon_eu_2018/Tom_Wilkie_GrafanaCon_EU_2018.pdf)
 - [PromQL 教程](../../../../prometheus/promql/intro.md)
 - [搞懂 Prometheus 的直方圖](../../../../prometheus/promql/metric-histogram.md)
-- [簡單理解 Summary 和 Histogram 指標](./../../../prometheus/promql/metric-histogram-summary.md)
+- [簡單理解 Summary 和 Histogram 指標](../../../../prometheus/promql/metric-histogram-summary.md)
 
 #### 資源監控 - USE Method
 
