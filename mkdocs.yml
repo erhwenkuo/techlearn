@@ -167,7 +167,9 @@ nav:
           - 簡介: kubernetes/03-tasks/debug/debug-application/index.md
         - 集群故障排查:
           - 簡介: kubernetes/03-tasks/debug/debug-cluster/index.md
-
+    - Autoscale:
+      - Kubernetes 自動縮放: kubernetes/autoscale/kubernetes-autoscaling.md
+      - Kubernetes 垂直自動縮放: kubernetes/autoscale/kubernetes-vpa.md
     - Tutorials:
       - 你好, K3D: kubernetes/04-tutorials/hello-k3d.md
       - 學習 Kubernetes 基礎知識: 
@@ -302,6 +304,10 @@ nav:
       - 簡介: opentelemetry/k8s-operator/index.md
     - 範例:
       - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
+  - Grafana:
+    - Tempo:
+      - 示例:
+        - Hot ROD 應用: grafana/tempo/hotrod.md
   - ArgoCD:
     - ArgoCD 教程:
       - ArgoCD 教程簡介: argocd/tutorial/index.md
