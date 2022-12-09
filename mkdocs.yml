@@ -291,6 +291,8 @@ nav:
       - 使用 ConfigMap 管理 Grafana 儀表板: prometheus/operator/dashboard-using-configmap.md
     - Operation Runbook:
       - Operation Runbook 簡介: prometheus/runbook/operations-runbook.md
+    - PostgresExporter:
+      - 使用 Prometheus 監控 PostgreSQL: prometheus/postgres-exporter/postgres-exporter-integration.md
   - OpenTelemetry:
     - Instrumentation:
       - 簡介: opentelemetry/instrumentation/index.md
