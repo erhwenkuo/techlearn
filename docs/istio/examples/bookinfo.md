@@ -2,30 +2,32 @@
 
 ![](./assets/ecosystem.resized.png)
 
-請跟隨本教程安裝、配置並深入評估 Istio 網格系統的生態系統元件。
+ServiceMesh 用來描述組成應用程序的微服務網絡以及它們之間的交互。隨著服務網格的規模和復雜性不斷的增長，它將會變得越來越難以理解和管理。管理微服務的非功能性需求包括服務發現、負載均衡、故障恢復、度量和監控等等。服務網格通常還有更複雜的運維需求，比如 A/B 測試、金絲雀發布、速率限制、訪問控制和端到端認證。
 
-## 步驟 01 - 安裝
+Istio 提供了對整個服務網格的行為洞察和操作控制的能力，以及一個完整的滿足微服務應用各種需求的解決方案。請跟隨本教程安裝、配置並深入評估 Istio 網格系統的生態系統元件。
+
+## 步驟 01 - 環境安裝
 
 ### Kubernetes
 
-執行下列命令來創建實驗 Kubernetes 集群:
+創建實驗 Kubernetes 集群:
 
-```bash
+```bash title="執行下列命令  >_"
 k3d cluster create --servers 1 --agents 1 --api-port 6443 \
 --k3s-arg "--disable=traefik@server:0" \
 --port 8080:80@loadbalancer --port 8443:443@loadbalancer \
 --agents-memory=8G
 ```
 
-- `--disable=traefik@server:0` 安裝 Istio 後禁用 Traefik 負載均衡器
-- `--agents-memory=8G` 安裝 Istio 的額外增加一些內存
-- `local-cluster` k3d 集群名稱
+- `--disable=traefik@server:0` 禁用 Traefik 負載均衡器
+- `--agents-memory=8G` 額外增加一些內存
 
 確認 Kubernetes 及 Kubectl 是否成功安裝：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl cluster-info
 ```
+
 (輸出結果)
 
 ```bash
@@ -40,18 +42,19 @@ Metrics-server is running at https://0.0.0.0:6443/api/v1/namespaces/kube-system/
 
 #### 安裝 Istioctl
 
-1. 前往 Istio release 網站，找到需要的版本，並使用 curl 下載程式檔
+1. 前往 Istio release 網站，找到需要的版本，並使用 curl 下載程式檔:
 
+    ```bash title="執行下列命令  >_"
+    curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
     ```
-    curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.15.3 TARGET_ARCH=x86_64 sh -
-    ```
 
-    本教程安裝的是 Istio 1.15.3 版本。
+    !!! info
+        本教程安裝的是 Istio `1.16.1` 版本。
 
-2. 移動到 Istio 包目錄。例如，如果包是 istio-1.15.3：
+2. 移動到 Istio 包目錄。例如，如果包是 istio-1.16.1：
 
-    ```bash
-    cd istio-1.15.3
+    ```bash title="執行下列命令  >_"
+    cd istio-1.16.1
     ```
 
     安裝目錄包含：
@@ -61,44 +64,45 @@ Metrics-server is running at https://0.0.0.0:6443/api/v1/namespaces/kube-system/
 
 3. 將 `istioctl` 客戶端添加到您的路徑：
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     export PATH=$PWD/bin:$PATH
     ```
 
 #### 安裝 Istio
 
-1. 對於此安裝，我們使用 `demo` [配置文件](https://istio.io/latest/docs/setup/additional-setup/config-profiles/)。
+對於此安裝，我們使用 `demo` 配置組合, 詳細說明見:[安裝配置文件](../setup/additional-setup/config-profiles.md)。
 
-    ```bash
-    istioctl install --set profile=demo -y
-    ```
+|核心组件              |demo   |
+|---------------------|-------|
+|istiod               |✔	  |
+|istio-ingressgateway |✔      |
+|istio-egressgateway  |✔      |
 
-    或是把啟動客製設定參數加上:
+```bash title="執行下列命令  >_"
+istioctl install --set profile=demo -y
+```
 
-    ```bash
-    istioctl install --set profile=demo --set meshConfig.accessLogFile="/dev/stdout" --set meshConfig.accessLogEncoding="JSON" -y 
-    ```
+或是把啟動客製設定參數加上:
 
-    結果：
-    
-    ```bash
-    ✔ Istio core installed
-    ✔ Istiod installed
-    ✔ Egress gateways installed
-    ✔ Ingress gateways installed
-    ✔ Installation complete 
-    ```
+```bash title="執行下列命令  >_"
+istioctl install --set profile=demo \
+--set meshConfig.accessLogFile="/dev/stdout" \
+--set meshConfig.accessLogEncoding="JSON" -y 
+```
 
-2. 添加命名空間標籤以指示 Istio 在您稍後部署應用程序時自動注入 Envoy sidecar 代理：
+結果：
 
-    ```bash
-    kubectl label namespace default istio-injection=enabled
-    ```
-
+```bash
+✔ Istio core installed
+✔ Istiod installed
+✔ Egress gateways installed
+✔ Ingress gateways installed
+✔ Installation complete 
+```
 
 確認 istio 是否成功安裝：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get pods -n istio-system
 ```
 
@@ -107,8 +111,6 @@ kubectl get pods -n istio-system
 ```bash
 NAME                                    READY   STATUS    RESTARTS   AGE
 istiod-76db9fbfc-m4vd9                  1/1     Running   0          7m26s
-svclb-istio-ingressgateway-w6lnz        5/5     Running   0          6m46s
-svclb-istio-ingressgateway-nbldc        5/5     Running   0          6m46s
 istio-egressgateway-77cf54b878-ms8tw    1/1     Running   0          6m46s
 istio-ingressgateway-7f5ddd54c8-gcjl4   1/1     Running   0          6m46s
 ```
@@ -116,7 +118,117 @@ istio-ingressgateway-7f5ddd54c8-gcjl4   1/1     Running   0          6m46s
 ![](./assets/security-arch-diagram.png)
 
 !!! info
-    會安裝至 istio-system Namespace，Istio 的 Control Plane 指的就是這些元件
+    Istio 的 Control Plane 指的就是這些安裝至 istio-system 命名空間的元件
+
+### 安裝相關遙測插件
+
+Istio 集成了幾個不同的遙測組件。這些組件可以幫助您了解服務網格的結構、顯示網格的拓撲並分析網格的健康狀況。
+
+使用以下說明部署 [Kiali](https://istio.io/latest/docs/ops/integrations/kiali/) 以及 [Prometheus](https://istio.io/latest/docs/ops/integrations/prometheus/)、[Grafana](https://istio.io/latest/docs/ops/integrations/grafana) 和 [Jaeger](https://istio.io/latest/docs/ops/integrations/jaeger/) 的步驟。
+
+
+1. 安裝 Kiali 和其他插件並等待它們被部署。
+
+    執行下列命令來安裝 Kiali、Prometheus、Grafana 與 Jaeger 元件:
+
+    ```bash title="執行下列命令  >_"
+    kubectl apply -f samples/addons
+    ```
+
+    結果：
+
+    ```bash
+    serviceaccount/grafana created
+    configmap/grafana created
+    service/grafana created
+    deployment.apps/grafana created
+    configmap/istio-grafana-dashboards created
+    configmap/istio-services-grafana-dashboards created
+    deployment.apps/jaeger created
+    service/tracing created
+    service/zipkin created
+    service/jaeger-collector created
+    serviceaccount/kiali created
+    configmap/kiali created
+    clusterrole.rbac.authorization.k8s.io/kiali-viewer created
+    clusterrole.rbac.authorization.k8s.io/kiali created
+    clusterrolebinding.rbac.authorization.k8s.io/kiali created
+    role.rbac.authorization.k8s.io/kiali-controlplane created
+    rolebinding.rbac.authorization.k8s.io/kiali-controlplane created
+    service/kiali created
+    deployment.apps/kiali created
+    serviceaccount/prometheus created
+    configmap/prometheus created
+    clusterrole.rbac.authorization.k8s.io/prometheus created
+    clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+    service/prometheus created
+    deployment.apps/prometheus created
+    ```
+
+    檢查服務佈署的狀態:
+
+    ```bash title="執行下列命令  >_"
+    $ kubectl get svc -n istio-system
+    NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP             PORT(S)                                                                      AGE
+    istiod                 ClusterIP      10.43.144.98    <none>                  15010/TCP,15012/TCP,443/TCP,15014/TCP                                        172m
+    istio-egressgateway    ClusterIP      10.43.143.51    <none>                  80/TCP,443/TCP                                                               171m
+    istio-ingressgateway   LoadBalancer   10.43.81.49     172.22.0.2,172.22.0.3   15021:31007/TCP,80:31366/TCP,443:32297/TCP,31400:32599/TCP,15443:32439/TCP   171m
+    grafana                ClusterIP      10.43.120.74    <none>                  3000/TCP                                                                     32m
+    tracing                ClusterIP      10.43.112.8     <none>                  80/TCP,16685/TCP                                                             32m
+    zipkin                 ClusterIP      10.43.182.146   <none>                  9411/TCP                                                                     32m
+    jaeger-collector       ClusterIP      10.43.138.129   <none>                  14268/TCP,14250/TCP,9411/TCP                                                 32m
+    kiali                  ClusterIP      10.43.247.206   <none>                  20001/TCP,9090/TCP                                                           32m
+    prometheus             ClusterIP      10.43.54.209    <none>                  9090/TCP 
+    
+    $ kubectl get pods -n istio-system
+    NAME                                    READY   STATUS    RESTARTS   AGE
+    istiod-76db9fbfc-m4vd9                  1/1     Running   0          173m
+    svclb-istio-ingressgateway-w6lnz        5/5     Running   0          172m
+    svclb-istio-ingressgateway-nbldc        5/5     Running   0          172m
+    istio-egressgateway-77cf54b878-ms8tw    1/1     Running   0          172m
+    istio-ingressgateway-7f5ddd54c8-gcjl4   1/1     Running   0          172m
+    jaeger-5858c698bf-wvbt8                 1/1     Running   0          32m
+    prometheus-6956c8c6c5-qknmr             2/2     Running   0          32m
+    kiali-64c4f869fb-xzjpd                  1/1     Running   0          32m
+    grafana-6d69f655fb-jk6wm                1/1     Running   0          32m
+    ```
+
+2. 訪問 Prometheus
+
+    執行下列命令來暴露 Prometheus 服務:
+
+    ```bash title="執行下列命令  >_"
+    kubectl port-forward -n istio-system svc/prometheus 9090:9090 --address=0.0.0.0
+    ```
+    ![](./assets/prometheus.png)
+
+3. 訪問 Grafana
+
+    執行下列命令來暴露 Grafana 服務:
+
+    ```bash title="執行下列命令  >_"
+    kubectl port-forward -n istio-system svc/grafana 3000:3000 --address=0.0.0.0
+    ```
+    ![](./assets/grafana.png)
+
+4. 訪問 Jaeger
+
+    執行下列命令來暴露 Jaeger 服務:
+
+    ```bash title="執行下列命令  >_"
+    kubectl port-forward -n istio-system svc/tracing 8084:80 --address=0.0.0.0
+    ```
+    ![](./assets/jaeger.png)
+
+5. 訪問 Kiali
+
+    執行下列命令來暴露 Kiali 服務:
+
+    ```bash title="執行下列命令  >_"
+    kubectl port-forward -n istio-system svc/kiali 20001:20001 --address=0.0.0.0
+    ```
+
+    ![](./assets/kaili-login.png)
 
 ### 部署範例應用程序
 
@@ -158,11 +270,337 @@ Bookinfo 應用中的幾個微服務是由不同的語言編寫的。這些服�
 
 所有的微服務都和 Envoy sidecar 集成在一起，被集成服務所有的出入流量都被 sidecar 所劫持，這樣就為外部控制準備了所需的 Hook，然後就可以利用 Istio 控制平面為應用提供服務路由、遙測數據收集以及策略實施等功能。
 
-1. 部署 Bookinfo 示例應用程序:
+1. 在 `default` 命名空間添加標籤以指示 Istio 自動注入 Envoy sidecar 代理：
 
-    ```bash
+    ```bash title="執行下列命令  >_"
+    kubectl label namespace default istio-injection=enabled
+    ```
+
+2. 部署 Bookinfo 示例應用程序:
+
+    ```bash title="執行下列命令  >_"
     kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
     ```
+
+    ??? example
+        ```yaml
+        ##################################################################################################
+        # Details service
+        ##################################################################################################
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: details
+          labels:
+            app: details
+            service: details
+        spec:
+          ports:
+          - port: 9080
+            name: http
+          selector:
+            app: details
+        ---
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: bookinfo-details
+          labels:
+            account: details
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: details-v1
+          labels:
+            app: details
+            version: v1
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: details
+              version: v1
+          template:
+            metadata:
+              labels:
+                app: details
+                version: v1
+            spec:
+              serviceAccountName: bookinfo-details
+              containers:
+              - name: details
+                image: docker.io/istio/examples-bookinfo-details-v1:1.17.0
+                imagePullPolicy: IfNotPresent
+                ports:
+                - containerPort: 9080
+                securityContext:
+                  runAsUser: 1000
+        ---
+        ##################################################################################################
+        # Ratings service
+        ##################################################################################################
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: ratings
+          labels:
+            app: ratings
+            service: ratings
+        spec:
+          ports:
+          - port: 9080
+            name: http
+          selector:
+            app: ratings
+        ---
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: bookinfo-ratings
+          labels:
+            account: ratings
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ratings-v1
+          labels:
+            app: ratings
+            version: v1
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: ratings
+              version: v1
+          template:
+            metadata:
+              labels:
+                app: ratings
+                version: v1
+            spec:
+              serviceAccountName: bookinfo-ratings
+              containers:
+              - name: ratings
+                image: docker.io/istio/examples-bookinfo-ratings-v1:1.17.0
+                imagePullPolicy: IfNotPresent
+                ports:
+                - containerPort: 9080
+                securityContext:
+                  runAsUser: 1000
+        ---
+        ##################################################################################################
+        # Reviews service
+        ##################################################################################################
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: reviews
+          labels:
+            app: reviews
+            service: reviews
+        spec:
+          ports:
+          - port: 9080
+            name: http
+          selector:
+            app: reviews
+        ---
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: bookinfo-reviews
+          labels:
+            account: reviews
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: reviews-v1
+          labels:
+            app: reviews
+            version: v1
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: reviews
+              version: v1
+          template:
+            metadata:
+              labels:
+                app: reviews
+                version: v1
+            spec:
+              serviceAccountName: bookinfo-reviews
+              containers:
+              - name: reviews
+                image: docker.io/istio/examples-bookinfo-reviews-v1:1.17.0
+                imagePullPolicy: IfNotPresent
+                env:
+                - name: LOG_DIR
+                  value: "/tmp/logs"
+                ports:
+                - containerPort: 9080
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: wlp-output
+                  mountPath: /opt/ibm/wlp/output
+                securityContext:
+                  runAsUser: 1000
+              volumes:
+              - name: wlp-output
+                emptyDir: {}
+              - name: tmp
+                emptyDir: {}
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: reviews-v2
+          labels:
+            app: reviews
+            version: v2
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: reviews
+              version: v2
+          template:
+            metadata:
+              labels:
+                app: reviews
+                version: v2
+            spec:
+              serviceAccountName: bookinfo-reviews
+              containers:
+              - name: reviews
+                image: docker.io/istio/examples-bookinfo-reviews-v2:1.17.0
+                imagePullPolicy: IfNotPresent
+                env:
+                - name: LOG_DIR
+                  value: "/tmp/logs"
+                ports:
+                - containerPort: 9080
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: wlp-output
+                  mountPath: /opt/ibm/wlp/output
+                securityContext:
+                  runAsUser: 1000
+              volumes:
+              - name: wlp-output
+                emptyDir: {}
+              - name: tmp
+                emptyDir: {}
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: reviews-v3
+          labels:
+            app: reviews
+            version: v3
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: reviews
+              version: v3
+          template:
+            metadata:
+              labels:
+                app: reviews
+                version: v3
+            spec:
+              serviceAccountName: bookinfo-reviews
+              containers:
+              - name: reviews
+                image: docker.io/istio/examples-bookinfo-reviews-v3:1.17.0
+                imagePullPolicy: IfNotPresent
+                env:
+                - name: LOG_DIR
+                  value: "/tmp/logs"
+                ports:
+                - containerPort: 9080
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: wlp-output
+                  mountPath: /opt/ibm/wlp/output
+                securityContext:
+                  runAsUser: 1000
+              volumes:
+              - name: wlp-output
+                emptyDir: {}
+              - name: tmp
+                emptyDir: {}
+        ---
+        ##################################################################################################
+        # Productpage services
+        ##################################################################################################
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: productpage
+          labels:
+            app: productpage
+            service: productpage
+        spec:
+          ports:
+          - port: 9080
+            name: http
+          selector:
+            app: productpage
+        ---
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: bookinfo-productpage
+          labels:
+            account: productpage
+        ---
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: productpage-v1
+          labels:
+            app: productpage
+            version: v1
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: productpage
+              version: v1
+          template:
+            metadata:
+              labels:
+                app: productpage
+                version: v1
+            spec:
+              serviceAccountName: bookinfo-productpage
+              containers:
+              - name: productpage
+                image: docker.io/istio/examples-bookinfo-productpage-v1:1.17.0
+                imagePullPolicy: IfNotPresent
+                ports:
+                - containerPort: 9080
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                securityContext:
+                  runAsUser: 1000
+              volumes:
+              - name: tmp
+                emptyDir: {}
+        ---
+        ```
+
 
     結果:
 
@@ -183,9 +621,11 @@ Bookinfo 應用中的幾個微服務是由不同的語言編寫的。這些服�
     deployment.apps/productpage-v1 created
     ```
 
-2. 應用程序將啟動。隨著每個 pod 準備就緒，Istio sidecar 將隨之部署。
 
-    ```bash
+
+3. 應用程序將啟動。隨著每個 pod 準備就緒，Istio sidecar 將隨之部署。
+
+    ```bash title="執行下列命令  >_"
     kubectl get services
     ```
 
@@ -202,7 +642,7 @@ Bookinfo 應用中的幾個微服務是由不同的語言編寫的。這些服�
 
     接著看一下 Pod 的佈署：
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl get pods
     ```
 
@@ -218,70 +658,88 @@ Bookinfo 應用中的幾個微服務是由不同的語言編寫的。這些服�
     reviews-v2-58d564d4db-p9bfb       2/2     Running   0          4m21s
     ```
 
-3. 驗證到目前為止的設置一切正常。運行以下命令，通過檢查響應中的頁面標題來查看應用程序是否在集群內運行並提供 HTML 頁面：
+4. 驗證到目前為止的設置一切正常。運行以下命令，通過檢查響應中的頁面標題來查看應用程序是否在集群內運行並提供 HTML 頁面：
 
-    ```bash
-    kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+    ```bash title="執行下列命令  >_"
+    kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" \
+    -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+    ```
+
+    如果看到下列結果即表示應用程式己經在集群內運行:
+
+    ```html
+    <title>Simple Bookstore App</title>
     ```
 
 #### 對外部暴露應用程序
 
 Bookinfo 應用程序已部署，但無法從 Kubernetes 外部來訪問它。為了使其可訪問， 需要創建一個 Istio Ingress Gateway，它將路徑映射到網格邊緣的路由。
 
-1. 將此應用程序與 Istio gateway 關聯：
+??? info "Istio Ingress 對比 Kubernetes Ingress"
+    使用 Istio 來控制 North-South 流量進出的 Ingress Gateway 與傳統 Kubernetes Ingress Controller 的手法不太一樣。
 
-    執行下列命令:
+    詳細的對比請參閱:[Istio Ingress 與 Kubernetes Ingress](../reference/istio-ingress-vs-k8s-ingress.md)
 
-    ```bash
-    kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
-    ```
-    
-    ??? info
+    ![](./assets/istio-vs-traditional-ingress-1-1400x923.png)
 
-        ```yaml title="bookinfo-gateway.yaml"
-        apiVersion: networking.istio.io/v1alpha3
-        kind: Gateway
-        metadata:
-        name: bookinfo-gateway
-        spec:
-        selector:
-            istio: ingressgateway # use istio default controller
-        servers:
-        - port:
-            number: 80
-            name: http
-            protocol: HTTP
-            hosts:
-            - "*"
-        ---
-        apiVersion: networking.istio.io/v1alpha3
-        kind: VirtualService
-        metadata:
-        name: bookinfo
-        spec:
-        hosts:
-        - "*"
-        gateways:
-        - bookinfo-gateway
-        http:
-        - match:
-            - uri:
-                exact: /productpage
-            - uri:
-                prefix: /static
-            - uri:
-                exact: /login
-            - uri:
-                exact: /logout
-            - uri:
-                prefix: /api/v1/products
-            route:
-            - destination:
-                host: productpage
-                port:
-                number: 9080  
-        ```
-2. 確保配置沒有問題：
+將此範例應用程序的服務與 Istio gateway 進行關聯：
+
+```bash title="執行下列命令  >_"
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+```
+
+讓我們來看一下這個設定檔的內容:
+
+```yaml title="bookinfo-gateway.yaml"
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bookinfo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+```
+
+整體的結構如下:
+
+![](./assets/istio-crd-gateway.png)
+
+!!! tip
+    如果想檢查配置是否有問題, 可使用 `istioctl analyze` 來驗證：
 
     ```bash
     istioctl analyze
@@ -292,15 +750,14 @@ Bookinfo 應用程序已部署，但無法從 Kubernetes 外部來訪問它。�
     ```bash
     ✔ No validation issues found when analyzing namespace: default.
     ```
-
-
+    
 #### 確定 Ingress IP 和端口
 
 按照這些說明設置用於訪問網關的 INGRESS_HOST 和 INGRESS_PORT 變量。
 
 執行以下命令來確定您的 Kubernetes 集群是否在支持外部負載均衡器的環境中運行：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get svc istio-ingressgateway -n istio-system
 ```
 
@@ -312,12 +769,25 @@ istio-ingressgateway   LoadBalancer   10.43.81.49   172.22.0.2,172.22.0.3   1502
 ```
 
 舉例來說在範例中的 Kubernetes 環境裡頭所暴露出來的外部 IP 是 `172.22.0.2` 與 `172.22.0.3`。
-
 為了方便後續的驗證，使用環境變數把 `GATEWAY_URL` 暴露出來:
 
-```bash
+```bash title="執行下列命令  >_"
 export GATEWAY_URL=172.22.0.2:80
 ```
+
+??? info
+    上述 `GATEWAY_URL` 的 IP 會根據每一個 Kuberntes 集群配置的 Load Balaner 不同而會有不同的 IP 位址。
+
+使用瀏覽器來鍵入下列的 Url:
+
+- 通過 K3D 的 Gateway (本機: 8080 << K3D cluster gateway: 80)
+    - http://localhost:8080/productpage
+
+- 直接通過本機的 LoadBalancer 的 IP
+    - http://$GATEWAY_URL/productpage
+
+
+![](./assets/bookinfo-productpage.png)
 
 #### 驗證外部訪問
 
@@ -330,132 +800,44 @@ export GATEWAY_URL=172.22.0.2:80
 
 所有的微服務都和 Envoy sidecar 集成在一起，被集成服務所有的出入流量都被 sidecar 所劫持，這樣就為外部控制準備了所需的 Hook，然後就可以利用 Istio 控制平面為應用提供服務路由、遙測數據收集以及策略實施等功能。
 
-### 安裝相關的插件
+#### 流量模擬
 
-Istio 集成了幾個不同的遙測應用程序。這些可以幫助您了解服務網格的結構、顯示網格的拓撲並分析網格的健康狀況。
+要了解 istio 的功能是否正常的簡單方式就是去模擬一些服務的流量。下列的指令會向 `productpage` 服務持續發送 10000 個請求：
 
-使用以下說明部署 [Kiali](https://istio.io/latest/docs/ops/integrations/kiali/) 以及 [Prometheus](https://istio.io/latest/docs/ops/integrations/prometheus/)、[Grafana](https://istio.io/latest/docs/ops/integrations/grafana) 和 [Jaeger](https://istio.io/latest/docs/ops/integrations/jaeger/)。
-
-
-1. 安裝 Kiali 和其他插件並等待它們被部署。
-
-    執行下列命令來安裝 Kiali、Prometheus、Grafana 與 Jaeger 元件:
+=== "通過 K3D 的 Gateway (本機: 8080 << K3D cluster gateway: 80)"
 
     ```bash
-    kubectl apply -f samples/addons
+    for i in $(seq 1 10000); do curl -s -o /dev/null "http://localhost:8080/productpage"; done
     ```
 
-    結果：
+
+=== "直接通過本機的 LoadBalancer 的 IP"
 
     ```bash
-    serviceaccount/grafana created
-    configmap/grafana created
-    service/grafana created
-    deployment.apps/grafana created
-    configmap/istio-grafana-dashboards created
-    configmap/istio-services-grafana-dashboards created
-    deployment.apps/jaeger created
-    service/tracing created
-    service/zipkin created
-    service/jaeger-collector created
-    serviceaccount/kiali created
-    configmap/kiali created
-    clusterrole.rbac.authorization.k8s.io/kiali-viewer created
-    clusterrole.rbac.authorization.k8s.io/kiali created
-    clusterrolebinding.rbac.authorization.k8s.io/kiali created
-    role.rbac.authorization.k8s.io/kiali-controlplane created
-    rolebinding.rbac.authorization.k8s.io/kiali-controlplane created
-    service/kiali created
-    deployment.apps/kiali created
-    serviceaccount/prometheus created
-    configmap/prometheus created
-    clusterrole.rbac.authorization.k8s.io/prometheus created
-    clusterrolebinding.rbac.authorization.k8s.io/prometheus created
-    service/prometheus created
-    deployment.apps/prometheus created
+    for i in $(seq 1 10000); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
     ```
 
-    檢查服務佈署的狀態:
+!!! info
+    上述的命令稿是使用 linux 的 Bash script 來模擬服務的流量。要查看跟踪數據，您必須向您的服務發送請求。請求的數量取決於 Istio 的採樣率，並且可以使用 Telemetry API 進行配置。在默認採樣率為 1% 的情況下，您需要發送至少 100 個請求才能看到第一個跟踪。
 
-    ```bash
-    $ kubectl get svc -n istio-system
-    NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP             PORT(S)                                                                      AGE
-    istiod                 ClusterIP      10.43.144.98    <none>                  15010/TCP,15012/TCP,443/TCP,15014/TCP                                        172m
-    istio-egressgateway    ClusterIP      10.43.143.51    <none>                  80/TCP,443/TCP                                                               171m
-    istio-ingressgateway   LoadBalancer   10.43.81.49     172.22.0.2,172.22.0.3   15021:31007/TCP,80:31366/TCP,443:32297/TCP,31400:32599/TCP,15443:32439/TCP   171m
-    grafana                ClusterIP      10.43.120.74    <none>                  3000/TCP                                                                     32m
-    tracing                ClusterIP      10.43.112.8     <none>                  80/TCP,16685/TCP                                                             32m
-    zipkin                 ClusterIP      10.43.182.146   <none>                  9411/TCP                                                                     32m
-    jaeger-collector       ClusterIP      10.43.138.129   <none>                  14268/TCP,14250/TCP,9411/TCP                                                 32m
-    kiali                  ClusterIP      10.43.247.206   <none>                  20001/TCP,9090/TCP                                                           32m
-    prometheus             ClusterIP      10.43.54.209    <none>                  9090/TCP 
-    
-    $ kubectl get pods -n istio-system
-    NAME                                    READY   STATUS    RESTARTS   AGE
-    istiod-76db9fbfc-m4vd9                  1/1     Running   0          173m
-    svclb-istio-ingressgateway-w6lnz        5/5     Running   0          172m
-    svclb-istio-ingressgateway-nbldc        5/5     Running   0          172m
-    istio-egressgateway-77cf54b878-ms8tw    1/1     Running   0          172m
-    istio-ingressgateway-7f5ddd54c8-gcjl4   1/1     Running   0          172m
-    jaeger-5858c698bf-wvbt8                 1/1     Running   0          32m
-    prometheus-6956c8c6c5-qknmr             2/2     Running   0          32m
-    kiali-64c4f869fb-xzjpd                  1/1     Running   0          32m
-    grafana-6d69f655fb-jk6wm                1/1     Running   0          32m
-    ```
+在 Kiali UI 左側導航菜單中，選擇 `Graph`，然後在 `Namespace` 下拉菜單中選擇 `default`。
 
-2. 訪問 Prometheus
+![](./assets/kiali-graph-default.png)
 
-    執行下列命令來暴露 Prometheus 服務:
+Kiali 經由 Prometheus 所收集的 envoy 指標就能夠視覺化地展現出流量與服務的拓撲圖。
 
-    ```bash
-    kubectl port-forward -n istio-system svc/prometheus 9090:9090 --address=0.0.0.0
-    ```
-    ![](./assets/prometheus.png)
+![](./assets/kiali-bookinfo-graph.png)
 
-3. 訪問 Grafana
-
-    執行下列命令來暴露 Grafana 服務:
-
-    ```bash
-    kubectl port-forward -n istio-system svc/grafana 3000:3000 --address=0.0.0.0
-    ```
-    ![](./assets/grafana.png)
-
-4. 訪問 Jaeger
-
-    執行下列命令來暴露 Jaeger 服務:
-
-    ```bash
-    kubectl port-forward -n istio-system svc/tracing 8084:80 --address=0.0.0.0
-    ```
-    ![](./assets/jaeger.png)
-
-5. 訪問 Kiali
-
-    執行下列命令來暴露 Kiali 服務:
-
-    ```bash
-    kubectl port-forward -n istio-system svc/kiali 20001:20001 --address=0.0.0.0
-    ```
-
-    ![](./assets/kaili-login.png)
-
-
-6. 在左側導航菜單中，選擇 `Graph`，然後在 `Namespace` 下拉菜單中選擇 `default`。
-
-    ![](./assets/kiali-graph-default.png)
-
-    要查看跟踪數據，您必須向您的服務發送請求。請求的數量取決於 Istio 的採樣率，並且可以使用 Telemetry API 進行配置。在默認採樣率為 1% 的情況下，您需要發送至少 100 個請求才能看到第一個跟踪。要向 productpage 服務發送 100 個請求，請使用以下命令：
-
-    ```bash
-    for i in $(seq 1 100); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
-    ```
-
-    ![](./assets/kiali-bookinfo-graph.png)
 
 ## 步驟 02 - Istio 功能展示
 
 ## 2.1 流量管理
+
+Istio 擁有強大的流量管理功能，DevOp 團隊通過相關 Istio 提供的 CRDs 來宣告相關的流量控制。
+
+![](./assets/istio-crd-components.png)
+
+接下來會使用幾個不同的情境來展示 Istio 在流量管理的功能。
 
 ### 配置请求路由
 
@@ -465,11 +847,11 @@ Istio Bookinfo 示例包含四個獨立的微服務。其中一個微服務 `rev
 
 #### 應用默認目標規則
 
-在使用 Istio 控制 Bookinfo 版本路由之前，您需要在 destionation rules 中定義好可用的版本，命名為 `subsets`。
+在使用 Istio 控制 Bookinfo 版本路由之前，您需要在 `destionation rules` 中定義好可用的版本，命名為 `subsets`。
 
 運行以下命令為 Bookinfo 服務創建的默認的目標規則：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
 ```
 
@@ -478,80 +860,94 @@ kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
-    name: productpage
+      name: productpage
     spec:
-    host: productpage
-    subsets:
-    - name: v1
+      // point to service name
+      host: productpage
+      subsets:
+      - name: v1
         labels:
-        version: v1
+          version: v1
     ---
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
-    name: reviews
+      name: reviews
     spec:
-    host: reviews
-    subsets:
-    - name: v1
+      // point to service name
+      host: reviews
+      subsets:
+      - name: v1
         labels:
-        version: v1
-    - name: v2
+          version: v1
+      - name: v2
         labels:
-        version: v2
-    - name: v3
+          version: v2
+      - name: v3
         labels:
-        version: v3
+          version: v3
     ---
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
-    name: ratings
+      name: ratings
     spec:
-    host: ratings
-    subsets:
-    - name: v1
+      // point to service name
+      host: ratings
+      subsets:
+      - name: v1
         labels:
-        version: v1
-    - name: v2
+          version: v1
+      - name: v2
         labels:
-        version: v2
-    - name: v2-mysql
+          version: v2
+      - name: v2-mysql
         labels:
-        version: v2-mysql
-    - name: v2-mysql-vm
+          version: v2-mysql
+      - name: v2-mysql-vm
         labels:
-        version: v2-mysql-vm
+          version: v2-mysql-vm
     ---
     apiVersion: networking.istio.io/v1alpha3
     kind: DestinationRule
     metadata:
-    name: details
+      name: details
     spec:
-    host: details
+       // point to service name
+      host: details
     subsets:
-    - name: v1
+      - name: v1
         labels:
-        version: v1
-    - name: v2
+          version: v1
+      - name: v2
         labels:
-        version: v2
+          version: v2
     ---
     ```
 
 您可以使用以下命令查看目標規則：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get destinationrules -o yaml
+```
+
+結果:
+
+```
+NAME          HOST          AGE
+productpage   productpage   73m
+reviews       reviews       73m
+ratings       ratings       73m
+details       details       73m
 ```
 
 #### 應用 Virtual Service
 
-要僅路由到其中特定的一個版本，請應用為微服務設置默認版本的 Virtual Service。在這種情況下，Virtual Service 將所有流量路由到每個微服務的 v1 版本。
+要僅路由到其中特定的一個版本，請應用為微服務設置默認版本的 Virtual Service。在這種情況下，Virtual Service 將所有流量路由到每個微服務的 **v1** 版本。
 
 運行以下命令以應用 Virtual Service：
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 ```
 
@@ -611,7 +1007,7 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
     ---
     ```
 
-您已將 Istio 配置為路由到 Bookinfo 微服務的 v1 版本，最重要的是 reviews 服務的版本 1。
+您已將 Istio 配置為路由到 Bookinfo 所有微服務的 `v1` 版本，其中最容易觀察這個流量的改變是落在 reviews 服務。reviews 有三個在線的版本 `v1`, `v2` 與 `v3`，經由 VirtualService 的設定之後，所有呼叫reviews 服務的流量都被導向至 `v1` 版本。
 
 ![](./assets/bookinfo-traffic-v1.png)
 
@@ -633,13 +1029,13 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 
 接下來，您將更改路由配置，以便將來自特定用戶的所有流量路由到特定服務版本。在這種情況下，來自名為 Jason 的用戶的所有流量將被路由到服務 `reviews:v2`。
 
-請注意，Istio 對用戶身份沒有任何特殊的內置機制。事實上，productpage 服務在所有到 reviews 服務的 HTTP 請求中都增加了一個自定義的 end-user 請求頭，從而達到了本例子的效果。
+請注意，Istio 對用戶身份沒有任何特殊的內置機制。事實上，productpage 服務在所有到 reviews 服務的 HTTP 請求中都增加了一個自定義的 `end-user` 請求 Header，從而達到了本例子的效果。
 
-請記住，reviews:v2 是包含星級評分功能的版本。
+請記住，`reviews:v2` 是包含星級評分功能的版本。
 
 1. 運行以下命令以啟用基於用戶的路由：
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
     ```
 
@@ -648,20 +1044,20 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
         apiVersion: networking.istio.io/v1alpha3
         kind: VirtualService
         metadata:
-        name: reviews
+          name: reviews
         spec:
-        hosts:
+          hosts:
             - reviews
-        http:
-        - match:
+          http:
+          - match:
             - headers:
                 end-user:
-                exact: jason
+                  exact: jason
             route:
             - destination:
                 host: reviews
                 subset: v2
-        - route:
+          - route:
             - destination:
                 host: reviews
                 subset: v1
@@ -677,24 +1073,28 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 
 3. 以其他用戶身份登錄（選擇您想要的任何名稱）。
 
-    刷新瀏覽器。現在星星消失了。這是因為除了 Jason 之外，所有用戶的流量都被路由到 reviews:v1。
+    刷新瀏覽器。現在星星消失了。這是因為除了 jason 之外，所有用戶的流量都被路由到 `reviews:v1`。
 
     ![](./assets/bookinfo-route-by-name2.png)
 
+    從 Kiali 的流量拓撲也可觀察到這個流量的狀態。
 
-您已成功配置 Istio 以根據用戶身份路由流量。
+    ![](./assets/istio-route-by-header.png)
+
+
+您已成功配置 Istio 根據用戶身份路由流量。
 
 ### 流量轉移
 
 本任務將向您展示如何將流量從微服務的一個版本逐步遷移到另一個版本。例如，您可以將流量從舊版本遷移到新版本。
 
-一個常見的用例是將流量從微服務的一個版本的逐漸遷移到另一個版本。在 Istio 中，您可以通過配置一系列規則來實現此目標。這些規則將一定比例的流量路由到一個或另一個服務。在本任務中，您將會把 50％ 的流量發送到 reviews:v1，另外，50％ 的流量發送到 reviews:v3。接著，再把 100％ 的流量發送到 reviews:v3 來完成遷移。
+一個常見的用例是將流量從微服務的一個版本的逐漸遷移到另一個版本。在 Istio 中，您可以通過配置一系列規則來實現此目標。這些規則將一定比例的流量路由到一個或另一個服務。在本任務中，您將會把 `50％` 的流量發送到 `reviews:v1`，另外，`50％` 的流量發送到 `reviews:v3`。接著，再把 `100％` 的流量發送到 `reviews:v3` 來完成遷移。
 
 #### 基於權重的路由
 
-1. 首先，運行此命令將所有流量路由到各個微服務的 v1 版本。
+1. 首先，運行此命令將所有流量路由到各個微服務的 `v1` 版本。
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
     ```
 
@@ -760,10 +1160,12 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 
     請注意，不管刷新多少次，頁面的評論部分都不會顯示評價星級的內容。這是因為 Istio 被配置為將星級評價的服務的所有流量都路由到了 reviews:v1 版本，而該版本的服務不訪問帶評價星級的服務。
 
+    ![](./assets/istio-traffic-v1.png)
 
-3. 使用下面的命令把 50% 的流量從 reviews:v1 轉移到 reviews:v3：
 
-    ```bash
+3. 使用下面的命令把 `50%` 的流量從 `reviews:v1` 轉移到 `reviews:v3`：
+
+    ```bash title="執行下列命令  >_"
     kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
     ```
     
@@ -772,27 +1174,29 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
         apiVersion: networking.istio.io/v1alpha3
         kind: VirtualService
         metadata:
-        name: reviews
+          name: reviews
         spec:
-        hosts:
+          hosts:
             - reviews
-        http:
-        - route:
+          http:
+          - route:
             - destination:
                 host: reviews
                 subset: v1
-                weight: 50
+              weight: 50
             - destination:
                 host: reviews
                 subset: v3
-                weight: 50
+              weight: 50
         ```
 
-4. 刷新瀏覽器中的 `/productpage` 頁面，大約有 50% 的機率會看到頁面中帶 紅色 星級的評價內容。這是因為 reviews 的 v3 版本可以訪問帶星級評價，但 v1 版本不能。
+4. 刷新瀏覽器中的 `/productpage` 頁面，大約有 `50%` 的機率會看到頁面中帶 **紅色** 星級的評價內容。這是因為 reviews 的 `v3` 版本可以訪問帶星級評價，但 `v1` 版本不能。
 
-5. 如果您認為 reviews:v3 微服務已經穩定，您可以通過應用 Virtual Service 規則將 100% 的流量路由 reviews:v3：
+    ![](./assets/istio-traffic-50v1-50v3.png)
 
-    ```bash
+5. 如果您認為 `reviews:v3` 微服務已經穩定，您可以通過應用 Virtual Service 規則將 `100%` 的流量路由 `reviews:v3`：
+
+    ```bash title="執行下列命令  >_"
     kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
     ```
 
@@ -801,12 +1205,12 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
         apiVersion: networking.istio.io/v1alpha3
         kind: VirtualService
         metadata:
-        name: reviews
+          name: reviews
         spec:
-        hosts:
+          hosts:
             - reviews
-        http:
-        - route:
+          http:
+          - route:
             - destination:
                 host: reviews
                 subset: v3
@@ -815,6 +1219,10 @@ kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
     現在，當您刷新 `/productpage` 時，您將始終看到帶有 **紅色** 星級評分的書評。
 
     ![](./assets/bookinfo-v3-100.png)
+
+    從 Kiali 觀察的結果:
+
+    ![](./assets/isto-traffic-v3.png)
 
 
 ## 2.2 可觀測性
@@ -849,7 +1257,7 @@ Istio 生成以下類型的遙測數據，以提供對整個服務網格的可�
 
 1. 查看 Bookinfo 佈署後的 Pods 狀態
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl get pod -n default
     ```
 
@@ -871,7 +1279,7 @@ Istio 生成以下類型的遙測數據，以提供對整個服務網格的可�
 
 2. 查看 `productpage` 的 Pod spec
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl get pod/productpage-v1-797d845774-76f95 -o yaml 
     ```
 
@@ -904,7 +1312,7 @@ Istio 生成以下類型的遙測數據，以提供對整個服務網格的可�
     ...
     ```
 
-    從 Pod spec　的 annotations 可發現 istio 自動注入的一個　sidecar 並且宣告這個 Pod 會在:
+    從 Pod spec 的 annotations 可發現 istio 自動注入的一個 sidecar 並且宣告這個 Pod 會在:
 
     - port: `prometheus.io/port: "15020"` 
     - path: `prometheus.io/path: /stats/prometheus`
@@ -913,18 +1321,18 @@ Istio 生成以下類型的遙測數據，以提供對整個服務網格的可�
 
 3. 執行下列命令來暴露 `productpage` 服務:
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl port-forward -n default pod/productpage-v1-797d845774-76f95 15020:15020 --address=0.0.0.0
     ```
 
     !!! info
-        注意要查找的 pod　的　id 會隨每個環境的佈署而有所不同
+        注意要查找的 pod 的 id 會隨每個環境的佈署而有所不同
 
     ![](./assets/productpage-metrics.png)
 
 4. 到 Prometheus GUI 介面 -> 在搜尋欄輸入下列字串後點擊 Execute
 
-    ```bash
+    ```
     istio_requests_total
     ```
 
@@ -964,20 +1372,20 @@ Istio 能夠以多種操作方式和配置的格式為流量生成 **訪問日�
 
 1. 查看 `productpage` 的 Pod 裡頭包含了那些容器
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl get pod/productpage-v1-797d845774-76f95 -o jsonpath='{range .spec.containers[*]}{.name}{"\n"}{end}'
     ```
 
     結果:
 
-    ```bash
+    ```
     productpage
     istio-proxy
     ```
 
 2. 查看 `productpage` 容器打印在 stdout 的日誌
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl logs pod/productpage-v1-797d845774-76f95 productpage --tail=10
     ```
 
@@ -1008,7 +1416,7 @@ Istio 能夠以多種操作方式和配置的格式為流量生成 **訪問日�
 
 3. 查看由 Istio 自動注入到 `productpage` Ｐod 裡頭的 Sidecar `istio-proxy` 容器打印在 stdout 的日誌
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     kubectl logs pod/productpage-v1-797d845774-76f95 istio-proxy --tail=10
     ```
 
@@ -1027,7 +1435,7 @@ Istio 能夠以多種操作方式和配置的格式為流量生成 **訪問日�
     [2022-11-10T02:05:11.027Z] "GET /productpage HTTP/1.1" 200 - via_upstream - "-" 0 4294 55 54 "10.42.1.1" "curl/7.81.0" "93ef3bcc-c560-94ff-a014-b8ce3088af65" "172.23.0.2" "10.42.1.6:9080" inbound|9080|| 127.0.0.6:46603 10.42.1.6:9080 10.42.1.1:0 outbound_.9080_._.productpage.default.svc.cluster.local default
     ```
 
-每一個不同的開發的團隊都可能使用不同的手法與格式來寫日誌，這會導致運維除錯查找根因的複雜度。Istio 的 Sidecar 可定義一致的日誌格式來減輕日誌解析的問題。另外也可使用設定來讓 Istio 使用 json 的日誌格式便於　Central Logging System　的整合(比如　Grafana Loki)。
+每一個不同的開發的團隊都可能使用不同的手法與格式來寫日誌，這會導致運維除錯查找根因的複雜度。Istio 的 Sidecar 可定義一致的日誌格式來減輕日誌解析的問題。另外也可使用設定來讓 Istio 使用 json 的日誌格式便於 Central Logging System 的整合(比如 Grafana Loki)。
 
 ### Tracing (追蹤)
 
@@ -1077,11 +1485,11 @@ Jaeger 為 CNCF 開源專案，是一個 Tracing 平台，用來監控 microserv
 
     ![](./assets/jaeger-query.png)
 
-3. 點擊 7 或　8 Spans 的 Traces 紀錄
+3. 點擊 7 或 8 Spans 的 Traces 紀錄
 
     ![](./assets/tracing-8-spans.png)
 
-    從　span 的追蹤記錄所蒐集到的資訊，可以看到經過哪些 Microservices 元件，也能看出每個元件處理請求所花費的時間。
+    從 span 的追蹤記錄所蒐集到的資訊，可以看到經過哪些 Microservices 元件，也能看出每個元件處理請求所花費的時間。
 
     搭配 Bookinfo 架構圖，就可以了解元件的溝通順序為何。
 
@@ -1097,7 +1505,7 @@ Jaeger 為 CNCF 開源專案，是一個 Tracing 平台，用來監控 microserv
 - `Defense in depth` (深度防禦): 在現有的安全機制下提供更多層的防禦。
 - `Zero-trust network` (零信任網路): 在不安全的網路也能建立安全的解決方案。
 
-而 Istio 在　Security 的實作方法，是在 Control Plane 管理 Certificate、認證策略等安全功能，並讓 Data Plane 中的 Sidecar 保護點對點之間的流量，以達成保護整個 Service Mesh 網路。
+而 Istio 在 Security 的實作方法，是在 Control Plane 管理 Certificate、認證策略等安全功能，並讓 Data Plane 中的 Sidecar 保護點對點之間的流量，以達成保護整個 Service Mesh 網路。
 
 ![](./assets/arch-sec.svg)
 
@@ -1121,19 +1529,19 @@ Jaeger 為 CNCF 開源專案，是一個 Tracing 平台，用來監控 microserv
 
 在 Istio 如何實現 Security 功能，其實在安裝時系統就會預設將 mTLS 功能打開，不需要修改程式碼或做額外設定下，也能在不安全的網路中提升應用程式的安全性。
 
-## 步驟 03 - Lab環境清理
+## 步驟 03 - Lab 環境清理
 
 結束對 Bookinfo 示例應用的體驗之後，就可以使用下面的命令來完成應用的刪除和清理了：
 
 1. 刪除路由規則，並銷毀應用的 Pod
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     samples/bookinfo/platform/kube/cleanup.sh
     ```
 
     結果:
 
-    ```bash
+    ```
     namespace ? [default] 
     using NAMESPACE=default
     destinationrule.networking.istio.io "productpage" deleted
@@ -1167,7 +1575,7 @@ Jaeger 為 CNCF 開源專案，是一個 Tracing 平台，用來監控 microserv
 
 2. 確認應用已經關停
 
-    ```bash
+    ```bash title="執行下列命令  >_"
     $ kubectl get virtualservices   #-- there should be no virtual services
     $ kubectl get destinationrules  #-- there should be no destination rules
     $ kubectl get gateway           #-- there should be no gateway

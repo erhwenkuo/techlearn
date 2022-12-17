@@ -42,13 +42,15 @@ k3d cluster create  --servers 1 --agents 1 --api-port 6443 \
 1. 安裝 `Istio base chart`，它包含了 Istio 控制平面用到的集群範圍的資源:
 
     ```bash title="執行下列命令  >_"
-    helm upgrade --install --create-namespace --namespace istio-system istio-base istio/base
+    helm upgrade --install --create-namespace --namespace istio-system \
+    istio-base istio/base
     ```
 
 3. 安裝 Istio discovery chart，它用於部署 istiod 服務:
 
     ```bash title="執行下列命令  >_"
-    helm upgrade --install --create-namespace --namespace istio-system istiod istio/istiod
+    helm upgrade --install --create-namespace --namespace istio-system \
+    istiod istio/istiod
     ```
 
 4. (可選項) 安裝 Istio 的入站網關:
@@ -56,7 +58,12 @@ k3d cluster create  --servers 1 --agents 1 --api-port 6443 \
     ```bash title="執行下列命令  >_"
     $ kubectl create namespace istio-ingress
     $ kubectl label namespace istio-ingress istio-injection=enabled
-    $ helm install istio-ingressgateway istio/gateway -n istio-ingress --wait
+    $ helm install istio-ingressgateway istio/gateway -n istio-ingress
+    ```
+
+    ```bash title="執行下列命令  >_"
+    helm upgrade --install --create-namespace --namespace istio-ingress \
+    istio-ingressgateway istio/gateway
     ```
 
     !!! info
@@ -144,7 +151,7 @@ prometheus:
 使用 Helm 在命名空間監控中部署 kube-stack-prometheus chart：
 
 ```bash title="執行下列命令  >_"
-helm upgrade --install --wait --create-namespace --namespace monitoring  \
+helm upgrade --install --create-namespace --namespace monitoring  \
 kube-stack-prometheus prometheus-community/kube-prometheus-stack \
 --values kube-stack-prometheus-values.yaml
 ```
@@ -232,6 +239,8 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.16/samp
 
 - [Awesome Prometheus alerts](https://awesome-prometheus-alerts.grep.to/rules#istio)
 
+![](./assets/awesome-alert-rules.png)
+
 #### 整合 Istio 與 Grafana
 
 接著讓我們來在 Grafana 中創建 Istio 相關的 dashboard。
@@ -252,7 +261,6 @@ kubectl apply -f istio-grafana-dashboards.yaml
 configmap/istio-grafana-dashboards created
 configmap/istio-services-grafana-dashboards created
 ```
-
 
 到這個階段我們的 Prometheus 和 Grafana 監控堆棧與 Istio 的整合已經準備就緒！
 
@@ -527,7 +535,8 @@ cd istio
 3. 驗證到目前為止的設置一切正常。運行以下命令，通過檢查響應中的頁面標題來查看應用程序是否在集群內運行並提供 HTML 頁面：
 
     ```bash title="執行下列命令  >_"
-    kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
+    kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" \
+    -c ratings -- curl -sS productpage:9080/productpage | grep -o "<title>.*</title>"
     ```
 
 ### 對外部暴露應用程序
@@ -595,22 +604,22 @@ spec:
 執行以下命令來確定您的 Kubernetes 集群是否在支持外部負載均衡器的環境中運行：
 
 ```bash
-kubectl get svc istio-ingress -n istio-ingress
+kubectl get svc istio-ingressgateway -n istio-ingress
 ```
 
 結果：
 
 ```bash
-NAME            TYPE           CLUSTER-IP    EXTERNAL-IP             PORT(S)                                      AGE
-istio-ingress   LoadBalancer   10.43.64.89   172.31.0.2,172.31.0.3   15021:31631/TCP,80:31581/TCP,443:31484/TCP   4h59m
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                 PORT(S)                                      AGE
+istio-ingressgateway   LoadBalancer   10.43.253.85   192.168.16.2,192.168.16.3   15021:30923/TCP,80:31629/TCP,443:30123/TCP   11m
 ```
 
-舉例來說在範例中的 Kubernetes 環境裡頭所暴露出來的外部 IP 是 `172.31.0.2` 與 `172.31.0.3`。
+舉例來說在範例中的 Kubernetes 環境裡頭所暴露出來的外部 IP 是 `192.168.16.2` 與 `192.168.16.3`。
 
 為了方便後續的驗證，使用環境變數把 `GATEWAY_URL` 暴露出來:
 
 ```bash
-export GATEWAY_URL=172.31.0.2:80
+export GATEWAY_URL=192.168.16.2:80
 ```
 
 使用瀏覽器來鍵入下列的 Url:
@@ -619,7 +628,7 @@ export GATEWAY_URL=172.31.0.2:80
     - http://localhost:8080/productpage
 
 - 直接通過本機的 LoadBalancer 的 IP
-    - http://172.31.0.2/productpage
+    - http://192.168.16.2/productpage
 
 
 ![](./assets/bookinfo-productpage.png)
@@ -631,14 +640,14 @@ export GATEWAY_URL=172.31.0.2:80
 === "通過 K3D 的 Gateway (本機: 8080 << K3D cluster gateway: 80)"
 
     ```bash
-    for i in $(seq 1 100); do curl -s -o /dev/null "http://localhost:8080/productpage"; done
+    for i in $(seq 1 10000); do curl -s -o /dev/null "http://localhost:8080/productpage"; done
     ```
 
 
 === "直接通過本機的 LoadBalancer 的 IP"
 
     ```bash
-    for i in $(seq 1 100); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
+    for i in $(seq 1 10000); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
     ```
 
 !!! info

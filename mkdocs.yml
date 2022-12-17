@@ -341,10 +341,13 @@ nav:
     - 簡介: istio/index.md
     - 安裝: 
       - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
+      - 更多指南:
+        - 安裝配置文件: istio/setup/additional-setup/config-profiles.md
     - 示例:
       - Bookinfo 應用: istio/examples/bookinfo.md
     - 參考:
       - 應用程序部署策略: istio/reference/deployment-strategies.md
+      - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
       
   - Vault:
     - Docs:
