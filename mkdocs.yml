@@ -348,7 +348,17 @@ nav:
     - 參考:
       - 應用程序部署策略: istio/reference/deployment-strategies.md
       - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
-      
+  - Kubeflow:
+    - 組件:
+      - Multi-Tenancy:
+        - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
+        - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
+  - Seldon:
+    - 簡介: seldon/index.md
+    - 概念:
+      - Seldon 核心組件概述: seldon/concepts/overview.md
+    - 示例:
+      - 快速入門指南: seldon/examples/quickstart.md
   - Vault:
     - Docs:
       - Auth Methods:

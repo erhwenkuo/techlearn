@@ -4,7 +4,7 @@
 
 請跟隨本指南一起，使用 Helm 安裝、配置、並深入評估 Istio 網格系統。本指南用到的 Helm chart、以及使用 Istioctl、Operator 安裝 Istio 時用到的 chart，它們都是相同的底層 chart。
 
-## 步驟 01 - 安裝
+## 步驟 01 - 環境安裝
 
 ### 先決條件
 
@@ -30,7 +30,6 @@ k3d cluster create  --servers 1 --agents 1 --api-port 6443 \
 
 * `--disable=traefik@server:0` 安裝 Istio 後禁用 Traefik 負載均衡器
 * `--agents-memory=8G` 安裝 Istio 的額外增加一些內存
-* `local-cluster` k3d 集群名稱
 
 ![](./assets/k3d-istio-on-laptop-1024x615.png)
 
