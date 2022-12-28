@@ -141,6 +141,8 @@ nav:
           - 使用 K3D 設置 Kubernetes 集群: kubernetes/01-getting-started/learning-env/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
         - Minikube:
           - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/01-getting-started/learning-env/minikube/how-to-install-minikube-on-ubuntu.md
+      - 最佳實踐:
+        - PKI 證書和要求: kubernetes/01-getting-started/best-practices/certificates.md
     - Concepts:
       - 概述:
         - K8S 介詔: kubernetes/02-concepts/01-overview/k8s-intro.md
@@ -169,6 +171,13 @@ nav:
           - 簡介: kubernetes/03-tasks/debug/debug-application/index.md
         - 集群故障排查:
           - 簡介: kubernetes/03-tasks/debug/debug-cluster/index.md
+      - TLS:
+        - 管理集群中的 TLS 認證: kubernetes/03-tasks/tls/managing-tls-in-a-cluster.md
+        - 手動輪換 CA 證書: kubernetes/03-tasks/tls/certificate-rotation.md
+        - 其它參考:
+          - Openssl 證書生成命令大全: kubernetes/03-tasks/tls/reference/openssl-certificate.md
+          - 帶 IP 地址的自簽 SSL/TLS: kubernetes/03-tasks/tls/reference/self-signed-cert.md
+          - 使用 mkcert 製作本機憑證: kubernetes/03-tasks/tls/reference/mkcert-quickstart.md
     - Autoscale:
       - Kubernetes 自動縮放: kubernetes/autoscale/kubernetes-autoscaling.md
       - Kubernetes 垂直自動縮放: kubernetes/autoscale/kubernetes-vpa.md
