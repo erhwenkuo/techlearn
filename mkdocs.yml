@@ -139,6 +139,7 @@ nav:
       - 學習環境:
         - K3D:
           - 使用 K3D 設置 Kubernetes 集群: kubernetes/01-getting-started/learning-env/k3d/k3s-kubernetes-cluster-setup-with-k3d.md
+          - K3D + Nginx Ingress 控制器: kubernetes/01-getting-started/learning-env/k3d/k3d-with-nginx-ingresscontroller.md
         - Minikube:
           - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/01-getting-started/learning-env/minikube/how-to-install-minikube-on-ubuntu.md
       - 最佳實踐:
@@ -322,13 +323,17 @@ nav:
       - 示例:
         - Hot ROD 應用: grafana/tempo/hotrod.md
   - ArgoCD:
-    - ArgoCD 教程:
-      - ArgoCD 教程簡介: argocd/tutorial/index.md
-      - ArgoCD 安裝設定: argocd/tutorial/01-setup.md
-      - ArgoCD 入門: argocd/tutorial/02-getting_started.md
-      - Kustomize: argocd/tutorial/03-kustomize.md
-      - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
-      - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
+    - 概念:
+      - Argo CD 是什麼？: argocd/concepts/what-is-argocd.md
+    - 入門:
+      - Getting Started: argocd/setup/getting_started.md
+      - 手把手教程:
+        - ArgoCD 教程簡介: argocd/tutorial/index.md
+        - ArgoCD 安裝設定: argocd/tutorial/01-setup.md
+        - ArgoCD 入門: argocd/tutorial/02-getting_started.md
+        - Kustomize: argocd/tutorial/03-kustomize.md
+        - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
+        - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
     - ArgoCD 插件:
       - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
     - ApplicationSet Controller:
