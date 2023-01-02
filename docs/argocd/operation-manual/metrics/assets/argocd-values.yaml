@@ -1,0 +1,105 @@
+## Argo CD server
+server:
+  extraArgs:
+  # -- Run server without TLS
+  - --insecure
+  ingress:
+    # -- Enable an ingress resource for the Argo CD server
+    enabled: true
+    # -- List of ingress hosts
+    ## Argo Ingress.
+    ## Hostnames must be provided if Ingress is enabled.
+    ## Secrets must be manually created in the namespace
+    hosts: 
+      - argocd.example.it
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    service:
+      # -- Metrics service port
+      servicePort: 8083
+      # -- Metrics service port name
+      portName: http-metrics
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+
+## Repo Server
+repoServer:
+  ## Repo server metrics service configuration
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    service:
+      # -- Metrics service port
+      servicePort: 8084
+      # -- Metrics service port name
+      portName: http-metrics
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+
+## Application controller
+controller:
+  ## Application controller metrics configuration
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    applicationLabels:
+      # -- Enables additional labels in argocd_app_labels metric
+      enabled: true
+    service:
+      # -- Metrics service port
+      servicePort: 8082
+      # -- Metrics service port name
+      portName: http-metrics
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true
+    rules:
+      # -- Deploy a PrometheusRule for the application controller
+      enabled: true
+      # -- PrometheusRule.Spec for the application controller
+      spec:
+       - alert: ArgoAppMissing
+         expr: |
+           absent(argocd_app_info) == 1
+         for: 15m
+         labels:
+           severity: critical
+         annotations:
+           summary: "[Argo CD] No reported applications"
+           description: >
+             Argo CD has not reported any applications data for the past 15 minutes which
+             means that it must be down or not functioning properly.  This needs to be
+             resolved for this cloud to continue to maintain state.
+       - alert: ArgoAppNotSynced
+         expr: |
+           argocd_app_info{sync_status!="Synced"} == 1
+         for: 12h
+         labels:
+           severity: warning
+         annotations:
+           summary: "[{{`{{$labels.name}}`}}] Application not synchronized"
+           description: >
+             The application [{{`{{$labels.name}}`}} has not been synchronized for over
+             12 hours which means that the state of this cloud has drifted away from the
+             state inside Git.
+      selector:
+        prometheus: kube-prometheus
+      namespace: monitoring
+
+## ApplicationSet controller
+applicationSet:
+  ## Metrics service configuration
+  metrics:
+    # -- Deploy metrics service
+    enabled: true
+    service:
+      # -- Metrics service port
+      servicePort: 8085
+      # -- Metrics service port name
+      portName: http-metrics
+    serviceMonitor:
+      # -- Enable a prometheus ServiceMonitor
+      enabled: true

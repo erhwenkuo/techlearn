@@ -334,6 +334,10 @@ nav:
         - Kustomize: argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
         - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
+    - 維運:
+      - 指標 Metrics: 
+        - 說明: argocd/operation-manual/metrics/index.md
+        - 可觀測性(metrics)實戰: argocd/operation-manual/metrics/metrics-argocd-integration.md
     - ArgoCD 插件:
       - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
     - ApplicationSet Controller:
