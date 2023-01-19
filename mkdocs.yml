@@ -142,6 +142,9 @@ nav:
           - K3D + Nginx Ingress 控制器: kubernetes/01-getting-started/learning-env/k3d/k3d-with-nginx-ingresscontroller.md
         - Minikube:
           - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/01-getting-started/learning-env/minikube/how-to-install-minikube-on-ubuntu.md
+        - Nvidia:
+          - Nvidia Container Toolkit:
+            - 簡介: kubernetes/01-getting-started/learning-env/nvidia/nvidia-container-toolkit/index.md
       - 最佳實踐:
         - PKI 證書和要求: kubernetes/01-getting-started/best-practices/certificates.md
     - Concepts:
@@ -149,12 +152,17 @@ nav:
         - K8S 介詔: kubernetes/02-concepts/01-overview/k8s-intro.md
       - Kubernetes 架構:
         - K8S 架構解析: kubernetes/02-concepts/02-cluster-architecture/k8s-architecture.md
+        - Container Runtime 接口(CRI): 
+          - 簡介: kubernetes/02-concepts/02-cluster-architecture/cri/index.md
+          - Containerd:
+            - 如何在 Ubuntu 22.04 上安裝 Containerd: kubernetes/02-concepts/02-cluster-architecture/cri/containerd/containerd-install.md
       - Serivce, 負載均衡與網路:
         - K8S 網絡通信介紹: kubernetes/02-concepts/05-svc-lb-network/k8s-network-intro.md
         - 應用程序向外部公開服務手法: kubernetes/02-concepts/05-svc-lb-network/app-service-type.md
         - 在 K3D 設定 Metallb: kubernetes/02-concepts/05-svc-lb-network/k3d-metallb-starter-kit.md
       - 存儲:
         - 簡介: kubernetes/02-concepts/06-storage/index.md
+        - 在 Pod 和本機進行文件複製: kubernetes/02-concepts/06-storage/kubectl-cp-example.md
       - 配置:
         - 配置最佳實踐: kubernetes/02-concepts/07-configuration/overview.md
         - ConfigMap: kubernetes/02-concepts/07-configuration/configmap.md
@@ -334,6 +342,9 @@ nav:
         - Kustomize: argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
         - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
+    - 同步選項:
+      - 簡介: argocd
+
     - 維運:
       - 指標 Metrics: 
         - 說明: argocd/operation-manual/metrics/index.md
@@ -367,6 +378,9 @@ nav:
       - 應用程序部署策略: istio/reference/deployment-strategies.md
       - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
   - Kubeflow:
+    - 環境:
+      - RKE2:
+        - 在 RKE2 Kubernetes 集群上安裝 Nvidia GPU Operator: kubeflow/env/rke2/rke2-nvidia-gpu-operator.md
     - 組件:
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
@@ -376,6 +390,7 @@ nav:
     - 概念:
       - Seldon 核心組件概述: seldon/concepts/overview.md
     - 示例:
+      - 學習環境: seldon/env/jupyter-hub.md
       - 快速入門指南: seldon/examples/quickstart.md
   - Vault:
     - Docs:
