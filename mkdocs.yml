@@ -134,6 +134,12 @@ nav:
         - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
         - 儀器化 Springboot 應用程序: coding/java/backend/metric/web-api-metric.md
         - 結構化日誌 Sprintboot 應用程序: coding/java/backend/logging/web-api-logging.md
+  - MLOps:
+    - Getting started:
+      - 學習環境:
+        - Kubeadm:
+          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/kubeadm/k8s-kubeadm-containerd-gpu.md
+
   - Kubernetes:
     - Getting started:
       - 學習環境:
