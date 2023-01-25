@@ -549,7 +549,7 @@ kubeadm join 192.168.50.195:6443 --token 8wj7gj.akbbtwr60x7e5bhx \
 mkdir -p $HOME/.kube
 
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-
+sudo chmod 600 ~/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 export KUBECONFIG=$HOME/.kube/config
@@ -763,15 +763,9 @@ helm install gpu-operator \
           timeoutSeconds: 300
           deleteEmptyDir: false
         # options for node drain (`kubectl drain`) before the driver reload
-        # this is required only if default GPU pod deletions done by the operator
-        # are not sufficient to re-install the driver
-        drain:
-          enable: false
-          force: false
-          podSelector: ""
-          # It's recommended to set a timeout to avoid infinite drain in case non-fatal error keeps happening on retries
-          timeoutSeconds: 300
-          deleteEmptyDir: false
+        # this is required only if default GPU pod deletions done by the operatohelm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
+   && helm repo update
+
       manager:
         image: k8s-driver-manager
         repository: nvcr.io/nvidia/cloud-native

@@ -139,7 +139,8 @@ nav:
       - 學習環境:
         - Kubeadm:
           - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/kubeadm/k8s-kubeadm-containerd-gpu.md
-
+        - Rancher RKE2/K3S:
+          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/rancher/k8s-rke2-containerd-gpu.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
