@@ -1,45 +1,52 @@
-# 基於 containerd Runtime 在 Kubernetes 上部署 Nvidia GPU Operator
+# 基於 containerd 在 Kubernetes 上部署 Nvidia GPU Operator
 
 原文: [Tutorial: Deploy the Nvidia GPU Operator on Kubernetes Based on containerd Runtime](https://thenewstack.io/tutorial-deploy-the-nvidia-gpu-operator-on-kubernetes-based-on-containerd-runtime/)
-
-參考: [Using kubeadm to Create a Cluster | Installation & Tutorial](https://www.containiq.com/post/kubeadm)
-
-以下是安裝 [containerd](https://containerd.io/)、Kubernetes 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 的步驟。在安裝即將結束時，我們將通過在 pod 中運行流行的 nvidia-smi 命令來測試 GPU 訪問。
 
 ![](./assets/gpu-operator-containerd-support.png)
 
 本教程將探討在 Kubernetes 集群上使用基於 [containerd](https://containerd.io/) 運行時而不是 Docker 引擎的 GPU 主機安裝 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 的步驟。
 
-在典型的基於 GPU 的 Kubernetes 安裝中，每個節點都需要配置正確版本的 Nvidia 顯卡驅動程序、CUDA runtime 和 cuDNN 函式庫，然後是容器 runtime，例如 Docker Engine、containerd、podman 或 CRI-O。然後，部署 Nvidia Container Toolkit 以提供對容器化應用程序的 GPU 訪問。最後，安裝 Kubernetes，它將與選定的容器 runtime 交互以管理工作負載的生命週期。
 
-Nvidia GPU Operator 顯著簡化了流程，無需安裝驅動程序、CUDA runtime、cuDNN 函式庫或 Container Toolkit。它可以安裝在任何滿足特定硬件和軟件要求的 Kubernetes 集群上。
+## 步驟 01 - 環境安裝
 
-以下是安裝 containerd、Kubernetes 和 Nvidia GPU Operator 的步驟。在安裝即將結束時，我們將通過在 pod 中運行流行的 `nvidia-smi` 命令來測試 GPU 訪問。
+在典型的基於 GPU 的 Kubernetes 安裝中，每個節點都需要配置正確版本的 Nvidia 顯卡驅動程序、CUDA runtime 和 cuDNN 函式庫，然後是容器 runtime，例如 Docker Engine、containerd、podman 或 CRI-O。
 
-環境:
+然後，部署 Nvidia Container Toolkit 以提供對容器化應用程序的 GPU 訪問。最後，安裝 Kubernetes，它將與選定的容器 runtime 交互以管理工作負載的生命週期。
+
+Nvidia GPU Operator 顯著簡化了相關的配置與安裝流程，無需安裝驅動程序、CUDA runtime、cuDNN 函式庫或 Container Toolkit。它可以安裝在任何滿足特定硬件和軟件要求的 Kubernetes 集群上。
+
+以下是安裝 containerd、Kubernetes 和 Nvidia GPU Operator 的步驟。在安裝結束後，我們將通過在 pod 中運行流行的 `nvidia-smi` 命令來測試對 GPU 的訪問。
+
+**先決條件 (一台配備著 Nvidia GPU 的機器):**
 
 - Operating system: `Ubuntu 20.04 LTS`
-- GPU: `Nvidia GeForce MX150`
+- GPU: `Nvidia GeForce MX150` (Nvidia GPU 顯卡)
 
-## Step 1: 安裝 nvidia drivers
+### Step 1: 安裝 nvidia drivers
 
-!!! info
-    根據 Nvidia GPU Operator 的內容，operator 應該可自動幫每一個 Kubernetes 節點自動配置 GPU 的 Driver。然而在驗證的過程會發現 Ubuntu 的機器會在安裝完 Nvidia GPU Operator 之後一直重覆 reboot。因此在本教程中是先手動安裝 Nvidia GPU Driver 在 Ubuntu 的機器壬
+!!! tip
+    根據 Nvidia GPU Operator 的內容，operator 應該可自動幫每一個 Kubernetes 節點自動配置 GPU 的 Driver。
+    
+    然而在驗證的過程會發現 Ubuntu 的機器會在安裝完 Nvidia GPU Operator 之後一直重覆 reboot。
+    
+    排查之後的結果因該是 GPU Operator 在自動安裝 GPU Driver 後所發生的現象，查找相關 Githut 與 Google 之後尚未找出根因，因此在本教程中是先手動安裝 Nvidia GPU Driver 在 Ubuntu 的機器上。
 
 
-我們可以先使用 `apt` 搜索可用的驅動程序：
+我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程序：
 
 ```bash
+sudo apt update
+
 sudo apt search nvidia-driver
 ```
 
-在撰寫本文時，最新的可用驅動程序版本是 525，所以讓我們繼續安裝這個版本：
+在撰寫本文時，最新的可用驅動程序版本是 `525`，所以讓我們安裝這個版本：
 
 ```bash
 sudo apt install nvidia-driver-525 nvidia-dkms-525
 ```
 
-重新啟動:
+重新啟動 Ubuntu 的機器:
 
 ```bash
 sudo shutdown now -r
@@ -48,7 +55,7 @@ sudo shutdown now -r
 驗證 nvidia driver 的安裝:
 
 
-```bash
+```
 $ nvidia-smi
 
 Fri Jan 20 01:05:54 2023       
@@ -73,16 +80,16 @@ Fri Jan 20 01:05:54 2023
 +-----------------------------------------------------------------------------+
 ```
 
-## Step 2: 安裝 Containerd Runtime
+### Step 2: 安裝 containerd
 
-加載所需的模塊並確保它們在重新啟動期間保持不變。
+加載所需的 kernel 模組並確保它們在作業系統重新啟動後設定保持不變。
 
 ```bash
 sudo modprobe overlay
 sudo modprobe br_netfilter
 ```
 
-您還可以確保這些是持久的：
+確保 kernel 模組設定是持久的：
 
 ```bash
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
@@ -91,7 +98,7 @@ br_netfilter
 EOF
 ```
 
-我們打算將 containerd 用作 Kubernetes 的 CRI 運行 runtime，配置 sysctl 參數:
+將 `containerd` 用作 Kubernetes 的 CRI 運行 runtime，配置 `sysctl` 參數:
 
 ```bash
 cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
@@ -119,7 +126,7 @@ sudo apt-get install -y \
     lsb-release
 ```
 
-添加存儲庫 GPG 密鑰和存儲庫:
+添加 docker 存儲庫 GPG 密鑰和存儲庫資訊:
 
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -129,7 +136,7 @@ echo \
 $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 
-最後，安裝 containerd runtime。
+最後，安裝 `containerd` runtime。
 
 ```bash
 sudo apt-get update \
@@ -139,31 +146,25 @@ sudo apt-get update
 sudo apt-get install containerd -y
 ```
 
-讓我們創建預設的 `containerd` 配置文件。
+使用下列命令來創建預設的 `containerd` 配置文件:
 
 ```bash
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 ```
 
-將 `runc` 的 cgroup 驅動程序設置為 `systemd`，這是 kubelet 所必需的。
+接著需要將 `runc` 的 cgroup 驅動程序設置為 `systemd` (這是 `kubelet` 所必需的配置)。
 
+使用文字編輯器打開 `/etc/containerd/config.toml`，在 `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]` 部分中，添加或修改以下內容:
 
-在 `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]` 部分中，添加以下內容:
-
-```toml title="/etc/containerd/config.toml"
+```toml title="/etc/containerd/config.toml" hl_lines="2"
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
   SystemdCgroup = true
 ```
 
-```bash
-sudo cat /etc/containerd/config.toml
-```
+這個 `config.toml` 看起來應該是這樣的：
 
-
-你的 `config.toml` 看起來應該是這樣的：
-
-```toml title="/etc/containerd/config.toml" hl_lines="112" 
+```toml title="/etc/containerd/config.toml" hl_lines="105" 
 disabled_plugins = []
 imports = []
 oom_score = 0
@@ -363,9 +364,10 @@ version = 2
   uid = 0
 ```
 
-下載範例: [config.toml](./assets/config.toml)
+!!! info
+    下載範例: [config.toml](./assets/config.toml)
 
-使用新配置重新啟動 `containerd`。
+重新啟動 `containerd`。
 
 ```bash
 sudo systemctl restart containerd
@@ -402,7 +404,7 @@ Jan 19 19:57:01 dxlab-nb-00 containerd[7694]: time="2023-01-19T19:57:01.16066494
 Jan 19 19:57:01 dxlab-nb-00 containerd[7694]: time="2023-01-19T19:57:01.160671816-05:00" level=info msg="containerd successfully booted in 0.027967s"
 ```
 
-## Step 2: Install Kubernetes 1.26.1
+### Step 3: 安裝 Kubernetes
 
 首先禁用 swap memory。
 
@@ -417,22 +419,34 @@ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo apt-get update
 
 sudo apt-get install -y apt-transport-https
+```
 
-# Download the Google Cloud public signing key
+下載 Google Cloud 公共簽名密鑰:
+
+```bash
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+```
 
-# Add the Kubernetes apt repository using the following command
+使用以下命令添加 Kubernetes apt 存儲庫:
+
+```bash
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+```
 
-sudo apt update \
-  && sudo apt install -y kubelet kubeadm kubectl \
-  && sudo apt-mark hold kubelet kubeadm kubectl
+安裝相關 cli:
+
+```bash
+sudo apt update
+
+sudo apt install -y kubelet kubeadm kubectl
+
+sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 !!! tip
     `apt-mark hold` 命令是 optional 的，但強烈推薦。這命令將阻止更新這些特定宣告的包，直到您使用以下命令取消保留它們。
 
-讓我們初始化控制平面。
+讓我們初始化 Kubernetes 控制平面。
 
 ```bash
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 \
@@ -441,22 +455,19 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 \
   --node-name dxlab-nb-00
 ```
 
-在幕後，`kubeadm init` 已經根據指定的 flags 配置了控制平面節點。下面，我們將討論它們中的每一個。
+`kubeadm init` 配置說明:
 
 - `--apiserver-advertise-address`: 這是 Kubernetes API 服務器將公佈其正在偵聽的 IP 地址。如果未指定，將使用默認網絡接口。在此示例中，使用主節點的 IP 地址 `192.168.50.195`。
-
-- `--apiserver-cert-extra-sans`: 此標誌是 optional 的，用於為 API 服務器使用的 TLS 證書提供額外的主題備用名稱 (SAN)。值得注意的是，該字符串的值既可以是 IP 地址，也可以是 DNS 名稱。
-
-- `--pod-network-cidr`: 這是最重要的 flag 之一，因為它指示 pod 網絡的 IP 地址範圍。這允許控制平面節點自動為每個節點分配 CIDR。本例中使用的範圍 `192.168.0.0/16` 與 Calico 網絡插件有關，稍後將進一步討論。
-
+- `--apiserver-cert-extra-sans`: 此旗標是 optional 的，用於為 API 服務器使用的 TLS 證書提供額外的主題備用名稱 (SAN)。值得注意的是，該字符串的值既可以是 IP 地址，也可以是 DNS 名稱。
+- `--pod-network-cidr`: 這是最重要的旗標之一，因為它指示 pod 網絡的 IP 地址範圍。這允許控制平面節點自動為每個節點分配 CIDR。本例中使用的範圍 `192.168.0.0/16` 與 Calico 網絡插件有關，稍後將進一步討論。
 - `--node-name`: 顧名思義，這是該節點的名稱。
 
 !!! info
-    確保將 IP 地址 `10.0.0.54` 替換為本地主機的 IP 地址。
+    確保將 IP 地址 `192.168.50.195` 替換為本地主機的 IP 地址，並修改 `--node-name`。
 
 結果:
 
-```bash
+```
 [init] Using Kubernetes version: v1.26.1
 [preflight] Running pre-flight checks
 [preflight] Pulling images required for setting up a Kubernetes cluster
@@ -530,28 +541,35 @@ kubeadm join 192.168.50.195:6443 --token 8wj7gj.akbbtwr60x7e5bhx \
 	--discovery-token-ca-cert-hash sha256:a58acdf439e5da5ddc881c572c4ffeca8e8d92bca120b8f221d902fd39193699 
 ```
 
-### 配置 kubectl
+#### 配置 kubectl
 
-`kubectl` 是一個命令行工具，用於在集群上執行操作。在繼續之前，您需要配置 `kubectl`。為此，請從您的控制平面節點運行以下命令:
+`kubectl` 是一個命令行工具，用於在集群上執行操作。在繼續下面的操作之前，您需要配置 `kubectl`。為此，請從您的控制平面節點運行以下命令:
 
 ```bash
-mkdir -p $HOME/.kube \
-&& sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config \
-&& sudo chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p $HOME/.kube
+
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 export KUBECONFIG=$HOME/.kube/config
+
 echo "export KUBECONFIG=$HOME/.kube/config" | tee -a ~/.bashrc
+
 ```
 
-由於我們只有一個節點，所以讓我們刪除污點以啟用調度。
+由於在本教程裡我們只有一個節點，所以讓我們刪除污點以便 Kubernetes 可把工作負載調度到本節點。
 
 ```bash
 kubectl taint nodes dxlab-nb-00 node-role.kubernetes.io/control-plane:NoSchedule-
-````
+```
 
-### 安裝 Calico CNI
+!!! info
+    詳細說明: [Control plane node isolation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation)
 
-在大多數實現中，使用容器網絡接口 (CNI) 以便 pod 可以直接接受流量，從而盡可能降低網絡延遲。
+#### 安裝 Calico CNI
+
+在 Kubernetes 集群中必須部署一個基於 Pod 網絡插件的 容器網絡接口 (CNI)，以便 Pod 可以相互通信。在安裝網絡之前，集群 DNS (CoreDNS) 將不會啟動。
 
 此示例中使用了 [Calico](https://projectcalico.docs.tigera.io/networking/advertise-service-ips)，因為它是當前可用的功能最豐富的 CNI 之一。但是你也可在 Kubernetes 中安裝其他 CNI 兼容的套件例如 Flannel。請記住，某些 CNI 需要特定的 `--pod-network-cidr` 值。您可以在文檔中找到有關 Kubernetes 網絡插件的更多詳細信息。
 
@@ -561,7 +579,7 @@ kubectl taint nodes dxlab-nb-00 node-role.kubernetes.io/control-plane:NoSchedule
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 ```
 
-在你可以使用集群之前，你必須等待 Calico 所需的 pod 下載完成。要驗證安裝是否成功，請運行以下命令：
+在你可以使用集群之前，你必須等待 Calico 所需的 pod 下載完成。要驗證安裝是否成功，請運行以下命令並檢查節點的狀態是否 `Ready`：
 
 ```bash
 kubectl get nodes
@@ -574,11 +592,15 @@ NAME          STATUS   ROLES           AGE   VERSION
 dxlab-nb-00   Ready    control-plane   18m   v1.26.1
 ```
 
-## Step 3 – 安裝 Nvidia GPU Operator
+### Step 4: 安裝 gpu operator
+
+詳細的 Nvidia GPU Operator 說明請見: [Nvidia GPU Operator 官網](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/overview.html)
 
 首先安裝 Helm3 的二進製文件。
 
 ```bash
+sudo apt install git -y
+
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 
 chmod 700 get_helm.sh
@@ -593,10 +615,10 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
    && helm repo update
 ```
 
-由於我們使用的是 `containerd` 容器 runtime，因此我們將其設置為默認值。
+由於我們使用的是 `containerd` 容器 runtime，因此我們將其設置為默認值並且宣告不自動安裝 Driver。
 
 
-```bash hl_lines="4"
+```bash hl_lines="4 5"
 helm install gpu-operator \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator \
@@ -604,428 +626,430 @@ helm install gpu-operator \
      --set driver.enabled=false
 ```
 
-從[github.com/NVIDIA/gpu-operator](https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml) 可了解預默認的設定值。
+??? info
 
-```yaml hl_lines="58"
-# Default values for gpu-operator.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+    從[github.com/NVIDIA/gpu-operator](https://github.com/NVIDIA/gpu-operator/blob/master/deployments/gpu-operator/values.yaml) 可了解預默認的設定值。
 
-platform:
-  openshift: false
+    ```yaml hl_lines="58"
+    # Default values for gpu-operator.
+    # This is a YAML-formatted file.
+    # Declare variables to be passed into your templates.
 
-nfd:
-  enabled: true
+    platform:
+      openshift: false
 
-psp:
-  enabled: false
+    nfd:
+      enabled: true
 
-sandboxWorkloads:
-  enabled: false
-  defaultWorkload: "container"
+    psp:
+      enabled: false
 
-daemonsets:
-  labels: {}
-  annotations: {}
-  priorityClassName: system-node-critical
-  tolerations:
-  - key: nvidia.com/gpu
-    operator: Exists
-    effect: NoSchedule
-  # configuration for controlling update strategy("OnDelete" or "RollingUpdate") of GPU Operands
-  # note that driver Daemonset is always set with OnDelete to avoid unintended disruptions
-  updateStrategy: "RollingUpdate"
-  # configuration for controlling rolling update of GPU Operands
-  rollingUpdate:
-    # maximum number of nodes to simultaneously apply pod updates on.
-    # can be specified either as number or percentage of nodes. Default 1.
-    maxUnavailable: "1"
+    sandboxWorkloads:
+      enabled: false
+      defaultWorkload: "container"
 
-validator:
-  repository: nvcr.io/nvidia/cloud-native
-  image: gpu-operator-validator
-  # If version is not specified, then default is to use chart.AppVersion
-  #version: ""
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  args: []
-  resources: {}
-  plugin:
-    env:
-      - name: WITH_WORKLOAD
-        value: "true"
+    daemonsets:
+      labels: {}
+      annotations: {}
+      priorityClassName: system-node-critical
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+      # configuration for controlling update strategy("OnDelete" or "RollingUpdate") of GPU Operands
+      # note that driver Daemonset is always set with OnDelete to avoid unintended disruptions
+      updateStrategy: "RollingUpdate"
+      # configuration for controlling rolling update of GPU Operands
+      rollingUpdate:
+        # maximum number of nodes to simultaneously apply pod updates on.
+        # can be specified either as number or percentage of nodes. Default 1.
+        maxUnavailable: "1"
 
-operator:
-  repository: nvcr.io/nvidia
-  image: gpu-operator
-  # If version is not specified, then default is to use chart.AppVersion
-  #version: ""
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  priorityClassName: system-node-critical
-  defaultRuntime: docker
-  runtimeClass: nvidia
-  use_ocp_driver_toolkit: false
-  # cleanup CRD on chart un-install
-  cleanupCRD: false
-  # upgrade CRD on chart upgrade, requires --disable-openapi-validation flag
-  # to be passed during helm upgrade.
-  upgradeCRD: false
-  initContainer:
-    image: cuda
-    repository: nvcr.io/nvidia
-    version: 11.8.0-base-ubi8
-    imagePullPolicy: IfNotPresent
-  tolerations:
-  - key: "node-role.kubernetes.io/master"
-    operator: "Equal"
-    value: ""
-    effect: "NoSchedule"
-  annotations:
-    openshift.io/scc: restricted-readonly
-  affinity:
-    nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 1
-          preference:
-            matchExpressions:
-              - key: "node-role.kubernetes.io/master"
-                operator: In
-                values: [""]
-  logging:
-    # Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano')
-    timeEncoding: epoch
-    # Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
-    level: info
-    # Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn)
-    # Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error)
-    develMode: false
-  resources:
-    limits:
-      cpu: 500m
-      memory: 350Mi
-    requests:
-      cpu: 200m
-      memory: 100Mi
+    validator:
+      repository: nvcr.io/nvidia/cloud-native
+      image: gpu-operator-validator
+      # If version is not specified, then default is to use chart.AppVersion
+      #version: ""
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      args: []
+      resources: {}
+      plugin:
+        env:
+          - name: WITH_WORKLOAD
+            value: "true"
 
-mig:
-  strategy: single
-
-driver:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: driver
-  version: "525.60.13"
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  rdma:
-    enabled: false
-    useHostMofed: false
-  upgradePolicy:
-    # global switch for automatic upgrade feature
-    # if set to false all other options are ignored
-    autoUpgrade: true
-    # how many nodes can be upgraded in parallel
-    # 0 means no limit, all nodes will be upgraded in parallel
-    maxParallelUpgrades: 1
-    # options for waiting on pod(job) completions
-    waitForCompletion:
-      timeoutSeconds: 0
-      podSelector: ""
-    # options for gpu pod deletion
-    gpuPodDeletion:
-      force: false
-      timeoutSeconds: 300
-      deleteEmptyDir: false
-    # options for node drain (`kubectl drain`) before the driver reload
-    # this is required only if default GPU pod deletions done by the operator
-    # are not sufficient to re-install the driver
-    drain:
-      enable: false
-      force: false
-      podSelector: ""
-      # It's recommended to set a timeout to avoid infinite drain in case non-fatal error keeps happening on retries
-      timeoutSeconds: 300
-      deleteEmptyDir: false
-  manager:
-    image: k8s-driver-manager
-    repository: nvcr.io/nvidia/cloud-native
-    version: v0.6.0
-    imagePullPolicy: IfNotPresent
-    env:
-      - name: ENABLE_GPU_POD_EVICTION
-        value: "true"
-      - name: ENABLE_AUTO_DRAIN
-        value: "false"
-      - name: DRAIN_USE_FORCE
-        value: "false"
-      - name: DRAIN_POD_SELECTOR_LABEL
+    operator:
+      repository: nvcr.io/nvidia
+      image: gpu-operator
+      # If version is not specified, then default is to use chart.AppVersion
+      #version: ""
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      priorityClassName: system-node-critical
+      defaultRuntime: docker
+      runtimeClass: nvidia
+      use_ocp_driver_toolkit: false
+      # cleanup CRD on chart un-install
+      cleanupCRD: false
+      # upgrade CRD on chart upgrade, requires --disable-openapi-validation flag
+      # to be passed during helm upgrade.
+      upgradeCRD: false
+      initContainer:
+        image: cuda
+        repository: nvcr.io/nvidia
+        version: 11.8.0-base-ubi8
+        imagePullPolicy: IfNotPresent
+      tolerations:
+      - key: "node-role.kubernetes.io/master"
+        operator: "Equal"
         value: ""
-      - name: DRAIN_TIMEOUT_SECONDS
-        value: "0s"
-      - name: DRAIN_DELETE_EMPTYDIR_DATA
-        value: "false"
-  env: []
-  resources: {}
-  # Private mirror repository configuration
-  repoConfig:
-    configMapName: ""
-  # custom ssl key/certificate configuration
-  certConfig:
-    name: ""
-  # vGPU licensing configuration
-  licensingConfig:
-    configMapName: ""
-    nlsEnabled: false
-  # vGPU topology daemon configuration
-  virtualTopology:
-    config: ""
-  # kernel module configuration for NVIDIA driver
-  kernelModuleConfig:
-    name: ""
+        effect: "NoSchedule"
+      annotations:
+        openshift.io/scc: restricted-readonly
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: "node-role.kubernetes.io/master"
+                    operator: In
+                    values: [""]
+      logging:
+        # Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano')
+        timeEncoding: epoch
+        # Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
+        level: info
+        # Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn)
+        # Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error)
+        develMode: false
+      resources:
+        limits:
+          cpu: 500m
+          memory: 350Mi
+        requests:
+          cpu: 200m
+          memory: 100Mi
 
-toolkit:
-  enabled: true
-  repository: nvcr.io/nvidia/k8s
-  image: container-toolkit
-  version: v1.11.0-ubuntu20.04
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  resources: {}
-  installDir: "/usr/local/nvidia"
+    mig:
+      strategy: single
 
-devicePlugin:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: k8s-device-plugin
-  version: v0.13.0-ubi8
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  args: []
-  env:
-    - name: PASS_DEVICE_SPECS
-      value: "true"
-    - name: FAIL_ON_INIT_ERROR
-      value: "true"
-    - name: DEVICE_LIST_STRATEGY
-      value: envvar
-    - name: DEVICE_ID_STRATEGY
-      value: uuid
-    - name: NVIDIA_VISIBLE_DEVICES
-      value: all
-    - name: NVIDIA_DRIVER_CAPABILITIES
-      value: all
-  resources: {}
-  # Plugin configuration
-  # Use "name" to either point to an existing ConfigMap or to create a new one with a list of configurations(i.e with create=true).
-  # Use "data" to build an integrated ConfigMap from a set of configurations as
-  # part of this helm chart. An example of setting "data" might be:
-  # config:
-  #   name: device-plugin-config
-  #   create: true
-  #   data:
-  #     default: |-
-  #       version: v1
-  #       flags:
-  #         migStrategy: none
-  #     mig-single: |-
-  #       version: v1
-  #       flags:
-  #         migStrategy: single
-  #     mig-mixed: |-
-  #       version: v1
-  #       flags:
-  #         migStrategy: mixed
-  config:
-    # Create a ConfigMap (default: false)
-    create: false
-    # ConfigMap name (either exiting or to create a new one with create=true above)
-    name: ""
-    # Default config name within the ConfigMap
-    default: ""
-    # Data section for the ConfigMap to create (i.e only applies when create=true)
-    data: {}
+    driver:
+      enabled: true
+      repository: nvcr.io/nvidia
+      image: driver
+      version: "525.60.13"
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      rdma:
+        enabled: false
+        useHostMofed: false
+      upgradePolicy:
+        # global switch for automatic upgrade feature
+        # if set to false all other options are ignored
+        autoUpgrade: true
+        # how many nodes can be upgraded in parallel
+        # 0 means no limit, all nodes will be upgraded in parallel
+        maxParallelUpgrades: 1
+        # options for waiting on pod(job) completions
+        waitForCompletion:
+          timeoutSeconds: 0
+          podSelector: ""
+        # options for gpu pod deletion
+        gpuPodDeletion:
+          force: false
+          timeoutSeconds: 300
+          deleteEmptyDir: false
+        # options for node drain (`kubectl drain`) before the driver reload
+        # this is required only if default GPU pod deletions done by the operator
+        # are not sufficient to re-install the driver
+        drain:
+          enable: false
+          force: false
+          podSelector: ""
+          # It's recommended to set a timeout to avoid infinite drain in case non-fatal error keeps happening on retries
+          timeoutSeconds: 300
+          deleteEmptyDir: false
+      manager:
+        image: k8s-driver-manager
+        repository: nvcr.io/nvidia/cloud-native
+        version: v0.6.0
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ENABLE_GPU_POD_EVICTION
+            value: "true"
+          - name: ENABLE_AUTO_DRAIN
+            value: "false"
+          - name: DRAIN_USE_FORCE
+            value: "false"
+          - name: DRAIN_POD_SELECTOR_LABEL
+            value: ""
+          - name: DRAIN_TIMEOUT_SECONDS
+            value: "0s"
+          - name: DRAIN_DELETE_EMPTYDIR_DATA
+            value: "false"
+      env: []
+      resources: {}
+      # Private mirror repository configuration
+      repoConfig:
+        configMapName: ""
+      # custom ssl key/certificate configuration
+      certConfig:
+        name: ""
+      # vGPU licensing configuration
+      licensingConfig:
+        configMapName: ""
+        nlsEnabled: false
+      # vGPU topology daemon configuration
+      virtualTopology:
+        config: ""
+      # kernel module configuration for NVIDIA driver
+      kernelModuleConfig:
+        name: ""
 
-# standalone dcgm hostengine
-dcgm:
-  # disabled by default to use embedded nv-hostengine by exporter
-  enabled: false
-  repository: nvcr.io/nvidia/cloud-native
-  image: dcgm
-  version: 3.1.3-1-ubuntu20.04
-  imagePullPolicy: IfNotPresent
-  hostPort: 5555
-  args: []
-  env: []
-  resources: {}
+    toolkit:
+      enabled: true
+      repository: nvcr.io/nvidia/k8s
+      image: container-toolkit
+      version: v1.11.0-ubuntu20.04
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      resources: {}
+      installDir: "/usr/local/nvidia"
 
-dcgmExporter:
-  enabled: true
-  repository: nvcr.io/nvidia/k8s
-  image: dcgm-exporter
-  version: 3.1.3-3.1.2-ubuntu20.04
-  imagePullPolicy: IfNotPresent
-  env:
-    - name: DCGM_EXPORTER_LISTEN
-      value: ":9400"
-    - name: DCGM_EXPORTER_KUBERNETES
-      value: "true"
-    - name: DCGM_EXPORTER_COLLECTORS
-      value: "/etc/dcgm-exporter/dcp-metrics-included.csv"
-  resources: {}
-  serviceMonitor:
-    enabled: false
-    interval: 15s
-    honorLabels: false
-    additionalLabels: {}
+    devicePlugin:
+      enabled: true
+      repository: nvcr.io/nvidia
+      image: k8s-device-plugin
+      version: v0.13.0-ubi8
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      args: []
+      env:
+        - name: PASS_DEVICE_SPECS
+          value: "true"
+        - name: FAIL_ON_INIT_ERROR
+          value: "true"
+        - name: DEVICE_LIST_STRATEGY
+          value: envvar
+        - name: DEVICE_ID_STRATEGY
+          value: uuid
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: all
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: all
+      resources: {}
+      # Plugin configuration
+      # Use "name" to either point to an existing ConfigMap or to create a new one with a list of configurations(i.e with create=true).
+      # Use "data" to build an integrated ConfigMap from a set of configurations as
+      # part of this helm chart. An example of setting "data" might be:
+      # config:
+      #   name: device-plugin-config
+      #   create: true
+      #   data:
+      #     default: |-
+      #       version: v1
+      #       flags:
+      #         migStrategy: none
+      #     mig-single: |-
+      #       version: v1
+      #       flags:
+      #         migStrategy: single
+      #     mig-mixed: |-
+      #       version: v1
+      #       flags:
+      #         migStrategy: mixed
+      config:
+        # Create a ConfigMap (default: false)
+        create: false
+        # ConfigMap name (either exiting or to create a new one with create=true above)
+        name: ""
+        # Default config name within the ConfigMap
+        default: ""
+        # Data section for the ConfigMap to create (i.e only applies when create=true)
+        data: {}
 
-gfd:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: gpu-feature-discovery
-  version: v0.7.0-ubi8
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env:
-    - name: GFD_SLEEP_INTERVAL
-      value: 60s
-    - name: GFD_FAIL_ON_INIT_ERROR
-      value: "true"
-  resources: {}
+    # standalone dcgm hostengine
+    dcgm:
+      # disabled by default to use embedded nv-hostengine by exporter
+      enabled: false
+      repository: nvcr.io/nvidia/cloud-native
+      image: dcgm
+      version: 3.1.3-1-ubuntu20.04
+      imagePullPolicy: IfNotPresent
+      hostPort: 5555
+      args: []
+      env: []
+      resources: {}
 
-migManager:
-  enabled: true
-  repository: nvcr.io/nvidia/cloud-native
-  image: k8s-mig-manager
-  version: v0.5.0-ubuntu20.04
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env:
-    - name: WITH_REBOOT
-      value: "false"
-  resources: {}
-  config:
-    name: ""
-  gpuClientsConfig:
-    name: ""
+    dcgmExporter:
+      enabled: true
+      repository: nvcr.io/nvidia/k8s
+      image: dcgm-exporter
+      version: 3.1.3-3.1.2-ubuntu20.04
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: DCGM_EXPORTER_LISTEN
+          value: ":9400"
+        - name: DCGM_EXPORTER_KUBERNETES
+          value: "true"
+        - name: DCGM_EXPORTER_COLLECTORS
+          value: "/etc/dcgm-exporter/dcp-metrics-included.csv"
+      resources: {}
+      serviceMonitor:
+        enabled: false
+        interval: 15s
+        honorLabels: false
+        additionalLabels: {}
 
-nodeStatusExporter:
-  enabled: false
-  repository: nvcr.io/nvidia/cloud-native
-  image: gpu-operator-validator
-  # If version is not specified, then default is to use chart.AppVersion
-  #version: ""
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  resources: {}
+    gfd:
+      enabled: true
+      repository: nvcr.io/nvidia
+      image: gpu-feature-discovery
+      version: v0.7.0-ubi8
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env:
+        - name: GFD_SLEEP_INTERVAL
+          value: 60s
+        - name: GFD_FAIL_ON_INIT_ERROR
+          value: "true"
+      resources: {}
 
-gds:
-  enabled: false
-  repository: nvcr.io/nvidia/cloud-native
-  image: nvidia-fs
-  version: "2.14.13"
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  args: []
+    migManager:
+      enabled: true
+      repository: nvcr.io/nvidia/cloud-native
+      image: k8s-mig-manager
+      version: v0.5.0-ubuntu20.04
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env:
+        - name: WITH_REBOOT
+          value: "false"
+      resources: {}
+      config:
+        name: ""
+      gpuClientsConfig:
+        name: ""
 
-vgpuManager:
-  enabled: false
-  repository: ""
-  image: vgpu-manager
-  version: ""
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  resources: {}
-  driverManager:
-    image: k8s-driver-manager
-    repository: nvcr.io/nvidia/cloud-native
-    version: v0.6.0
-    imagePullPolicy: IfNotPresent
-    env:
-      - name: ENABLE_GPU_POD_EVICTION
-        value: "false"
-      - name: ENABLE_AUTO_DRAIN
-        value: "false"
+    nodeStatusExporter:
+      enabled: false
+      repository: nvcr.io/nvidia/cloud-native
+      image: gpu-operator-validator
+      # If version is not specified, then default is to use chart.AppVersion
+      #version: ""
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      resources: {}
 
-vgpuDeviceManager:
-  enabled: true
-  repository: nvcr.io/nvidia/cloud-native
-  image: vgpu-device-manager
-  version: "v0.2.0"
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  config:
-    name: ""
-    default: "default"
+    gds:
+      enabled: false
+      repository: nvcr.io/nvidia/cloud-native
+      image: nvidia-fs
+      version: "2.14.13"
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      args: []
 
-vfioManager:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: cuda
-  version: 11.7.1-base-ubi8
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  env: []
-  resources: {}
-  driverManager:
-    image: k8s-driver-manager
-    repository: nvcr.io/nvidia/cloud-native
-    version: v0.6.0
-    imagePullPolicy: IfNotPresent
-    env:
-      - name: ENABLE_GPU_POD_EVICTION
-        value: "false"
-      - name: ENABLE_AUTO_DRAIN
-        value: "false"
+    vgpuManager:
+      enabled: false
+      repository: ""
+      image: vgpu-manager
+      version: ""
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      resources: {}
+      driverManager:
+        image: k8s-driver-manager
+        repository: nvcr.io/nvidia/cloud-native
+        version: v0.6.0
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ENABLE_GPU_POD_EVICTION
+            value: "false"
+          - name: ENABLE_AUTO_DRAIN
+            value: "false"
 
-sandboxDevicePlugin:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: kubevirt-gpu-device-plugin
-  version: v1.2.1
-  imagePullPolicy: IfNotPresent
-  imagePullSecrets: []
-  args: []
-  env: []
-  resources: {}
+    vgpuDeviceManager:
+      enabled: true
+      repository: nvcr.io/nvidia/cloud-native
+      image: vgpu-device-manager
+      version: "v0.2.0"
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      config:
+        name: ""
+        default: "default"
 
-node-feature-discovery:
-  worker:
-    tolerations:
-    - key: "node-role.kubernetes.io/master"
-      operator: "Equal"
-      value: ""
-      effect: "NoSchedule"
-    - key: nvidia.com/gpu
-      operator: Exists
-      effect: NoSchedule
+    vfioManager:
+      enabled: true
+      repository: nvcr.io/nvidia
+      image: cuda
+      version: 11.7.1-base-ubi8
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      env: []
+      resources: {}
+      driverManager:
+        image: k8s-driver-manager
+        repository: nvcr.io/nvidia/cloud-native
+        version: v0.6.0
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ENABLE_GPU_POD_EVICTION
+            value: "false"
+          - name: ENABLE_AUTO_DRAIN
+            value: "false"
 
-    config:
-      sources:
-        pci:
-          deviceClassWhitelist:
-          - "02"
-          - "0200"
-          - "0207"
-          - "0300"
-          - "0302"
-          deviceLabelFields:
-          - vendor
+    sandboxDevicePlugin:
+      enabled: true
+      repository: nvcr.io/nvidia
+      image: kubevirt-gpu-device-plugin
+      version: v1.2.1
+      imagePullPolicy: IfNotPresent
+      imagePullSecrets: []
+      args: []
+      env: []
+      resources: {}
 
-  master:
-    extraLabelNs:
-      - nvidia.com
-    serviceAccount:
-      name: node-feature-discovery
-```
+    node-feature-discovery:
+      worker:
+        tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Equal"
+          value: ""
+          effect: "NoSchedule"
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+
+        config:
+          sources:
+            pci:
+              deviceClassWhitelist:
+              - "02"
+              - "0200"
+              - "0207"
+              - "0300"
+              - "0302"
+              deviceLabelFields:
+              - vendor
+
+      master:
+        extraLabelNs:
+          - nvidia.com
+        serviceAccount:
+          name: node-feature-discovery
+    ```
 
 
-幾分鐘後，您應該會看到 `gpu-operator` 命名空間中的 pod 正在運行。
+幾分鐘後，您應該會看到 `gpu-operator` 命名空間中的 pod 正在運行, 檢查是否有運行錯誤或異常的的 pod。
 
 ```bash
 kubectl get pods -n gpu-operator
@@ -1047,6 +1071,8 @@ nvidia-device-plugin-validator-qkhxb                          0/1     Completed 
 nvidia-operator-validator-tcfz6                               1/1     Running     0          5m8s
 ```
 
+## 步驟 02 - GPU 配置功能驗證
+
 是時候測試 Pod 的 GPU 訪問了。運行以下命令以啟動測試 pod。
 
 ```bash
@@ -1058,7 +1084,7 @@ kubectl run gpu-test \
 
 結果:
 
-```bash
+```
 Fri Jan 20 05:28:21 2023       
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 525.78.01    Driver Version: 525.78.01    CUDA Version: 12.0     |
@@ -1080,5 +1106,13 @@ Fri Jan 20 05:28:21 2023
 +-----------------------------------------------------------------------------+
 ```
 
-恭喜！在不到 10 分鐘的時間裡，我們配置了一個基於 GPU 驅動的 containerd 的 Kubernetes 集群。
+恭喜！在短短的時間裡，我們配置了一個基於 GPU 驅動的 `containerd` 的 Kubernetes 集群。
 
+## 總結
+
+在本教裡我們展示了 [containerd](https://containerd.io/)、Kubernetes 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 相關安裝與配置的步驟。在安裝即將結束後，我們通過在 pod 中運行 `nvidia-smi` 命令來測試與驗證了 GPU 的訪問。
+
+
+**參考:**
+
+- [Using kubeadm to Create a Cluster | Installation & Tutorial](https://www.containiq.com/post/kubeadm)
