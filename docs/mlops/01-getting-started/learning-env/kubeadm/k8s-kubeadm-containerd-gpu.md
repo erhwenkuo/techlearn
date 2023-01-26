@@ -1104,7 +1104,7 @@ Fri Jan 20 05:28:21 2023
 
 ## 總結
 
-在本教裡我們展示了 [containerd](https://containerd.io/)、Kubernetes 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 相關安裝與配置的步驟。在安裝即將結束後，我們通過在 pod 中運行 `nvidia-smi` 命令來測試與驗證了 GPU 的訪問。
+在本教程裡我們展示了 [containerd](https://containerd.io/)、Kubernetes 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 相關安裝與配置的步驟。在安裝即將結束後，我們通過在 pod 中運行 `nvidia-smi` 命令來測試與驗證了 GPU 的訪問。
 
 
 **參考:**

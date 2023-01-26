@@ -475,7 +475,7 @@ Done
 
 ## 總結
 
-在本教裡我們展示了 [Rancher RKE2](https://docs.rke2.io/)/[K3S](https://k3s.io/) 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 相關安裝與設定的步驟。在安裝結束後，我們通過在 pod 中運行 Vector 運算來測試與驗證了 GPU 的訪問。
+在本教程裡我們展示了 [Rancher RKE2](https://docs.rke2.io/)/[K3S](https://k3s.io/) 和 [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/getting-started.html#) 相關安裝與設定的步驟。在安裝結束後，我們通過在 pod 中運行 Vector 運算來測試與驗證了 GPU 的訪問。
 
 
 **參考:**
