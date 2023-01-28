@@ -39,10 +39,22 @@ sudo apt update
 sudo apt search nvidia-driver
 ```
 
-在撰寫本文時，最新的可用驅動程式版本是 `525`，所以讓我們安裝這個版本：
+由於許多深度學習開發工具會與 Nvidia CUDA 函式庫有相依性，在安裝 Nvidia Driver 時需要根據實際的情況來決定要安裝的 Driver 版本。
+
+下面列出 CUDA 版本對應到 Driver 版本的兼容性:
+
+|CUDA Toolkit	|Linux x86_64 Minimum Required Driver Version	|Windows Minimum Required Driver Version|
+|-------------|---------------------------------------------|---------------------------------------|
+|CUDA 12.x	|>=525.60.13	|>=527.41|
+|CUDA 11.x	|>= 450.80.02*	|>=452.39*|
+|CUDA 10.2	|>= 440.33	|>=441.22|
+|CUDA 10.1	|>= 418.39	|>=418.96|
+|CUDA 10.0	|>= 410.48	|>=411.31|
+
+在撰寫本文時，CUDA 11.x 是主流的版本，因此在本教程會選擇相搭配的驅動程式版本 `515`，所以讓我們安裝這個版本：
 
 ```bash
-sudo apt install nvidia-driver-525 nvidia-dkms-525 -y
+sudo apt install nvidia-driver-515 nvidia-dkms-515 -y
 ```
 
 重新啟動 Ubuntu 的機器:
@@ -60,16 +72,16 @@ nvidia-smi
 結果:
 
 ```
-Fri Jan 20 01:05:54 2023       
+Sat Jan 28 00:13:13 2023       
 +-----------------------------------------------------------------------------+
-| NVIDIA-SMI 525.78.01    Driver Version: 525.78.01    CUDA Version: 12.0     |
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
 |-------------------------------+----------------------+----------------------+
 | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
 |                               |                      |               MIG M. |
 |===============================+======================+======================|
 |   0  NVIDIA GeForce ...  Off  | 00000000:02:00.0 Off |                  N/A |
-| N/A   38C    P8    N/A /  N/A |      4MiB /  2048MiB |      0%      Default |
+| N/A   57C    P0    N/A /  N/A |    469MiB /  2048MiB |    100%      Default |
 |                               |                      |                  N/A |
 +-------------------------------+----------------------+----------------------+
                                                                                
@@ -78,7 +90,8 @@ Fri Jan 20 01:05:54 2023
 |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
 |        ID   ID                                                   Usage      |
 |=============================================================================|
-|    0   N/A  N/A       942      G   /usr/lib/xorg/Xorg                  4MiB |
+|    0   N/A  N/A       937      G   /usr/lib/xorg/Xorg                  4MiB |
+|    0   N/A  N/A    102783      C   /usr/bin/dcgmproftester11         463MiB |
 +-----------------------------------------------------------------------------+
 ```
 
@@ -391,7 +404,7 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
 
 
 ```bash hl_lines="4 5 6"
-helm install gpu-operator \
+helm upgrade --install gpu-operator \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator \
      --set operator.defaultRuntime=containerd \
@@ -427,32 +440,6 @@ nvidia-operator-validator-4md82                               1/1     Running   
 ## 步驟 02 - GPU 設定功能驗證
 
 是時候測試 Pod 的 GPU 訪問了。運行以下命令以啟動測試 pod。
-
-```bash
-kubectl apply -f -<<EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test-gpu
-  labels:
-    test-gpu: "true"
-spec:
-  runtimeClassName: nvidia
-  containers:
-  - name: training
-    image: registry.cn-beijing.aliyuncs.com/ai-samples/tensorflow:1.5.0-devel-gpu
-    command:
-    - python
-    - tensorflow-sample-code/tfjob/docker/mnist/main.py
-    - --max_steps=300
-    - --data_dir=tensorflow-sample-code/data
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-    workingDir: /root
-  restartPolicy: Never
-EOF
-```
 
 ```bash hl_lines="8"
 kubectl apply -f -<<EOF
@@ -496,6 +483,192 @@ Copy output data from the CUDA device to the host memory
 Test PASSED
 Done
 ```
+
+### 設置 GPU 監控解決方案
+
+NVIDIA GPU Operator 包含了 `dcgm-exporter` 組件。DCGM Exporter 的核心功能是用來收集 Kubernetes 節點上 GPU 信息（比如 GPU 卡的利用率、溫度、顯存使用情況等）的工具，若結合 Prometheus 和 Grafana 則可以提供豐富的 dashboard 來對 GPU 進行監控。
+
+接著我們使用 Prometheus Operator 來部署 Prometheus 與 Grafana 儀表板。然後利用 `dcgmproftester` 的 utitliy 來驗證 GPU 的效能與指標的訊息。
+
+**安裝 Prometheus Operator:**
+
+添加 Prometheus-Community helm 存儲庫並更新本地緩存:
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+```
+
+創建要配置的 vlaues 檔案:
+
+```yaml title="kube-stack-prometheus-values.yaml"
+grafana:
+  # change timezone setting base on browser
+  defaultDashboardsTimezone: browser
+  grafana.ini:
+    users:
+      viewers_can_edit: true
+    auth:
+      disable_login_form: false
+      disable_signout_menu: false
+    auth.anonymous:
+      enabled: true
+      org_role: Viewer
+  sidecar:
+    datasources:
+      logLevel: "DEBUG"
+      enabled: true
+      searchNamespace: "ALL"
+    dashboards:
+      logLevel: "DEBUG"
+      # enable the cluster wide search for dashbaords and adds/updates/deletes them in grafana
+      enabled: true
+      searchNamespace: "ALL"
+      label: grafana_dashboard
+      labelValue: "1"
+
+prometheus:
+  prometheusSpec:
+    # enable the cluster wide search for ServiceMonitor CRD
+    serviceMonitorSelectorNilUsesHelmValues: false
+    # enable the cluster wide search for PodMonitor CRD
+    podMonitorSelectorNilUsesHelmValues: false
+    # enable the cluster wide search for PrometheusRule CRD
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+```
+
+使用 Helm 在命名空間監控中部署 `kube-stack-prometheus` chart：
+
+```bash
+helm upgrade --install --wait --create-namespace --namespace monitoring  \
+     kube-stack-prometheus prometheus-community/kube-prometheus-stack \
+     --values kube-stack-prometheus-values.yaml
+```
+
+修改 gpu-operator 佈署的參數來啟動對 `ServiceMonitor` 的設定:
+
+```bash hl_lines="7"
+helm upgrade --install gpu-operator \
+     -n gpu-operator --create-namespace \
+     nvidia/gpu-operator \
+     --set operator.defaultRuntime=containerd \
+     --set driver.enabled=false \
+     --set toolkit.enabled=false \
+     --set dcgmExporter.serviceMonitor.enabled=true
+```
+
+檢查:
+
+```bash
+kubectl get servicemonitor -n gpu-operator
+```
+
+結果:
+
+```
+NAME                   AGE
+nvidia-dcgm-exporter   42s
+```
+
+**連接到 Grafana:**
+
+Grafana Web UI 可通過以下命令通過端口轉發訪問:
+
+```bash
+kubectl port-forward --namespace monitoring \
+        svc/kube-stack-prometheus-grafana \
+        3000:80 --address="0.0.0.0"
+```
+
+打開瀏覽器並轉到 http://localhost:3000 並填寫前一個命令所取得的用戶名/密碼。預設的帳號是:
+
+- `username`: admin
+- `password`: prom-operator
+
+![](./assets/grafana-ui.png)
+
+到 Grafana Dashboard 網站取得 DCGM Exporter 的 Dashboard ID:
+
+- https://grafana.com/grafana/dashboards/12239-nvidia-dcgm-exporter-dashboard/
+- ID: 12239
+
+![](./assets/dcgm-exporter-dashboard.png)
+
+在 Grafana 的側 Menu bar 上點擊 "Dashboards >> Import":
+
+![](./assets/grafana-dashboard-import01.png)
+
+輸入 Dashboard 編號 "12239" 後點擊 "Load":
+
+![](./assets/grafana-dashboard-import02.png)
+
+在 "Prometheus" 的下接選單中點選 "Prometheus" 後再點擊 "Import":
+
+![](./assets/grafana-dashboard-import03.png)
+
+**產生 GPU 負載:**
+
+要生成 GPU 負載，我們直接運行 `dcgmproftester` 的容器。此容器在 NVIDIA DockerHub 存儲庫中可用。
+
+通過指定 `-t 1004` 並運行 `-d 300`（300 秒）測試，使用 Tensor Core 觸發 FP16 矩陣乘法。您可以通過修改 `-t` 參數嘗試運行其他工作負載。
+
+```bash
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dcgmproftester
+  labels:
+    app: dcgmproftester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dcgmproftester
+  template:
+    metadata:
+      labels:
+        app: dcgmproftester
+    spec:
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      runtimeClassName: nvidia
+      containers:
+        - name: dcgmproftester11
+          image: nvidia/samples:dcgmproftester-2.1.7-cuda11.2.2-ubuntu20.04
+          command: ["/bin/sh", "-c"]
+          args:
+            - while true; do /usr/bin/dcgmproftester11 --no-dcgm-validation -t 1004 -d 300; sleep 30; done
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          securityContext:
+            capabilities:
+              add: ["SYS_ADMIN"]
+EOF
+```
+
+檢查:
+
+```bash
+kubectl get pods
+```
+
+結果:
+
+```
+NAME                              READY   STATUS    RESTARTS   AGE
+dcgmproftester-5c644f4694-gqf6c   1/1     Running   0          88s
+```
+
+您可以看到 dcgmproftester pod 正在運行，隨後是 Grafana 儀表板上顯示的指標。 GPU 利用率 (GrActive) 達到了 98% 的峰值。您可能還會發現其他有趣的指標，例如功率或 GPU 內存。
+
+![](./assets/gpu-utilization-grafana.png)
+
 
 恭喜！在短短的時間裡，我們設定了一個基於 GPU 驅動的 `RKE2`/`K3S` 的 Kubernetes 集群。
 
