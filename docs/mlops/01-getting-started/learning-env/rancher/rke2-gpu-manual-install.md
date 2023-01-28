@@ -165,7 +165,7 @@ version = 2
 
 **安裝**
 
-我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程序：
+我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程式：
 
 ```bash
 sudo apt update
@@ -173,7 +173,7 @@ sudo apt update
 sudo apt search nvidia-driver -y
 ```
 
-在撰寫本文時，最新的可用驅動程序版本是 `525`，所以讓我們安裝這個版本：
+在撰寫本文時，最新的可用驅動程式版本是 `525`，所以讓我們安裝這個版本：
 
 ```bash
 sudo apt install nvidia-driver-525 nvidia-dkms-525
@@ -642,7 +642,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update 
 ```
 
-創建要配置的 vlaues 檔案:
+創建要設定的 vlaues 檔案:
 
 ```yaml title="kube-stack-prometheus-values.yaml"
 grafana:
