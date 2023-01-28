@@ -428,6 +428,32 @@ nvidia-operator-validator-4md82                               1/1     Running   
 
 是時候測試 Pod 的 GPU 訪問了。運行以下命令以啟動測試 pod。
 
+```bash
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-gpu
+  labels:
+    test-gpu: "true"
+spec:
+  runtimeClassName: nvidia
+  containers:
+  - name: training
+    image: registry.cn-beijing.aliyuncs.com/ai-samples/tensorflow:1.5.0-devel-gpu
+    command:
+    - python
+    - tensorflow-sample-code/tfjob/docker/mnist/main.py
+    - --max_steps=300
+    - --data_dir=tensorflow-sample-code/data
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    workingDir: /root
+  restartPolicy: Never
+EOF
+```
+
 ```bash hl_lines="8"
 kubectl apply -f -<<EOF
 apiVersion: v1
