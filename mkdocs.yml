@@ -146,6 +146,8 @@ nav:
           - Nvidia GPU 共享的機制: mlops/02-gpu-sharing/nvidia-gpu-sharing-concepts.md
           - 提高 GPU 利用率: 
             - Time-slicing: mlops/02-gpu-sharing/improving-gpu-utilization-in-kubernetes.md
+            - MIG: 
+              - 概念: mlops/02-gpu-sharing/mig/mig_concept.md
   - Kubernetes:
     - Getting started:
       - 學習環境:

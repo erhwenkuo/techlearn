@@ -7,7 +7,7 @@
 NVIDIA GPU 通過 `device plugin` 框架來將 GPU 作為 Kubernetes 中可被調度的運算資源。然而，此框架僅允許將 GPU (`nvidia.com/gpu`) 設備作為 **整數** 資源進行宣告，因此不允許過度訂閱 (oversubscription)。
 
 要提高 GPU 利用率之前必需先對 Nvidia GPU 的併發機制有基本的認識:
-
+為
 - CUDA streams
 - Time-slicing
 - CUDA Multi-Process Service
@@ -27,7 +27,7 @@ NVIDIA GPU 通過 `device plugin` 框架來將 GPU 作為 Kubernetes 中可被�
 - Kubernetes
 - Nvidia GPU Operator
 
-根據 Nvidia 的文件說明 CUDA 應用程序的 time-slice duration 可通過 `nvidia-smi` 工具程式在 CUDA 11.1 (R455+ drivers) 的環境下來動態設定。
+根據 Nvidia 的文件說明 CUDA 應用程式的 time-slice duration 可通過 `nvidia-smi` 工具程式在 CUDA 11.1 (R455+ drivers) 的環境下來動態設定。
 
 下面列出 CUDA 版本對應到 Driver 版本的兼容性:
 
@@ -584,7 +584,7 @@ kubectl apply -f time-slicing-config.yaml
 
 ### 啟用 GPU 的共享訪問
 
-您可以通過傳遞 `devicePlugin.config.name=<config-map-name>` 參數來讓 NVIDIA GPU Operator 啟用 `time-slicing`，其中 <config-map-name> 是為時間切片配置創建的 ConfigMap 的名稱如前一節所述，而 `devicePlugin.config.default` 則是設定要用那一組設定做為預設。
+您可以通過傳遞 `devicePlugin.config.name=<config-map-name>` 參數來讓 NVIDIA GPU Operator 啟用 `time-slicing`，其中 <config-map-name> 是為時間切片設定創建的 ConfigMap 的名稱如前一節所述，而 `devicePlugin.config.default` 則是設定要用那一組設定做為預設。
 
 執行下列命令:
 
@@ -602,7 +602,7 @@ helm upgrade --install gpu-operator \
 
 ### 測試 GPU Time-Slicing
 
-下面是使用時間切片 API 超額訂閱 GPU 資源的完整示例。在此示例中，您將了解 Kubernetes 設備插件和 GFD 的其他配置設置，以設置 GPU 超額訂閱並使用指定資源啟動工作負載。
+下面是使用時間切片 API 超額訂閱 GPU 資源的完整示例。在此示例中，您將了解 Kubernetes 設備插件和 GFD 的其他設定設置，以設置 GPU 超額訂閱並使用指定資源啟動工作負載。
 
 1. 創建 GPU 工作負載如下：
 
