@@ -44,7 +44,7 @@ Multi-Instance GPU（MIG）功能使 NVIDIA A100 GPU 可以安全地切割為多
 
 ### GPU Instance (GI)
 
-GPU 的分區根據 `GPU Memory Slice` 來規劃進行，因此 `A100-40GB` GPU 可以被認為具有 **8x5GB** 個 `Memory Slice` 和 7 個 `SM Slice`，如下圖所示
+GPU 的切割根據 `GPU Memory Slice` 來規劃進行，因此 `A100-40GB` GPU 可以被認為具有 **8x5GB** 個 `Memory Slice` 和 7 個 `SM Slice`，如下圖所示
 
 ![](./assets/mig-partitioning-ex1.png)
 
@@ -117,6 +117,18 @@ MIG 功能作為 NVIDIA GPU 驅動程序的一部分提供，因此需要根據 
 
 本節概述了支持 MIG 配置設定在受支持的 GPU 上的設定組合。
 
+![](./assets/MIGPU_f1-625x182.png)
+
+簡單來說切割的基本原則就是考量到單一 GPU 卡上面的 `SM Slice` 的個數與 `Memory Slice` 的個數的組合:
+
+- **GPU SM Slice**: GPU SM Slice 是 GPU SM 的最小單位，一張 GPU 的 SM 總共由 {==**7**==} 個 GPU SM Slice 所組成。
+- **GPU Memory Slice**: GPU Memory Slice 是 GPU 顯卡記憶體的最小單位，一張 GPU 的顯卡記憶體總共由 {==**8**==} 個 GPU Memory Slice 所組成。
+
+
+而且這個 MIG 切割的組合要搭配每一張 GPU 卡在相對 GPU Driver 上支持的配置 `profile` 來規劃。接著我們先來了解一下幾張 GPU 顯卡的配置 `profile`。
+
+至於 GPU MIG 切割的練習會在 [MIG 切割入門](./mig-setup.md) 裡來說明。
+
 ### A30 MIG 配置範本
 
 ![](./assets/a30-mig-profile.png)
@@ -125,11 +137,11 @@ MIG 功能作為 NVIDIA GPU 驅動程序的一部分提供，因此需要根據 
 
 |Profile Name	|Fraction of Memory	|Fraction of SMs	|Hardware Units	|L2 Cache Size	|Copy Engines	|Number of Instances Available|
 |-------------|-------------------|-----------------|---------------|---------------|-------------|-----------------------------|
-|MIG 1g.6gb|1/4|1/4|0 NVDECs /0 JPEG /0 OFA|1/4|1|4|
-|MIG 1g.6gb+me|1/4|1/4|1 NVDEC /1 JPEG /1 OFA|1/4|1|1 (A single 1g profile can include media extensions)|
-|MIG 2g.12gb|2/4|2/4|2 NVDECs /0 JPEG /0 OFA|2/4|2|2|
-|MIG 2g.12gb+me|2/4|2/4|2 NVDECs /1 JPEG /1 OFA	|2/4	|2	|1 (A single 2g profile can include media extensions)|
-|MIG 4g.24gb	|Full	|4/4	|4 NVDECs /1 JPEG /1 OFA	|Full	|4	|1|
+|MIG 1g.6gb|1 / 4|1 / 4|0 NVDECs /0 JPEG /0 OFA|1 / 4|1|4|
+|MIG 1g.6gb+me|1 / 4|1 / 4|1 NVDEC /1 JPEG /1 OFA|1 / 4|1|1 (A single 1g profile can include media extensions)|
+|MIG 2g.12gb|2 / 4|2 / 4|2 NVDECs /0 JPEG /0 OFA|2 / 4|2|2|
+|MIG 2g.12gb+me|2 / 4|2 / 4|2 NVDECs /1 JPEG /1 OFA	|2 / 4	|2	|1 (A single 2g profile can include media extensions)|
+|MIG 4g.24gb	|Full	|4 / 4	|4 NVDECs /1 JPEG /1 OFA	|Full	|4	|1|
 
 ### A100 MIG 配置範本
 
@@ -139,13 +151,13 @@ MIG 功能作為 NVIDIA GPU 驅動程序的一部分提供，因此需要根據 
 
 |Profile Name	|Fraction of Memory	|Fraction of SMs	|Hardware Units	|L2 Cache Size	|Copy Engines	|Number of Instances Available|
 |-------------|-------------------|-----------------|---------------|---------------|-------------|-----------------------------|
-|MIG 1g.5gb	|1/8	|1/7	|0 NVDECs /0 JPEG /0 OFA	|1/8	|1	|7|
-|MIG 1g.5gb+me	|1/8	|1/7	|1 NVDEC /1 JPEG /1 OFA	|1/8	|1	|1 (A single 1g profile can include media extensions)|
-|MIG 1g.10gb	|1/8	|1/7	|1 NVDECs /0 JPEG /0 OFA	|1/8	|1	|4|
-|MIG 2g.10gb	|2/8	|2/7	|1 NVDECs /0 JPEG /0 OFA	|2/8	|2	|3|
-|MIG 3g.20gb	|4/8	|3/7	|2 NVDECs /0 JPEG /0 OFA	|4/8	|3	|2|
-|MIG 4g.20gb	|4/8	|4/7	|2 NVDECs /0 JPEG /0 OFA	|4/8	|4	|1|
-|MIG 7g.40gb	|Full	|7/7	|5 NVDECs /1 JPEG /1 OFA	|Full	|7	|1|
+|MIG 1g.5gb	|1 / 8	|1 / 7	|0 NVDECs /0 JPEG /0 OFA	|1 / 8	|1	|7|
+|MIG 1g.5gb+me	|1 / 8	|1 / 7	|1 NVDEC /1 JPEG /1 OFA	|1 / 8	|1	|1 (A single 1g profile can include media extensions)|
+|MIG 1g.10gb	|1 / 8	|1 / 7	|1 NVDECs /0 JPEG /0 OFA	|1 / 8	|1	|4|
+|MIG 2g.10gb	|2 / 8	|2 / 7	|1 NVDECs /0 JPEG /0 OFA	|2 / 8	|2	|3|
+|MIG 3g.20gb	|4 / 8	|3 / 7	|2 NVDECs /0 JPEG /0 OFA	|4 / 8	|3	|2|
+|MIG 4g.20gb	|4 / 8	|4 / 7	|2 NVDECs /0 JPEG /0 OFA	|4 / 8	|4	|1|
+|MIG 7g.40gb	|Full	|7 / 7	|5 NVDECs /1 JPEG /1 OFA	|Full	|7	|1|
 
 ### H100 MIG 配置範本
 
@@ -155,13 +167,13 @@ MIG 功能作為 NVIDIA GPU 驅動程序的一部分提供，因此需要根據 
 
 |Profile Name	|Fraction of Memory	|Fraction of SMs	|Hardware Units	|L2 Cache Size	|Copy Engines	|Number of Instances Available|
 |-------------|-------------------|-----------------|---------------|---------------|-------------|-----------------------------|
-|MIG 1g.10gb	|1/8	|1/7	|1 NVDECs /1 JPEG /0 OFA	|1/8	|1	|7|
-|MIG 1g.10gb+me	|1/8	|1/7	|1 NVDEC /1 JPEG /1 OFA	|1/8	|1	|1 (A single 1g profile can include media extensions)|
-|MIG 1g.20gb	|1/4	|1/7	|1 NVDECs /1 JPEG /0 OFA	|1/8	|1	|4|
-|MIG 2g.20gb	|2/8	|2/7	|2 NVDECs /2 JPEG /0 OFA	|2/8	|2	|3|
-|MIG 3g.40gb	|4/8	|3/7	|3 NVDECs /3 JPEG /0 OFA	|4/8	|3	|2|
-|MIG 4g.40gb	|4/8	|4/7	|4 NVDECs /4 JPEG /0 OFA	|4/8	|4	|1|
-|MIG 7g.80gb	|Full	|7/7	|7 NVDECs /7 JPEG /1 OFA	|Full	|8	|1|
+|MIG 1g.10gb	|1 / 8	|1 / 7	|1 NVDECs /1 JPEG /0 OFA	|1 / 8	|1	|7|
+|MIG 1g.10gb+me	|1 / 8	|1 / 7	|1 NVDEC /1 JPEG /1 OFA	|1 / 8	|1	|1 (A single 1g profile can include media extensions)|
+|MIG 1g.20gb	|1 / 4	|1 / 7	|1 NVDECs /1 JPEG /0 OFA	|1 / 8	|1	|4|
+|MIG 2g.20gb	|2 / 8	|2 / 7	|2 NVDECs /2 JPEG /0 OFA	|2 / 8	|2	|3|
+|MIG 3g.40gb	|4 / 8	|3 / 7	|3 NVDECs /3 JPEG /0 OFA	|4 / 8	|3	|2|
+|MIG 4g.40gb	|4 / 8	|4 / 7	|4 NVDECs /4 JPEG /0 OFA	|4 / 8	|4	|1|
+|MIG 7g.80gb	|Full	|7 / 7	|7 NVDECs /7 JPEG /1 OFA	|Full	|8	|1|
 
 
 參考:

@@ -148,6 +148,7 @@ nav:
             - Time-slicing: mlops/02-gpu-sharing/improving-gpu-utilization-in-kubernetes.md
             - MIG: 
               - 概念: mlops/02-gpu-sharing/mig/mig_concept.md
+              - MIG 切割入門: mlops/02-gpu-sharing/mig/mig-setup.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
@@ -393,6 +394,7 @@ nav:
       - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
   - Kubeflow:
     - 環境:
+      - 手動安裝 Kubeflow: kubeflow/env/kubeflow-install.md
       - RKE2:
         - 在 RKE2 Kubernetes 集群上安裝 Nvidia GPU Operator: kubeflow/env/rke2/rke2-nvidia-gpu-operator.md
     - 組件:
