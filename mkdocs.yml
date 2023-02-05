@@ -147,8 +147,9 @@ nav:
           - 提高 GPU 利用率: 
             - Time-slicing: mlops/02-gpu-sharing/improving-gpu-utilization-in-kubernetes.md
             - MIG: 
-              - 概念: mlops/02-gpu-sharing/mig/mig_concept.md
+              - MIG 概念: mlops/02-gpu-sharing/mig/mig_concept.md
               - MIG 切割入門: mlops/02-gpu-sharing/mig/mig-setup.md
+              - Kubernetes 對 MIG 支持: mlops/02-gpu-sharing/mig/mig-k8s.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
