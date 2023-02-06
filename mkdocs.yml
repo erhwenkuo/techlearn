@@ -346,6 +346,9 @@ nav:
     - Tempo:
       - 示例:
         - Hot ROD 應用: grafana/tempo/hotrod.md
+    - Tempo(v2):
+      - 示例:
+        - Hot ROD 應用: grafana/tempo/hotrod2.md
   - ArgoCD:
     - 概念:
       - Argo CD 是什麼？: argocd/concepts/what-is-argocd.md
