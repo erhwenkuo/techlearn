@@ -14,6 +14,67 @@
 
 參考: [NC A100 v4 系列](https://learn.microsoft.com/zh-tw/azure/virtual-machines/nc-a100-v4-series)
 
+### 安裝 nvidia drivers
+
+我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程式：
+
+```bash
+sudo apt update
+
+sudo apt search nvidia-driver
+```
+
+由於許多深度學習開發工具會與 Nvidia CUDA 函式庫有相依性，在安裝 Nvidia Driver 時需要根據實際的情況來決定要安裝的 Driver 版本。
+
+下面列出 CUDA 版本對應到 Driver 版本的兼容性:
+
+|CUDA Toolkit	|Linux x86_64 Minimum Required Driver Version	|Windows Minimum Required Driver Version|
+|-------------|---------------------------------------------|---------------------------------------|
+|CUDA 12.x	|>=525.60.13	|>=527.41|
+|CUDA 11.x	|>= 450.80.02*	|>=452.39*|
+|CUDA 10.2	|>= 440.33	|>=441.22|
+|CUDA 10.1	|>= 418.39	|>=418.96|
+|CUDA 10.0	|>= 410.48	|>=411.31|
+
+根據 Nivida 官網的資訊:
+
+- 從 CUDA 12/R525 驅動程序開始支持 H100 GPU。
+- 從 CUDA 11/R450 驅動程序開始支持 A100 和 A30 GPU。
+
+因此在本教程會選擇驅動程式版本 `515`，所以讓我們安裝這個版本：
+
+```bash
+sudo apt install nvidia-driver-515 nvidia-dkms-515 -y
+```
+
+重新啟動 Ubuntu 的機器:
+
+```bash
+sudo shutdown now -r
+```
+
+驗證 nvidia driver 的安裝:
+
+```bash
+nvidia-smi
+```
+
+結果:
+
+```    
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  Off  | 00000001:00:00.0 Off |                   On |
+| N/A   36C    P0    66W / 300W |      0MiB / 81920MiB |     N/A      Default |
+|                               |                      |              Enabled |
++-------------------------------+----------------------+----------------------+
+```
+
 ## MIG 切割管理流程
 
 本節概述如何在 GPU 上創建各種分區。出於說明目的，本文將以 A100-80GB 的 GPU 顯卡為例，但其他支持 MIG 的 GPU 的切割過程類似。

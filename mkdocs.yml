@@ -389,6 +389,7 @@ nav:
     - 簡介: istio/index.md
     - 安裝: 
       - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
+      - 整合安裝: istio/setup/install/helm/helm-install2.md
       - 更多指南:
         - 安裝配置文件: istio/setup/additional-setup/config-profiles.md
     - 示例:
