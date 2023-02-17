@@ -1,4 +1,4 @@
-# Istio 安裝配置
+# Istio+OpenTelemetry+Tempo 大全配
 
 ![](./assets/ecosystem.resized.png)
 
@@ -32,7 +32,7 @@ helm repo update
 ```bash
 docker network create \
   --driver=bridge \
-  --subnet=172.20.0.0/16 \
+  --subnet=172.20.0.0/24 \
   --gateway=172.20.0.1 \
   lab-network
 ```
@@ -59,7 +59,7 @@ docker network inspect lab-network
             "Options": {},
             "Config": [
                 {
-                    "Subnet": "172.20.0.0/16",
+                    "Subnet": "172.20.0.0/24",
                     "Gateway": "172.20.0.1"
                 }
             ]
@@ -78,7 +78,7 @@ docker network inspect lab-network
 ]
 ```
 
-讓我們從這個虛擬網段裡的 CIDR IP Range　中保留　4　個IP (`172.20.0.2-172.20.0.5`)來做本次的練習。
+讓我們從這個虛擬網段裡的 CIDR IP Range 中保留 5 個 IP (`172.20.0.10-172.20.0.15`) 來做本次的練習。
 
 ### 創建 K8S 集群
 
@@ -87,11 +87,20 @@ docker network inspect lab-network
 ```bash title="執行下列命令  >_"
 k3d cluster create  --api-port 6443 \
   --port 8080:80@loadbalancer --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:0" \
   --k3s-arg "--disable=servicelb@server:0" \
   --network lab-network
 ```
 
-### 部署 MetalLB
+參數說明:
+
+- `--k3s-arg "--disable=servicelb@server:0"` 不安裝 K3D 預設的 traefik (IngressController), 我們將使用　nginx ingress controller
+- `--k3s-arg "--disable=traefik@server:0"` 不安裝 K3D 預設的 servicelb (klipper-lb), 我們將使用 metallb
+- `--network lab-network` 使用預先創建的 docker 虛擬網段
+
+### 安裝/設定 MetalLB
+
+#### Helm 安裝
 
 使用 Helm 的手法來進行 Ｍetallb 安裝:
 
@@ -110,9 +119,9 @@ helm upgrade --install --create-namespace --namespace metallb-system \
     - 新功能:　支持CRD！期待已久的功能 MetalLB 現在可通過 CR 進行配置。
     - 行為變化:　最大的變化是引入了 CRD 並刪除了對通過 ConfigMap 進行配置的支持。
 
-#### 配置 IP Adress Pool
+#### 設定 IP Adress Pool
 
-Layer 2 模式是最簡單的配置：在大多數的情況下，你不需要任何特定於協議的配置，只需要 IP 地址範圍。
+我們將使用 MetalLB 的 Layer 2 模式是最簡單的配置：在大多數的情況下，你不需要任何特定於協議的配置，只需要 IP 地址範圍。
 
 Layer 2 模式模式不需要將 IP 綁定到工作程序節點的網絡接口。它通過直接響應本地網絡上的 ARP 請求來工作，將機器的 MAC 地址提供給客戶端。
 
@@ -127,7 +136,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 172.20.0.2-172.20.0.5
+  - 172.20.0.10-172.20.0.15
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
@@ -150,44 +159,58 @@ l2advertisement.metallb.io/l2advertise created
 !!! tip
     如果只有一個 IP 要讓 Metallb 來給予，那麼 CIDR 的設定可設成 172.20.0.5/32 (也就是只有一個 IP: `172.20.0.5` 可被指派使用)
 
-### 安裝 Istio 
+### 安裝/設定 Nginx Ingress Controller
 
-#### 安裝步驟
+#### Helm 安裝
 
-1. 安裝 `Istio base chart`，它包含了 Istio 控制平面用到的集群範圍的資源:
+使用以下命令添加 Nginx Ingress Controller 的 chart 存儲庫：
 
-    ```bash title="執行下列命令  >_"
-    helm upgrade --install --create-namespace --namespace istio-system \
-      istio-base istio/base
-    ```
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
-3. 安裝 Istio discovery chart，它用於部署 istiod 服務:
+helm repo update
+```
 
-    ```bash title="執行下列命令  >_"
-    helm upgrade --install --create-namespace --namespace istio-system \
-      istiod istio/istiod
-    ```
+設定 `ingress-nginx` 要從 metallb 取得特定的預設 IP (`172.20.0.13`):
 
-4. 安裝 Istio 的入站網關:
+```yaml title="ingress-nginx-values.yaml"
+controller:
+  # add annotations to get ip from metallb
+  service:
+    annotations:
+      metallb.universe.tf/address-pool: ip-pool
+    loadBalancerIP: "172.20.0.13"
+  # set ingressclass as default
+  ingressClassResource:
+    default: true
+```
 
-    設定 `istio-ingressgateway` 要從 metallb 取得特定的預設 IP:
+將 Nginx Ingress Controller 安裝到 kube-system 命名空間中：
 
-    ```yaml title="istio-ingressgateway-values.yaml"
-    service:
-      annotations:
-        metallb.universe.tf/address-pool: ip-pool
-      loadBalancerIP: "172.20.0.5"
-    ```
+```bash
+helm upgrade --install \
+     --create-namespace --namespace kube-system \
+     ingress-nginx ingress-nginx/ingress-nginx \
+     --values ingress-nginx-values.yaml
+```
 
-    ```bash title="執行下列命令  >_"
-    helm upgrade --install --create-namespace --namespace istio-system \
-      istio-ingressgateway istio/gateway \
-      --values istio-ingressgateway-values.yaml      
-    ```
+檢查:
 
-#### 驗證 IngressController 與 Istio Gateway
+```bash
+kubectl get svc -n kube-system
+```
 
-**驗證 Ingress 設定:**
+結果:
+
+```
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             LoadBalancer   10.43.160.250   172.20.0.13    80:30672/TCP,443:30990/TCP   91s
+```
+
+!!! tip
+    特別注意 `ingress-nginx-controller` 的 EXTERNAL-IP 是否從 metallb 取得 `172.20.0.13`
+
+#### 驗證 Ingress 設定
 
 創建一個 Nginx 的 Deployment 與 Service:
 
@@ -229,19 +252,149 @@ kubectl get ing/ingress-nginx-svc
 結果:
 
 ```
-NAME                CLASS    HOSTS              ADDRESS      PORTS   AGE
-ingress-nginx-svc   <none>   nginx.example.it   172.20.0.2   80      21s
+NAME                CLASS    HOSTS              ADDRESS       PORTS   AGE
+ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 ```
 
 修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
 
 ``` title="/etc/hosts"
 ...
-172.20.0.2  nginx.example.it
+172.20.0.13  nginx.example.it
 ...
 ```
 
-**驗證 Istio Gateway 設定:**
+使用瀏覽器瀏覽 `http://nginx.example.it`:
+
+![](./assets/ingress-test-nginx.png)
+
+### 安裝/設定 Istio 
+
+#### Helm 安裝
+
+使用以下命令添加 Istio 的 chart 存儲庫：
+
+```bash
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+
+helm repo update
+```
+
+1. 安裝 `Istio base chart`，它包含了 Istio 控制平面用到的集群範圍的資源:
+
+    ```bash title="執行下列命令  >_"
+    helm upgrade --install --create-namespace --namespace istio-system \
+      istio-base istio/base
+    ```
+
+3. 安裝 Istio discovery chart，它用於部署 istiod 服務:
+
+    設定 `istiod` 要啟動 tracing:
+
+    ```yaml title="istiod-values.yaml"
+    meshConfig:
+      enableTracing: true
+      defaultConfig:
+        tracing:
+          zipkin:
+            address: tempo.monitoring.svc.cluster.local:9411
+            # address=<jaeger-collector-address>:9411 
+    ```
+
+    ```bash title="執行下列命令  >_"
+    helm upgrade --install --create-namespace --namespace istio-system \
+      istiod istio/istiod \
+      --values istiod-values.yaml
+    ```
+
+4. 安裝 Istio 的入站網關:
+
+    設定 `istio-ingressgateway` 要從 metallb 取得特定的預設 IP:
+
+    ```yaml title="istio-ingressgateway-values.yaml"
+    # add annotations to get specific ip from metallb
+    service:
+      annotations:
+        metallb.universe.tf/address-pool: ip-pool
+      loadBalancerIP: "172.20.0.15"
+    ```
+
+    ```bash title="執行下列命令  >_"
+    helm upgrade --install --create-namespace --namespace istio-system \
+      istio-ingressgateway istio/gateway \
+      --values istio-ingressgateway-values.yaml      
+    ```
+
+檢查:
+
+```bash
+kubectl get svc -n istio-system
+```
+
+結果:
+
+```
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                      AGE
+istiod                 ClusterIP      10.43.149.164   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP        9m50s
+istio-ingressgateway   LoadBalancer   10.43.37.155    172.20.0.15   15021:30247/TCP,80:32140/TCP,443:32550/TCP   8m37s
+```
+
+檢查 Istio 的 tracing 設定:
+
+```bash
+kubectl get cm istio -n istio-system -o yaml
+```
+
+結果:
+
+```hl_lines="6-8 10"
+apiVersion: v1
+data:
+  mesh: |-
+    defaultConfig:
+      discoveryAddress: istiod.istio-system.svc:15012
+      tracing:
+        zipkin:
+          address: tempo.monitoring.svc.cluster.local:9411
+    enablePrometheusMerge: true
+    enableTracing: true
+    rootNamespace: null
+    trustDomain: cluster.local
+  meshNetworks: 'networks: {}'
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: istiod
+    meta.helm.sh/release-namespace: istio-system
+  creationTimestamp: "2023-02-11T02:18:12Z"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    install.operator.istio.io/owning-resource: unknown
+    istio.io/rev: default
+    operator.istio.io/component: Pilot
+    release: istiod
+  name: istio
+  namespace: istio-system
+  resourceVersion: "30512"
+  uid: af45df78-4bda-4a64-bed4-9a5f63f377dc
+```
+
+!!! tip
+    特別注意 `istio-ingressgateway` 的 EXTERNAL-IP 是否從 metallb 取得 `172.20.0.15`
+
+#### 驗證 Istio IngressGateway
+
+在前面的步驟我們創建一個 Nginx 的 Deployment 與 Service 來驗證 Nginx Ingress Controller，接著我們使用 Istio IngressGateway 來進行服務的曝露。
+
+??? info
+
+    ```bash
+    kubectl create deployment nginx --image=nginx
+
+    kubectl create service clusterip nginx --tcp=80:80
+    ```
+
+創建 Istio 的 `Gateway` 與 `VirtualService` 來曝露這個測試的 Nginx 網站:
 
 ```yaml
 kubectl apply -f -<<EOF
@@ -272,7 +425,7 @@ spec:
   http:
   - route:
     - destination:
-        host: nginx.default.svc.cluster.local
+        host: nginx.default.svc.cluster.local # {service_name}.{namespace}.svc.cluster.local
         port:
           number: 80
 EOF
@@ -308,11 +461,16 @@ virtualservice-nginx-svc   ["gateway-nginx-svc"]   ["nginx.istio-example.it"]   
 
 ``` title="/etc/hosts"
 ...
-172.20.0.5  nginx.istio-example.it
+172.20.0.15  nginx.istio-example.it
 ...
 ```
 
-### Grafana Tempo
+使用瀏覽器瀏覽 `http://nginx.istio-example.it`:
+
+![](./assets/gateway-test-nginx.png)
+
+
+### 安裝/設定 Grafana Tempo
 
 使用以下命令添加 Tempo 的 chart 存儲庫：
 
@@ -604,59 +762,6 @@ NAME                     READY   AGE
 statefulset.apps/tempo   1/1     2m36s
 ```
 
-檢查 Tempo 版本:
-
-```bash
-kubectl describe statefulset/tempo  -n monitoring
-```
-
-結果:
-
-``` hl_lines="8 22"
-Name:               tempo
-Namespace:          monitoring
-CreationTimestamp:  Sun, 05 Feb 2023 11:17:02 +0800
-Selector:           app.kubernetes.io/instance=tempo,app.kubernetes.io/name=tempo
-Labels:             app.kubernetes.io/instance=tempo
-                    app.kubernetes.io/managed-by=Helm
-                    app.kubernetes.io/name=tempo
-                    app.kubernetes.io/version=2.0.0
-                    helm.sh/chart=tempo-1.0.0
-Annotations:        meta.helm.sh/release-name: tempo
-                    meta.helm.sh/release-namespace: tracing
-Replicas:           1 desired | 1 total
-Update Strategy:    RollingUpdate
-Pods Status:        1 Running / 0 Waiting / 0 Succeeded / 0 Failed
-Pod Template:
-  Labels:           app.kubernetes.io/instance=tempo
-                    app.kubernetes.io/name=tempo
-  Annotations:      checksum/config: 439e9f45b8b5fc03c92d7c77f01a6e595a4cd2ef69a778e6b7e55bb702103b2c
-  Service Account:  tempo
-  Containers:
-   tempo:
-    Image:       grafana/tempo:2.0.0
-    Ports:       3100/TCP, 6831/UDP, 6832/UDP, 14268/TCP, 14250/TCP, 9411/TCP, 55680/TCP, 4317/TCP, 55681/TCP, 55678/TCP
-    Host Ports:  0/TCP, 0/UDP, 0/UDP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP
-    Args:
-      -config.file=/conf/tempo.yaml
-      -mem-ballast-size-mbs=1024
-    Environment:  <none>
-    Mounts:
-      /conf from tempo-conf (rw)
-   tempo-query:
-    Image:       grafana/tempo-query:2.0.0
-    Ports:       16686/TCP, 16687/TCP
-    Host Ports:  0/TCP, 0/TCP
-    Args:
-      --query.base-path=/
-      --grpc-storage-plugin.configuration-file=/conf/tempo-query.yaml
-    Environment:  <none>
-    Mounts:
-      /conf from tempo-query-conf (rw)
-    ...
-    ...
-```
-
 Grafana Tempo 支持許多不同 protocol 來接收 tracing 的資料:
 
 |Port|Description|
@@ -672,8 +777,6 @@ Grafana Tempo 支持許多不同 protocol 來接收 tracing 的資料:
 |55678/TCP|Default endpoint for Opencensus receiver.<br/>Opencensus 接收器的默認端點。|
 |55680/TCP|efault endpoint for legacy OpenTelemetry gRPC receiver.<br/>舊版 OpenTelemetry gRPC 接收器的默認端點。|
 |55681/TCP|efault endpoint for legacy OpenTelemetry HTTP receiver.<br/>舊版 OpenTelemetry HTTP 接收器。的默認端點|
-
-
 
 ### kube-prometheus-stack
 
@@ -785,12 +888,26 @@ helm upgrade --install \
   --values kube-stack-prometheus-values.yaml
 ```
 
+檢查看這個所創建的 ingress 是否有取得 IP ADDRESS:
+
+```bash
+kubectl get ing -n monitoring
+```
+
+結果:
+
+```
+NAME                                    CLASS   HOSTS                   ADDRESS       PORTS   AGE
+kube-stack-prometheus-grafana           nginx   grafana.example.it      172.20.0.13   80      3m53s
+kube-stack-prometheus-kube-prometheus   nginx   prometheus.example.it   172.20.0.13   80      3m53s
+```
+
 由於對 Grafana 與 Prometheus 啟動了 ingress, 修改 `/etc/hosts` 來增加兩筆 entry 來模擬 DNS 解析:
 
 ``` title="/etc/hosts"
 ...
-172.20.0.2  grafana.example.it
-172.20.0.2  prometheus.example.it
+172.20.0.13  grafana.example.it
+172.20.0.13  prometheus.example.it
 ...
 ```
 
@@ -968,11 +1085,17 @@ helm upgrade --install --create-namespace --namespace otel-system  \
   opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
-一旦 `opentelemetry-operator` 部署準備就緒，您就可以在我們的 Kubernetes 集群中部署 OpenTelemetry Collector。
-
-Collector 可以部署為四種模式之一：`Deployment`、`DaemonSet`、`StatefulSet` 和 `Sidecar`。默認模式是 `Deployment`。
-
-#### Deployment Mode
+一旦 `opentelemetry-operator` 部署準備就緒，您就可以  rules:
+  - http:
+      paths:
+        - path: /apple
+          backend:
+            serviceName: apple-service
+            servicePort: 5678
+        - path: /banana
+          backend:
+            serviceName: banana-service
+            servicePort: 5678
 
 如果您想更好地控制 OpenTelemetry Collector 並創建一個獨立的應用程序，`Deployment` 將是您的選擇。通過 Deployment，您可以相對輕鬆地擴展 Collector 以監視更多目標、在發生任何意外情況時回滾到早期版本、暫停 Collector 等。通常，您可以像管理應用程序一樣管理 Collector 實例。
 
@@ -990,8 +1113,8 @@ spec:
     receivers:
       otlp:
         protocols:
-          grpc:
-          http:
+          grpc: # endpoint = 0.0.0.0:4317 (default)
+          http: # endpoint = 0.0.0.0:4318 (default)
       jaeger:
         protocols:
           grpc:
@@ -1015,12 +1138,135 @@ spec:
     service:
       pipelines:
         traces:
-          receivers: [otlp, jaeger]
+          receivers: [otlp, jaeger, zipkin]
           processors: []
           exporters: [logging, otlp]
 EOF
 ```
 
+#### 驗證
+
+`HotROD` 是一個演示用的應用程序，由多個微服務組成，並說明了 OpenTracing API 的使用。它可以獨立運行，但需要 Jaeger protocol compliant 的後端才能查看鏈路追踪的結果。
+
+執行下列命令來佈署 `Hot R.O.D` 應用:
+
+創建 Deployment manifest:
+
+```bash title="Deployment" hl_lines="24-26"
+kubectl apply -f -<<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: example-hotrod
+  name: example-hotrod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-hotrod
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: example-hotrod
+    spec:
+      containers:
+      - image: jaegertracing/example-hotrod:latest
+        name: example-hotrod
+        args: ["all"]
+        env:
+          - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+            # endpoint for tracing data collector
+            value: http://otel-collector-collector.otel-system.svc.cluster.local:14268/api/traces
+        ports:
+          - containerPort: 8080
+            name: frontend
+          - containerPort: 8081
+            name: customer
+          - containerPort: 8083
+            name: route
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100M
+          requests:
+            cpu: 100m
+            memory: 100M
+EOF
+```
+
+創建 Service manifest:
+
+```bash title="Service"
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-hotrod
+spec:
+  selector:
+    app: example-hotrod
+  ports:
+    - name: frontend
+      protocol: TCP
+      port: 8080
+      targetPort: frontend
+EOF
+```
+
+創建 Ingress 來曝露這個測試的 HotROD:
+
+```bash
+kubectl apply -f -<<EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-example-hotrod
+spec:
+  - host: "hotrod.example.it"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: example-hotrod
+            port:
+              number: 8080
+EOF
+```
+
+檢查看這個 ingress 是否有取得 IP ADDRESS:
+
+```bash
+kubectl get ing/ingress-example-hotrod
+```
+
+結果:
+
+```
+NAME                     CLASS   HOSTS               ADDRESS       PORTS   AGE
+ingress-example-hotrod   nginx   hotrod.example.it   172.20.0.13   80      22s
+```
+
+修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
+
+```bash
+sudo nano /etc/hosts
+```
+
+修改內容:
+
+``` title="/etc/hosts"
+...
+172.20.0.13  hotrod.example.it
+...
+```
+
+使用瀏覽器瀏覽 `http://hotrod.example.it`:
+
+![](./assets/tracing-test-hotrod.png)
 
 ### 安裝 Kiali
 
@@ -1066,6 +1312,24 @@ spec:
     strategy: anonymous
   deployment:
     view_only_mode: true
+    ingress:
+      class_name: "nginx"
+      # default: enabled is undefined
+      enabled: true
+      # default: override_yaml is undefined
+      override_yaml:
+        spec:
+          rules:
+          - host: "kiali.example.it"
+            http:
+              paths:
+              - path: "/kiali"
+                pathType: Prefix
+                backend:
+                  service:
+                    name: "kiali"
+                    port:
+                      number: 20001
   external_services:
     custom_dashboards:
       enabled: false
@@ -1232,7 +1496,6 @@ cd istio
 
 ### 對外部暴露應用程序
 
-for i in $(seq 1 10000); do curl -s -o /dev/null "http://localhost:9080/productpage"; done
 
 Bookinfo 應用程序已部署，但無法從 Kubernetes 外部來訪問它。為了使其可訪問， 需要創建一個 Istio Ingress Gateway，它將路徑映射到網格邊緣的路由。
 
@@ -1290,58 +1553,31 @@ spec:
           number: 9080
 ```
 
-#### 確定 Ingress IP 和端口
-
-按照這些說明設置用於訪問網關的 INGRESS_HOST 和 INGRESS_PORT 變量。
-
-執行以下命令來確定您的 Kubernetes 集群是否在支持外部負載均衡器的環境中運行：
+修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
 
 ```bash
-kubectl get svc istio-ingressgateway -n istio-ingress
+sudo nano /etc/hosts
 ```
 
-結果：
+修改內容:
 
-```bash
-NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                 PORT(S)                                      AGE
-istio-ingressgateway   LoadBalancer   10.43.253.85   192.168.16.2,192.168.16.3   15021:30923/TCP,80:31629/TCP,443:30123/TCP   11m
+``` title="/etc/hosts"
+...
+172.20.0.15  bookinfo.istio-example.it
+...
 ```
 
-舉例來說在範例中的 Kubernetes 環境裡頭所暴露出來的外部 IP 是 `192.168.16.2` 與 `192.168.16.3`。
+使用瀏覽器瀏覽 `http://bookinfo.istio-example.it`:
 
-為了方便後續的驗證，使用環境變數把 `GATEWAY_URL` 暴露出來:
-
-```bash
-export GATEWAY_URL=192.168.16.2:80
-```
-
-使用瀏覽器來鍵入下列的 Url:
-
-- 通過 K3D 的 Gateway (本機: 8080 << K3D cluster gateway: 80)
-    - http://localhost:8080/productpage
-
-- 直接通過本機的 LoadBalancer 的 IP
-    - http://192.168.16.2/productpage
-
-
-![](./assets/bookinfo-productpage.png)
+![](./assets/gateway-test-book-info.png)
 
 #### 流量模擬
 
 要了解 istio 的功能是否正常的簡單方式就是去模擬一些對服務的流量。下列的指命會向 productpage 服務持續發送 10000 個請求：
 
-=== "通過 K3D 的 Gateway (本機: 8080 << K3D cluster gateway: 80)"
-
-    ```bash
-    for i in $(seq 1 10000); do curl -s -o /dev/null "http://localhost:8080/productpage"; done
-    ```
-
-
-=== "直接通過本機的 LoadBalancer 的 IP"
-
-    ```bash
-    for i in $(seq 1 10000); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
-    ```
+```bash
+for i in $(seq 1 10000); do curl -s -o /dev/null "http://bookinfo.istio-example.it/productpage"; done
+```
 
 !!! info
     上述的命令稿是使用 linux 的 Bash script 來模擬服務的流量。

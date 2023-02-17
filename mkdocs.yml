@@ -150,6 +150,9 @@ nav:
               - MIG 概念: mlops/02-gpu-sharing/mig/mig_concept.md
               - MIG 切割入門: mlops/02-gpu-sharing/mig/mig-setup.md
               - Kubernetes 對 MIG 支持: mlops/02-gpu-sharing/mig/mig-k8s.md
+              - GPU 持久化模式: mlops/02-gpu-sharing/mig/mig-persistence-mode.md
+              - NVIDIA GPU 的 MIG 切割編輯器: mlops/02-gpu-sharing/mig/mig-parted.md
+              - GPU Operator 與 MIG 配置: mlops/02-gpu-sharing/mig/gpu-operator-mig.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
