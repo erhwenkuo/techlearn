@@ -276,7 +276,7 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
 
 由於我們使用的是 `containerd` 容器 runtime，因此我們將其設置為默認值並且宣告不自動安裝 Nvidia Driver。
 
-```bash hl_lines="4 5 6"
+```bash hl_lines="7"
 helm upgrade --install gpu-operator \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator \
@@ -340,7 +340,7 @@ migManager:
 
 我們可以使用以下選項來安裝 GPU Operator:
 
-```bash hl_lines="7"
+```bash hl_lines="7 8"
 helm upgrade --install gpu-operator \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator \
@@ -805,6 +805,7 @@ kind: Pod
 metadata:
   name: cuda-vectoradd
 spec:
+  runtimeClassName: nvidia
   restartPolicy: OnFailure
   containers:
   - name: vectoradd
@@ -937,7 +938,7 @@ argo-mig-example-z6mqd-845918106: Done
 
 從 v1.9 開始，MIG Manager 支持預裝驅動程序。本文檔中詳述的所有內容仍然適用，但還有一些額外的細節需要考慮。
 
-安裝 GPU Operator 時，必須設置 driver.enabled=false。以下選項可用於安裝 GPU Operator：
+安裝 GPU Operator 時，必須設置 `driver.enabled=false`。以下選項可用於安裝 GPU Operator：
 
 ```bash
 helm install gpu-operator \
