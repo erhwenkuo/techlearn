@@ -253,7 +253,41 @@ version = 2
 
 ### Step 4: 安裝 gpu operator
 
-詳細的 Nvidia GPU Operator 說明請見: [Nvidia GPU Operator 官網](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/overview.html)
+檢查 GPU 的 MIG mode:
+
+```bash
+nvidia-smi
+```
+
+結果:
+
+```
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  On   | 00000001:00:00.0 Off |                   On |
+| N/A   40C    P0    76W / 300W |     38MiB / 81920MiB |     N/A      Default |
+|                               |                      |              Enabled |
++-------------------------------+----------------------+----------------------+
+```
+
+如果 `MIG M.` 是 `Enabled` 則執行下列指命來先行關閉:
+
+```
+sudo nvidia-smi -i 0 -mig 0
+```
+
+重新啟動:
+
+```bash
+sudo shutdown now -r
+```
+
+接下來安裝 gpu operator, 詳細的 Nvidia GPU Operator 說明請見: [Nvidia GPU Operator 官網](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/overview.html)
 
 首先安裝 Helm3 的二進製文件。
 
