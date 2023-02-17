@@ -69,7 +69,7 @@ sudo apt search nvidia-driver
 |CUDA 10.1	|>= 418.39	|>=418.96|
 |CUDA 10.0	|>= 410.48	|>=411.31|
 
-在撰寫本文時，CUDA 11.x 是主流的版本，因此在本教程會選擇相搭配的驅動程式版本 `515`，所以讓我們安裝這個版本：
+在撰寫本文時，CUDA 11.x 是主流的版本，因此在本教程會選擇相搭配的驅動程式版本 `515`，所以讓我們安裝這個版本:
 
 ```bash
 sudo apt install nvidia-driver-515 nvidia-dkms-515 -y
@@ -105,7 +105,7 @@ nvidia-smi
 
 ### Step 2: 安裝 nvidia container toolkit
 
-首先，設置包存儲庫和 GPG 密鑰：
+首先，設置包存儲庫和 GPG 密鑰:
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -132,10 +132,13 @@ write-kubeconfig-mode: "0644"
 write-kubeconfig: "/root/.kube/config"
 cni: "calico"
 tls-san:
-  - aiml-server-2
-  - 10.30.148.9
+  - aiml-server-0
+  - 10.30.148.14
 EOF
 ```
+
+!!! info
+    請根據本機的 hostname 與 IP 來修改 `tls-san` 的設定。
 
 下載並運行 RKE2 的安裝腳本:
 

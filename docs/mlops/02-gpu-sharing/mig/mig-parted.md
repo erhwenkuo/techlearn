@@ -5,8 +5,7 @@
 MIG（Multi-Instance GPU 的縮寫）是最新一代 NVIDIA Ampere GPU 中的一種操作模式。它允許將一個 GPU 劃分為一組“MIG 設備”，在使用它們的軟件看來，每個設備都像一個迷你 GPU，具有固定的內存分區和固定的計算資源分區。有關 MIG 及其提供的功能的詳細說明，請參閱 [MIG 用戶指南](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html)。
 
 
-
-## 安裝
+## 安裝 `nvidia-mig-parted`
 
 MIG Partiton Editor (`nvidia-mig-parted`) 是一款專為系統管理員設計的工具，可讓他們更輕鬆地處理 MIG 分割。
 
@@ -17,19 +16,17 @@ MIG Partiton Editor (`nvidia-mig-parted`) 是一款專為系統管理員設計�
 請在[此處](https://github.com/NVIDIA/mig-parted/releases)的發布頁面下載 `nvidia-mig-parted` 並安裝它們。
 
 
-下載最新的 `nvidia-mig-parted`(v0.5.0):
+根據下列命令來下載 `nvidia-mig-parted`(v0.5.0):
 
-```bash
+```bash title="執行下列命令  >_"
 wget https://github.com/NVIDIA/mig-parted/releases/download/v0.5.0/nvidia-mig-manager-0.5.0-1.x86_64.tar.gz
 
 tar -xzvf nvidia-mig-manager-0.5.0-1.x86_64.tar.gz
 
-cd nvidia-mig-manager-0.5.0-1
-
-sudo cp nvidia-mig-parted /usr/local/bin
+sudo cp nvidia-mig-manager-0.5.0-1/nvidia-mig-parted /usr/local/bin
 ```
 
-解壓縮的目錄裡:
+解壓縮的目錄裡有相關的設定範例:
 
 ``` hl_lines="9"
 .
@@ -50,7 +47,215 @@ sudo cp nvidia-mig-parted /usr/local/bin
 
 ## 快速上手
 
-在深入了解 `nvidia-mig-parted` 的可能選項的細節之前，先看幾個最常見用法的示例是很有用的。下面的所有命令都會使用一個 `config.yaml` 的範例配置文件。
+
+### 環境安裝
+
+本教程使用了 Azure 上的 VM (O.S: Ubuntu 20.04.05)來作為練習在 Kubernetes 裡應用 MIG 的環境。
+
+|型號	|vCPU	|記憶體：GiB	|暫存儲存體：GiB	|GPU	|GPU 記憶體：GiB	|
+|----|-----|------------|---------------|-----|----------------|
+|Standard_NC24ads_A100_v4|24|220|1123|1|80|
+
+這個 VM 會搭配一張 **Nvidia A100 (80gb)** 的 GPU 卡。
+
+參考: [NC A100 v4 系列](https://learn.microsoft.com/zh-tw/azure/virtual-machines/nc-a100-v4-series)
+
+以下是安裝 Rancher (RKE2/K3S) 和 Nvidia GPU Operator 的步驟。
+
+**先決條件 (一台配備著 Nvidia GPU 的機器):**
+
+- Operating system: `Ubuntu 20.04.05 LTS`
+- GPU: `Nvidia A100 (80gb)` (Nvidia GPU 顯卡)
+
+**安裝 nvidia drivers:**
+
+!!! tip
+    根據 Nvidia GPU Operator 的內容，operator 應該可自動幫每一個 Kubernetes 節點自動設定 GPU 的 Driver。
+    
+    然而在驗證的過程會發現 Ubuntu 的機器會在安裝完 Nvidia GPU Operator 之後一直重覆 reboot。
+    
+    排查之後的結果因該是 GPU Operator 在自動安裝 GPU Driver 後所發生的現象，查找相關 Githut 與 Google 之後尚未找出根因，因此在本教程中是先手動安裝 Nvidia GPU Driver 與 Nvidia Container Toolkit 在 Ubuntu 的機器上。
+
+
+我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程式：
+
+```bash
+sudo apt update
+
+sudo apt search nvidia-driver
+```
+
+由於許多深度學習開發工具會與 Nvidia CUDA 函式庫有相依性，在安裝 Nvidia Driver 時需要根據實際的情況來決定要安裝的 Driver 版本。
+
+下面列出 CUDA 版本對應到 Driver 版本的兼容性:
+
+|CUDA Toolkit	|Linux x86_64 Minimum Required Driver Version	|Windows Minimum Required Driver Version|
+|-------------|---------------------------------------------|---------------------------------------|
+|CUDA 12.x	|>=525.60.13	|>=527.41|
+|CUDA 11.x	|>= 450.80.02*	|>=452.39*|
+|CUDA 10.2	|>= 440.33	|>=441.22|
+|CUDA 10.1	|>= 418.39	|>=418.96|
+|CUDA 10.0	|>= 410.48	|>=411.31|
+
+根據 Nivida 官網的資訊:
+
+- 從 CUDA 12/R525 驅動程序開始支持 H100 GPU。
+- 從 CUDA 11/R450 驅動程序開始支持 A100 和 A30 GPU。
+
+因此在本教程會選擇驅動程式版本 `515`，所以讓我們安裝這個版本：
+
+```bash
+sudo apt install nvidia-driver-515 nvidia-dkms-515 -y
+```
+
+重新啟動 Ubuntu 的機器:
+
+```bash
+sudo shutdown now -r
+```
+
+驗證 nvidia driver 的安裝:
+
+```bash
+nvidia-smi
+```
+
+結果:
+
+```    
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  Off  | 00000001:00:00.0 Off |                    0 |
+| N/A   38C    P0    45W / 300W |     99MiB / 81920MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+```
+
+### MIG 切割規劃
+
+下列的練習主要以 **Nvidia A100 (80gb)** 的 GPU 卡的切割組合來思考。詳細的 MIG 切割基本概念請參考:[MIG 切割入門](./mig-setup.md)。
+
+**檢查 MIG Mode:**
+
+要使用 `nvidia-mig-parted` 來切割 GPU，要確認 MIG mode 是否被啟動了:
+
+```bash
+sudo nvidia-smi
+```
+
+結果:
+
+```
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  On   | 00000001:00:00.0 Off |                    0 |
+| N/A   34C    P0    44W / 300W |    144MiB / 81920MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+```
+
+!!! info
+    注意 `MIG M.` 的設定是否是 `Enabled`!!
+
+如果 MIG mode 尚未啟動則使用下列命令來啟動:
+
+```bash
+sudo nvidia-smi -i 0 -mig 1
+```
+
+參數說明:
+
+- `-i`: 針對特定的 GPU, 後面接著的 GPU 的 ID
+- `-mig 1`: 啟動 MIG
+
+然後重新 reboot:
+
+```bash
+sudo shutdown now -r
+```
+
+要確認 MIG mode 是啟動的:
+
+```bash
+sudo nvidia-smi
+```
+
+結果:
+
+```
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  On   | 00000001:00:00.0 Off |                   On |
+| N/A   33C    P0    43W / 300W |      0MiB / 81920MiB |     N/A      Default |
+|                               |                      |              Enabled |
++-------------------------------+----------------------+----------------------+
+```
+
+**了解 GPU 的 MIG 分割組合:**
+
+查看 GI 可用組合:
+
+```bash
+nvidia-smi mig -i 0 -lgip
+```
+
+- `-lgip` 或是 `--list-gpu-instance-profiles`: 列出支持的 GPU 實例配置 profile。
+
+結果:
+
+```
++-----------------------------------------------------------------------------+
+| GPU instance profiles:                                                      |
+| GPU   Name             ID    Instances   Memory     P2P    SM    DEC   ENC  |
+|                              Free/Total   GiB              CE    JPEG  OFA  |
+|=============================================================================|
+|   0  MIG 1g.10gb       19     7/7        9.50       No     14     0     0   |
+|                                                             1     0     0   |
++-----------------------------------------------------------------------------+
+|   0  MIG 1g.10gb+me    20     1/1        9.50       No     14     1     0   |
+|                                                             1     1     1   |
++-----------------------------------------------------------------------------+
+|   0  MIG 2g.20gb       14     3/3        19.50      No     28     1     0   |
+|                                                             2     0     0   |
++-----------------------------------------------------------------------------+
+|   0  MIG 3g.40gb        9     2/2        39.25      No     42     2     0   |
+|                                                             3     0     0   |
++-----------------------------------------------------------------------------+
+|   0  MIG 4g.40gb        5     1/1        39.25      No     56     2     0   |
+|                                                             4     0     0   |
++-----------------------------------------------------------------------------+
+|   0  MIG 7g.80gb        0     1/1        79.00      No     98     5     0   |
+|                                                             7     1     1   |
++-----------------------------------------------------------------------------+
+```
+
+以 NVIDIA A100 80G 為例，最大利用率的排列組合如下圖，可根據需求做選擇。
+
+![](./assets/a100-mig-partitions.png)NVIDIA A100 80G 
+
+
+**構建 GPU 的 MIG 分割組合設定檔:**
+
+把想要的 MIG 分割組合寫成一個 `nvidia-mig-parted` 看的懂的設定檔。
+
+根據上述 NVIDIA A100 80G 的 MIG 分割組合, 我們規劃成一個 `config.yaml` 的範例配置文件。
+
+使用文字編輯器在本機創建一個 `config.yaml` 檔案:
 
 ```yaml title="config.yaml"
 version: v1
@@ -113,99 +318,111 @@ mig-configs:
         "3g.40gb": 1
 ```
 
-從配置文件應用特定的 MIG 配置:
+!!! tip 
+    設定說明:
 
-```bash
-nvidia-mig-parted apply -f config.yaml -c all-1g.10gb
-```
+    `mig-configs` 下的每個部分都是由用戶定義的 MIG 分割配置，當要啟動時可利用這些自定義標籤來引用它們。
 
-應用配置以僅更改配置的 MIG 模式設置:
+    例如，`all-disabled` 標籤是指為節點上的所有 GPU 禁用 MIG 的 MIG 配置。同樣，`all-1g.10gb` 標籤指的是將節點上的所有 GPU 切片為 `1g.10gb` 設備的 MIG 配置。
 
-```bash
-nvidia-mig-parted apply --mode-only -f config.yaml -c all-1g.10gb
-```
+    最後，`custom-config` 標籤定義了一個完全自定義的配置，它在節點的前 4 個 GPU 上禁用 MIG，並在其餘部分應用混合的 MIG 設備。
 
-應用帶有調試輸出的 MIG 配置:
 
-```bash
-nvidia-mig-parted -d apply -f config.yaml -c all-1g.10gb
-```
+下面列出怎麼使用 MIG 分割組合設定檔的一些手法。
 
-在沒有配置文件的情況下應用一次性 MIG 配置:
+1. 從配置文件應用特定的 MIG 配置:
 
-```bash
-cat <<EOF | nvidia-mig-parted apply -f -
-version: v1
-mig-configs:
-  all-1g.10gb:
-  - devices: all
-    mig-enabled: true
-    mig-devices:
-      1g.10gb: 7
-EOF
-```
+    ```bash
+    nvidia-mig-parted apply -f config.yaml -c all-1g.10gb
+    ```
 
-應用一次性 MIG 配置以僅更改 MIG 模式:
+2. 應用配置以僅更改配置的 MIG 模式設置:
 
-```bash
-cat <<EOF | nvidia-mig-parted apply --mode-only -f -
-version: v1
-mig-configs:
-  whatever:
-  - devices: all
-    mig-enabled: true
-    mig-devices: {}
-EOF
-```
+    ```bash
+    nvidia-mig-parted apply --mode-only -f config.yaml -c all-1g.10gb
+    ```
 
-導出當前的 MIG 配置:
+3. 應用帶有調試輸出的 MIG 配置:
 
-```bash
-nvidia-mig-parted export
-```
+    ```bash
+    nvidia-mig-parted -d apply -f config.yaml -c all-1g.10gb
+    ```
 
-檢查當前應用了特定的 MIG 配置:
+4. 在沒有配置文件的情況下應用一次性 MIG 配置:
 
-```bash
-nvidia-mig-parted assert -f config.yaml -c all-1g.10gb
-```
+    ```bash
+    cat <<EOF | nvidia-mig-parted apply -f -
+    version: v1
+    mig-configs:
+      all-1g.10gb:
+      - devices: all
+        mig-enabled: true
+        mig-devices:
+          1g.10gb: 7
+    EOF
+    ```
 
-檢查並執行當前應用了 MIG 配置的 MIG 模式設置:
+5. 應用一次性 MIG 配置以僅更改 MIG 模式:
 
-```bash
-nvidia-mig-parted assert --mode-only -f config.yaml -c all-1g.10gb
-```
+    ```bash
+    cat <<EOF | nvidia-mig-parted apply --mode-only -f -
+    version: v1
+    mig-configs:
+      whatever:
+      - devices: all
+        mig-enabled: true
+        mig-devices: {}
+    EOF
+    ```
 
-在沒有配置文件的情況下檢查並執行一次性 MIG 配置:
+6. 導出當前的 MIG 配置:
 
-```bash
-cat <<EOF | nvidia-mig-parted assert -f -
-version: v1
-mig-configs:
-  all-1g.5gb:
-  - devices: all
-    mig-enabled: true
-    mig-devices: 
-      1g.5gb: 7
-EOF
-```
+    ```bash
+    nvidia-mig-parted export
+    ```
 
-檢查一次性 MIG 配置的 MIG 模式設置:
+7. 檢查當前應用了特定的 MIG 配置:
 
-```bash
-cat <<EOF | nvidia-mig-parted assert --mode-only -f -
-version: v1
-mig-configs:
-  whatever:
-  - devices: all
-    mig-enabled: true
-    mig-devices: {}
-EOF
-```
+    ```bash
+    nvidia-mig-parted assert -f config.yaml -c all-1g.10gb
+    ```
 
-### 練習
+8. 檢查並執行當前應用了 MIG 配置的 MIG 模式設置:
 
-創建一個範例 MIG 配置檔 `config.yaml` 來對一個擁有 8　張 NVIDIA A100(80gb) 的 GPU 節點進行 MIG 切割的設定:
+    ```bash
+    nvidia-mig-parted assert --mode-only -f config.yaml -c all-1g.10gb
+    ```
+
+9. 在沒有配置文件的情況下檢查並執行一次性 MIG 配置:
+
+    ```bash
+    cat <<EOF | nvidia-mig-parted assert -f -
+    version: v1
+    mig-configs:
+      all-1g.5gb:
+      - devices: all
+        mig-enabled: true
+        mig-devices: 
+          1g.5gb: 7
+    EOF
+    ```
+
+10. 檢查一次性 MIG 配置的 MIG 模式設置:
+
+    ```bash
+    cat <<EOF | nvidia-mig-parted assert --mode-only -f -
+    version: v1
+    mig-configs:
+      whatever:
+      - devices: all
+        mig-enabled: true
+        mig-devices: {}
+    EOF
+    ```
+
+### MIG 切割練習
+
+使用範例 MIG 配置檔 `config.yaml` 來對一個擁有 8　張 NVIDIA A100(80gb) 的 GPU 節點進行 MIG 切割:
 
 ```yaml title="config.yaml"
 version: v1
@@ -268,13 +485,7 @@ mig-configs:
         "3g.40gb": 1
 ```
 
-`mig-configs` 下的每個部分都是由用戶定義的 MIG 分割配置，當要啟動時可利用這些自定義標籤來引用它們。
-
-例如，`all-disabled` 標籤是指為節點上的所有 GPU 禁用 MIG 的 MIG 配置。同樣，`all-1g.10gb` 標籤指的是將節點上的所有 GPU 切片為 `1g.10gb` 設備的 MIG 配置。
-
-最後，`custom-config` 標籤定義了一個完全自定義的配置，它在節點的前 4 個 GPU 上禁用 MIG，並在其餘部分應用混合的 MIG 設備。
-
-使用此工具，可以運行以下命令以依次應用這些配置中的每一個:
+使用 `nvidia-mig-parted` 工具，來運行以下命令依次應用這些配置:
 
 ```bash
 sudo nvidia-mig-parted apply -f config.yaml -c all-disabled
@@ -342,7 +553,7 @@ sudo shutdown now -r
 sudo nvidia-mig-parted apply -f config.yaml -c all-1g.10gb
 ```
 
-用`nvidia-smi` 查看:
+用 `nvidia-smi` 查看:
 
 ```bash
 +-----------------------------------------------------------------------------+

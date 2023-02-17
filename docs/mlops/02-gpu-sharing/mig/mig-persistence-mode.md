@@ -72,7 +72,7 @@ NVIDIA 內核模式驅動程序必須正在運行並連接到目標 GPU 設備�
     - ECC Mode, Aggregate ECC errors, Retired Pages
     - GPU Operation Mode, Driver Model
 
-## 設定練習
+## 練習
 
 ### 環境安裝
 
@@ -170,7 +170,7 @@ nvidia-smi
 - 手動啟停　Persistence Mode
 - 使用 Persistence Daemon (守護進程)
 
-### 手動啟動　Persistence Mode
+### 手動啟動 Persistence Mode
 
 **持久模式** 是用戶可設置的驅動程序屬性的術語，即使沒有客戶端連接到目標 GPU，它也能使目標 GPU 保持初始化狀態。此解決方案已接近生命週期結束，最終將被棄用，取而代之的是 Persistence Daemon。
 
@@ -353,7 +353,7 @@ sudo nano /lib/systemd/system/nvidia-persistenced.service
 
 修改下列內容:
 
-```
+```hl_lines="9"
 [Unit]
 Description=NVIDIA Persistence Daemon
 Wants=syslog.target
