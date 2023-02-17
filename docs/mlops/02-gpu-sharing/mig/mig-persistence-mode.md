@@ -72,8 +72,105 @@ NVIDIA 內核模式驅動程序必須正在運行並連接到目標 GPU 設備�
     - ECC Mode, Aggregate ECC errors, Retired Pages
     - GPU Operation Mode, Driver Model
 
+## 設定練習
 
-## Persistence Mode (傳統手法)
+### 環境安裝
+
+本教程使用了 Azure 上的 VM (O.S: Ubuntu 20.04.05)來作為練習在 Kubernetes 裡應用 MIG 的環境。
+
+|型號	|vCPU	|記憶體：GiB	|暫存儲存體：GiB	|GPU	|GPU 記憶體：GiB	|
+|----|-----|------------|---------------|-----|----------------|
+|Standard_NC24ads_A100_v4|24|220|1123|1|80|
+
+這個 VM 會搭配一張 **Nvidia A100 (80gb)** 的 GPU 卡。
+
+參考: [NC A100 v4 系列](https://learn.microsoft.com/zh-tw/azure/virtual-machines/nc-a100-v4-series)
+
+以下是安裝 Rancher (RKE2/K3S) 和 Nvidia GPU Operator 的步驟。
+
+**先決條件 (一台配備著 Nvidia GPU 的機器):**
+
+- Operating system: `Ubuntu 20.04.05 LTS`
+- GPU: `Nvidia A100 (80gb)` (Nvidia GPU 顯卡)
+
+**安裝 nvidia drivers:**
+
+!!! tip
+    根據 Nvidia GPU Operator 的內容，operator 應該可自動幫每一個 Kubernetes 節點自動設定 GPU 的 Driver。
+    
+    然而在驗證的過程會發現 Ubuntu 的機器會在安裝完 Nvidia GPU Operator 之後一直重覆 reboot。
+    
+    排查之後的結果因該是 GPU Operator 在自動安裝 GPU Driver 後所發生的現象，查找相關 Githut 與 Google 之後尚未找出根因，因此在本教程中是先手動安裝 Nvidia GPU Driver 與 Nvidia Container Toolkit 在 Ubuntu 的機器上。
+
+
+我們可以先使用 `apt` 搜索可用的 Nvidia GPU 卡的驅動程式：
+
+```bash
+sudo apt update
+
+sudo apt search nvidia-driver
+```
+
+由於許多深度學習開發工具會與 Nvidia CUDA 函式庫有相依性，在安裝 Nvidia Driver 時需要根據實際的情況來決定要安裝的 Driver 版本。
+
+下面列出 CUDA 版本對應到 Driver 版本的兼容性:
+
+|CUDA Toolkit	|Linux x86_64 Minimum Required Driver Version	|Windows Minimum Required Driver Version|
+|-------------|---------------------------------------------|---------------------------------------|
+|CUDA 12.x	|>=525.60.13	|>=527.41|
+|CUDA 11.x	|>= 450.80.02*	|>=452.39*|
+|CUDA 10.2	|>= 440.33	|>=441.22|
+|CUDA 10.1	|>= 418.39	|>=418.96|
+|CUDA 10.0	|>= 410.48	|>=411.31|
+
+根據 Nivida 官網的資訊:
+
+- 從 CUDA 12/R525 驅動程序開始支持 H100 GPU。
+- 從 CUDA 11/R450 驅動程序開始支持 A100 和 A30 GPU。
+
+因此在本教程會選擇驅動程式版本 `515`，所以讓我們安裝這個版本：
+
+```bash
+sudo apt install nvidia-driver-515 nvidia-dkms-515 -y
+```
+
+重新啟動 Ubuntu 的機器:
+
+```bash
+sudo shutdown now -r
+```
+
+驗證 nvidia driver 的安裝:
+
+```bash
+nvidia-smi
+```
+
+結果:
+
+```    
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100 80G...  Off  | 00000001:00:00.0 Off |                    0 |
+| N/A   38C    P0    45W / 300W |     99MiB / 81920MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+```
+
+!!! info
+    特別注意的資訊是 `Persistence-M` 的預設狀態是 `Off`!!
+
+要啟動 Persistence, Nvidia 官方有建議下列兩種方法:
+
+- 手動啟停　Persistence Mode
+- 使用 Persistence Daemon (守護進程)
+
+### 手動啟動　Persistence Mode
 
 **持久模式** 是用戶可設置的驅動程序屬性的術語，即使沒有客戶端連接到目標 GPU，它也能使目標 GPU 保持初始化狀態。此解決方案已接近生命週期結束，最終將被棄用，取而代之的是 Persistence Daemon。
 
@@ -101,11 +198,11 @@ All done.
 使用 `nvidia-smi` 查看當前持久化模式：
 
 ```bash title="範本"
-nvidia-smi -i <target gpu> - q
+nvidia-smi -i <target gpu> -q
 ```
 
 ```bash title="執行下列命令  >_"
-sudo nvidia-smi -i 0 - q
+sudo nvidia-smi -i 0 -q
 ```
 
 結果:
@@ -147,7 +244,7 @@ Disabled persistence mode for GPU 00000001:00:00.0.
 All done.
 ```
 
-## Persistence Daemon
+### 使用 Persistence Daemon
 
 NVIDIA 在 Linux 上提供了一個用戶空間守護進程，以支持跨 Cuda 作業運行的驅動程序狀態持久化。守護進程方法為這個問題提供了比持久模式更優雅和健壯的解決方案。
 
@@ -155,7 +252,7 @@ NVIDIA 在 Linux 上提供了一個用戶空間守護進程，以支持跨 Cuda 
 
 NVIDIA 建議使用守護程序方法來設定驅動程序狀態持久化。
 
-### 實施細節
+#### 實施細節
 
 在運行 NVIDIA GPU 驅動程序的 Linux 系統上，客戶端通過打開其設備文件來附加 GPU。相反，通過關閉設備文件來分離 GPU。只要一個或多個客戶端打開設備文件，GPU 狀態就會保持加載到驅動程序中。一旦所有客戶端都關閉了設備文件，除非啟用持久模式，否則 GPU 狀態將被卸載。
 
@@ -164,7 +261,7 @@ NVIDIA 建議使用守護程序方法來設定驅動程序狀態持久化。
 Persistence Daemon 可以用作我們現在稱為 Persistence Mode 的替代品，如在 NVIDIA 內核模式驅動程序中實現的那樣。 NVIDIA SMI 已在驅動程序版本 319 中更新，以使用守護程序的 RPC 接口在守護程序運行時使用守護程序設置持久性模式，如果守護程序未運行，將回退到在內核模式驅動程序中設置遺留持久性模式來運行。這一切都由 NVIDIA SMI 處理，因此持久模式的配置方式應該沒有變化。最終，一旦 NVIDIA Persistence Daemon 在相關用例中得到廣泛採用，舊的持久性模式將被棄用和刪除。
 
 
-### 權限和安全
+#### 權限和安全
 
 NVIDIA Persistence Daemon 在 Linux 上提供了更強大的持久模式實現，因為它只是模擬 GPU 的外部客戶端，但實際上並不使用 GPU 進行任何工作。通過這種方式，它使 NVIDIA GPU 驅動程序在其原始設計的假設範圍內運行。
 
@@ -179,7 +276,7 @@ NVIDIA Persistence Daemon 在 Linux 上提供了更強大的持久模式實現�
 
 請注意，在這兩種情況下，守護進程在被終止時可能無法刪除其運行時數據目錄，因此該任務通常應由守護進程的初始化腳本或服務處理。
 
-### 範例
+#### 範例
 
 啟動 NVIDIA Persistence Daemon，並為所有 NVIDIA GPU 裝置禁用持久模式。
 
@@ -195,26 +292,9 @@ sudo nvidia-persistenced --persistence-mode
 
 #### 啟用 Service 以及檢查測試
 
-安裝完 driver，建議啟用 `service nvidia-persistenced`:
+通常安裝完 Nvidia Driver 後 `nvidia-persistenced` 的服務也被啟動。
 
-```bash
-# 啟用 nvidia-persistenced 
-systemctl start nvidia-persistenced
-
-# 開機自動啟用 nvidia-persistenced
-systemctl enable nvidia-persistenced
-
-# 檢查 driver 版本
-cat /proc/driver/nvidia/version
-
-# 測試基本指定能否正常執行和顯示
-nvidia-smi 
-
-# 如果有異常，可能需要重開機
-systemctl reboot
-```
-
-執行下列命令來檢查:
+檢查　`nvidia-persistenced` 服務狀態:
 
 ```bash
 sudo systemctl status nvidia-persistenced
@@ -222,27 +302,50 @@ sudo systemctl status nvidia-persistenced
 
 結果:
 
-```
+```hl_lines="4"
 ● nvidia-persistenced.service - NVIDIA Persistence Daemon
      Loaded: loaded (/lib/systemd/system/nvidia-persistenced.service; static; vendor preset: enabled)
-     Active: active (running) since Tue 2023-02-14 07:29:20 UTC; 2min 32s ago
-    Process: 908 ExecStart=/usr/bin/nvidia-persistenced --user nvidia-persistenced --no-persistence-mode --verbose (code=exited, status=0/SUCCESS)
-   Main PID: 909 (nvidia-persiste)
+     Active: active (running) since Fri 2023-02-17 05:03:58 UTC; 10min ago
+    Process: 911 ExecStart=/usr/bin/nvidia-persistenced --user nvidia-persistenced --no-persistence-mode --verbose (code=exited, status=0/SUCCESS)
+   Main PID: 912 (nvidia-persiste)
       Tasks: 1 (limit: 265743)
-     Memory: 740.0K
+     Memory: 784.0K
      CGroup: /system.slice/nvidia-persistenced.service
-             └─909 /usr/bin/nvidia-persistenced --user nvidia-persistenced --no-persistence-mode --verbose
+             └─912 /usr/bin/nvidia-persistenced --user nvidia-persistenced --no-persistence-mode --verbose
 
-Feb 14 07:29:20 aiml-server-2 systemd[1]: Starting NVIDIA Persistence Daemon...
-Feb 14 07:29:20 aiml-server-2 nvidia-persistenced[909]: Verbose syslog connection opened
-Feb 14 07:29:20 aiml-server-2 nvidia-persistenced[909]: Now running with user ID 115 and group ID 124
-Feb 14 07:29:20 aiml-server-2 nvidia-persistenced[909]: Started (909)
-Feb 14 07:29:20 aiml-server-2 nvidia-persistenced[909]: device 0001:00:00.0 - registered
-Feb 14 07:29:20 aiml-server-2 nvidia-persistenced[909]: Local RPC services initialized
-Feb 14 07:29:20 aiml-server-2 systemd[1]: Started NVIDIA Persistence Daemon.
+Feb 17 05:03:58 aiml-server-0 nvidia-persistenced[912]: Started (912)
+Feb 17 05:03:58 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - registered
+Feb 17 05:03:58 aiml-server-0 nvidia-persistenced[912]: Local RPC services initialized
+Feb 17 05:03:58 aiml-server-0 systemd[1]: Started NVIDIA Persistence Daemon.
+Feb 17 05:05:36 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - persistence mode enabled.
+Feb 17 05:05:36 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - NUMA memory onlined.
+Feb 17 05:06:45 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - persistence mode disabled.
+Feb 17 05:06:45 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - NUMA memory offlined.
+Feb 17 05:07:06 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - persistence mode enabled.
+Feb 17 05:07:06 aiml-server-0 nvidia-persistenced[912]: device 0001:00:00.0 - NUMA memory onlined.
 ```
 
-從上述的 systemd 的設定的來看 Persistent Mode 預設是停用的。修改 `/lib/systemd/system/nvidia-persistenced.service` 命令稿來啟用:
+!!! tip
+    如果機器上沒找到 `nvidia-persistenced` 服務進程, 那麼建議使用下列的手法來啟用 `nvidia-persistenced`:
+
+    ```bash
+    # 啟用 nvidia-persistenced 
+    systemctl start nvidia-persistenced
+
+    # 開機自動啟用 nvidia-persistenced
+    systemctl enable nvidia-persistenced
+
+    # 檢查 driver 版本
+    cat /proc/driver/nvidia/version
+
+    # 測試基本指定能否正常執行和顯示
+    nvidia-smi 
+
+    # 如果有異常，可能需要重開機
+    systemctl reboot
+    ```
+
+從上述的 systemd 的設定的來看 Persistent Mode 預設是停用的。修改 `/lib/systemd/system/nvidia-persistenced.service` 命令稿:
 
 ```bash
 sudo nano /lib/systemd/system/nvidia-persistenced.service
@@ -259,13 +362,11 @@ Before=systemd-backlight@backlight:nvidia_0.service
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/nvidia-persistenced --persistence-mode
+ExecStart=/usr/bin/nvidia-persistenced --persistence-mode --verbose
 ExecStopPost=/bin/rm -rf /var/run/nvidia-persistenced
 ```
 
-- `ExecStart=/usr/bin/nvidia-persistenced --user nvidia-persistenced --no-persistence-mode --verbose`
-
-重新 reboot:
+重新 reboot 機器:
 
 ```bash
 sudo shutdown now -r
@@ -279,20 +380,25 @@ sudo systemctl status nvidia-persistenced
 
 結果:
 
-```hl_lines="4"
+```hl_lines="4 15"
 ● nvidia-persistenced.service - NVIDIA Persistence Daemon
      Loaded: loaded (/lib/systemd/system/nvidia-persistenced.service; static; vendor preset: enabled)
-     Active: active (running) since Tue 2023-02-14 07:45:23 UTC; 1min 37s ago
-    Process: 907 ExecStart=/usr/bin/nvidia-persistenced --persistence-mode (code=exited, status=0/SUCCESS)
-   Main PID: 911 (nvidia-persiste)
+     Active: active (running) since Fri 2023-02-17 05:20:43 UTC; 33s ago
+    Process: 907 ExecStart=/usr/bin/nvidia-persistenced --persistence-mode --verbose (code=exited, status=0/SUCCESS)
+   Main PID: 909 (nvidia-persiste)
       Tasks: 1 (limit: 265743)
      Memory: 33.1M
      CGroup: /system.slice/nvidia-persistenced.service
-             └─911 /usr/bin/nvidia-persistenced --persistence-mode
+             └─909 /usr/bin/nvidia-persistenced --persistence-mode --verbose
 
-Feb 14 07:45:21 aiml-server-2 systemd[1]: Starting NVIDIA Persistence Daemon...
-Feb 14 07:45:21 aiml-server-2 nvidia-persistenced[911]: Started (911)
-Feb 14 07:45:23 aiml-server-2 systemd[1]: Started NVIDIA Persistence Daemon.
+Feb 17 05:20:41 aiml-server-0 systemd[1]: Starting NVIDIA Persistence Daemon...
+Feb 17 05:20:41 aiml-server-0 nvidia-persistenced[909]: Verbose syslog connection opened
+Feb 17 05:20:41 aiml-server-0 nvidia-persistenced[909]: Started (909)
+Feb 17 05:20:41 aiml-server-0 nvidia-persistenced[909]: device 0001:00:00.0 - registered
+Feb 17 05:20:43 aiml-server-0 nvidia-persistenced[909]: device 0001:00:00.0 - persistence mode enabled.
+Feb 17 05:20:43 aiml-server-0 nvidia-persistenced[909]: device 0001:00:00.0 - NUMA memory onlined.
+Feb 17 05:20:43 aiml-server-0 nvidia-persistenced[909]: Local RPC services initialized
+Feb 17 05:20:43 aiml-server-0 systemd[1]: Started NVIDIA Persistence Daemon.
 ```
 
 使用 `nvidia-smi` 來檢查:
@@ -305,8 +411,8 @@ Feb 14 07:45:23 aiml-server-2 systemd[1]: Started NVIDIA Persistence Daemon.
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
 |                               |                      |               MIG M. |
 |===============================+======================+======================|
-|   0  NVIDIA A100 80G...  On   | 00000001:00:00.0 Off |                   On |
-| N/A   36C    P0    45W / 300W |      0MiB / 81920MiB |     N/A      Default |
-|                               |                      |              Enabled |
+|   0  NVIDIA A100 80G...  On   | 00000001:00:00.0 Off |                    0 |
+| N/A   34C    P0    44W / 300W |     99MiB / 81920MiB |      0%      Default |
+|                               |                      |             Disabled |
 +-------------------------------+----------------------+----------------------+
 ```
