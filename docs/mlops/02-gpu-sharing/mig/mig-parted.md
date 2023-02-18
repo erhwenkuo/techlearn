@@ -2,6 +2,8 @@
 
 原文: [MIG Partiton Editor for NVIDIA GPUs](https://github.com/NVIDIA/mig-parted)
 
+![](./assets/mig-parted.png)
+
 MIG（Multi-Instance GPU 的縮寫）是最新一代 NVIDIA Ampere GPU 中的一種操作模式。它允許將一個 GPU 劃分為一組“MIG 設備”，在使用它們的軟件看來，每個設備都像一個迷你 GPU，具有固定的內存分區和固定的計算資源分區。有關 MIG 及其提供的功能的詳細說明，請參閱 [MIG 用戶指南](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html)。
 
 

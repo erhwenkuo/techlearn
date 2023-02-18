@@ -2,6 +2,8 @@
 
 原文: https://docs.nvidia.com/deploy/driver-persistence/index.html
 
+![](./assets/gpu-persistence-mode.jpg)
+
 ## 背景
 
 NVIDIA GPU 驅動程序歷來遵循 Unix 設計哲學，僅在用戶配置系統時才初始化軟件和硬件狀態。傳統上，這種配置是通過 X 服務器完成的，GPU 僅在 X 服務器（代表用戶）請求啟用時才初始化。這對於無需重啟即可重新配置 GPU 的能力非常重要（例如，更改 SLI 模式或總線設置，尤其是在 AGP 時代）。
