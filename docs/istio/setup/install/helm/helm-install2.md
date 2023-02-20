@@ -1,10 +1,31 @@
-# Istio+OpenTelemetry+Tempo 大全配
+# Istio+OTel+Tempo 大全配
 
-![](./assets/ecosystem.resized.png)
+![](./assets/istio-ecosystem.png)
 
-請跟隨本指南一起，使用 Helm 安裝、配置、並深入評估 Istio 網格系統。本指南用到的 Helm chart、以及使用 Istioctl、Operator 安裝 Istio 時用到的 chart，它們都是相同的底層 chart。
+請跟隨本教程一起，使用 Helm 安裝、配置、並深入評估 Istio 網格系統。本教程會安裝下列的元件:
+
+- Ubuntu 20.04 (O.S)
+- Docker
+- Kubernetes (K3D)
+- Metallb
+- Nginx Ingress Controller
+- Istio
+- Kiali
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Tempo
+
+同時也會利用不同類型的範例應用來驗證不同元件的功能與彼此的整合，其中會特別值得關注的是:
+
+1. 啟動 Istio tracing 的功能與設定拋轉 envoy 的 tracing 資訊到 Tempo
+2. 啟動 OpenTelemetryCollector 並設定基本的 tracing receiver 與 exporter
+3. 啟動 Grafana Tempo (v2) 來接收由 OTel Collector 傳送進來的 tracing 資料
+4. 設定 Grafana TracingQL 的 UI plugin, 並用來查找 tracing 相關數據
 
 ## 步驟 01 - 環境安裝
+
+![](./assets/lab-env.png)
 
 ### 先決條件
 
@@ -99,6 +120,10 @@ k3d cluster create  --api-port 6443 \
 - `--network lab-network` 使用預先創建的 docker 虛擬網段
 
 ### 安裝/設定 MetalLB
+
+在本次的結構裡, 有兩個負責南北向 traffic 的亓件, 主要原因是 Nginx Ingress Controller 是很多團隊己經使用的 ingress 的元件, 雖說 Istio Ingress Gateway 也可負責對外開放在 Kubernetes 裡頭的服務, 但是對大多數的團隊來說這樣的轉換需要熟悉與過渡。因此在本次的 lab 架構會同時並存這兩個元件並且使用 metallb 來配置固定的 IP。
+
+![](./assets/dual-north-south-traffic.png)
 
 #### Helm 安裝
 
@@ -297,14 +322,19 @@ helm repo update
       defaultConfig:
         tracing:
           zipkin:
-            address: tempo.monitoring.svc.cluster.local:9411
+            address: otel-collector-collector.otel-system.svc.cluster.local:9411
             # address=<jaeger-collector-address>:9411 
     ```
+
 
     ```bash title="執行下列命令  >_"
     helm upgrade --install --create-namespace --namespace istio-system \
       istiod istio/istiod \
       --values istiod-values.yaml
+    ```
+
+    ```
+    helm pull istio/istiod
     ```
 
 4. 安裝 Istio 的入站網關:
@@ -355,7 +385,7 @@ data:
       discoveryAddress: istiod.istio-system.svc:15012
       tracing:
         zipkin:
-          address: tempo.monitoring.svc.cluster.local:9411
+          address: opentelemetry-operator.otel-system.svc.cluster.local:9411
     enablePrometheusMerge: true
     enableTracing: true
     rootNamespace: null
@@ -782,8 +812,8 @@ Grafana Tempo 支持許多不同 protocol 來接收 tracing 的資料:
 
 本教程使用 `kube-prometheus-stack` 來構建可觀測性的相關元件, 詳細說明請參additionalDataSources
 
-- [Prometheus 簡介](../../prometheus/prometheus/overview.md)
-- [Prometheus Operator 簡介](../../prometheus/operator/install.md)
+- [Prometheus 簡介](../../../../prometheus/prometheus/overview.md)
+- [Prometheus Operator 簡介](../../../../prometheus/prometheus/overview.md)
 
 添加 Prometheus-Community helm 存儲庫並更新本地緩存：
 
@@ -804,7 +834,7 @@ helm repo update
 
 創建要配置的 prometheus stack 的設定檔案(使用任何文字編輯器來創建):
 
-```yaml title="kube-stack-prometheus-values.yaml" hl_lines="4 8-12 22-23"
+```yaml title="kube-stack-prometheus-values.yaml" hl_lines="8 12-16 26-27"
 grafana:
   ingress:
     enabled: true
@@ -918,7 +948,7 @@ kube-stack-prometheus-kube-prometheus   nginx   prometheus.example.it   172.20.0
 
 有關 `kube-stack-prometheus` 的詳細說明:
 
-- [Prometheus Operator](../../prometheus/operator/install.md)
+- [Prometheus Operator](../../../../prometheus/operator/install.md)
 
 #### 整合 Istio 與 Prometheus
 
@@ -1085,21 +1115,7 @@ helm upgrade --install --create-namespace --namespace otel-system  \
   opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
-一旦 `opentelemetry-operator` 部署準備就緒，您就可以  rules:
-  - http:
-      paths:
-        - path: /apple
-          backend:
-            serviceName: apple-service
-            servicePort: 5678
-        - path: /banana
-          backend:
-            serviceName: banana-service
-            servicePort: 5678
-
-如果您想更好地控制 OpenTelemetry Collector 並創建一個獨立的應用程序，`Deployment` 將是您的選擇。通過 Deployment，您可以相對輕鬆地擴展 Collector 以監視更多目標、在發生任何意外情況時回滾到早期版本、暫停 Collector 等。通常，您可以像管理應用程序一樣管理 Collector 實例。
-
-以下示例配置將收集器部署為 `Deployment`。接收器是 Jaeger protocol compliant 的接收器，導出器是 otlp 與 logging（在這裡放上 logging 的主要原因是方便在本教程裡展現與除錯 tracing 在 OTEL 流經的查證, 在 Production 環境記得移除)。
+以下示例配置將 OpenTelemetry Collector 部署為 `Deployment`。接收器是 Jaeger protocol compliant 的接收器，導出器是 otlp 與 logging（在這裡放上 logging 的主要原因是方便在本教程裡展現與除錯 tracing 在 OTEL 流經的查證, 在 Production 環境記得移除)。
 
 ```bash hl_lines="14-19"
 kubectl apply -n otel-system -f -<<EOF
@@ -1122,6 +1138,8 @@ spec:
           thrift_compact:
           thrift_http:
       zipkin:
+      opencensus:
+        endpoint: 0.0.0.0:55678
 
     processors:
       batch:
@@ -1129,7 +1147,7 @@ spec:
     exporters:
       otlp:
         # otlp grpc protocol
-        endpoint: tempo.monitoring:4317
+        endpoint: "tempo.monitoring:4317"
         tls:
           insecure: true
       logging:
@@ -1224,6 +1242,7 @@ kind: Ingress
 metadata:
   name: ingress-example-hotrod
 spec:
+  rules:
   - host: "hotrod.example.it"
     http:
       paths:
@@ -1235,6 +1254,25 @@ spec:
             port:
               number: 8080
 EOF
+```
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-svc
+spec:
+  rules:
+  - host: "nginx.example.it"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
 ```
 
 檢查看這個 ingress 是否有取得 IP ADDRESS:
@@ -1361,11 +1399,33 @@ kubectl apply -f kiali-cr.yaml -n istio-system
 
 #### 連接到 Kiali
 
+修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
+
+```bash
+sudo nano /etc/hosts
+```
+
+修改內容:
+
+``` title="/etc/hosts"
+...
+172.20.0.13  kiali.example.it
+...
+```
+
+在 `kiali-cr.yaml` 的設定裡啟動了 ingress 的設定, 而且也在本機的 `/etc/hosts` 檔案裡增加了 `kiali.example.it` 對 Ingress Controller 掌控的 IP: `172.20.0.13` 的映射。因此可直接使用瀏覽器到下列的網址:
+
+- `http://kiali.example.it/kiali`
+
+或是使用端口轉發來訪問：
+
 Kiali Web UI 可通過以下命令通過端口轉發訪問：
 
 ```bash title="執行下列命令  >_"
 kubectl port-forward svc/kiali 20001:20001 -n istio-system --address="0.0.0.0"
 ```
+
+![](./assets/kiali-ui.png)
 
 ## 步驟 02 - Istio 功能驗證
 
@@ -1581,3 +1641,12 @@ for i in $(seq 1 10000); do curl -s -o /dev/null "http://bookinfo.istio-example.
 
 !!! info
     上述的命令稿是使用 linux 的 Bash script 來模擬服務的流量。
+
+在 Kiali UI 左側導航菜單中，選擇 `Graph`，然後在 `Namespace` 下拉菜單中選擇 `default`。
+
+![](./assets/kiali-graph-default.png)
+
+Kiali 經由 Prometheus 所收集的 envoy 指標就能夠視覺化地展現出流量與服務的拓撲圖。
+
+![](./assets/kiali-bookinfo-graph.png)
+
