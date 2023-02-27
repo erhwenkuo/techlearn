@@ -134,6 +134,15 @@ nav:
         - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
         - 儀器化 Springboot 應用程序: coding/java/backend/metric/web-api-metric.md
         - 結構化日誌 Sprintboot 應用程序: coding/java/backend/logging/web-api-logging.md
+  - SRE:
+    - 概念:
+      - 基於 SLO 告警: sre/concepts/slo-alerts/slo-alert.md
+    - 工具:
+      - Sloth:
+        - 概念:
+          - Sloth 是什麼？: sre/tools/sloth/what-is-sloth.md
+        - 安裝: 
+          - Helm 安裝與功能驗證: sre/tools/sloth/setup/helm-install.md
   - MLOps:
     - Getting started:
       - 學習環境:
@@ -459,14 +468,6 @@ nav:
       - 如何在 Ubuntu 20.04 上安裝 Docker: ansible/tutorial/ubuntu-insall-docker.md
       - 如何使用 Ansible 在 Ubuntu 20.04 上安裝和設置 Docker: ansible/tutorial/ansible-install-docker.md
       - 如何在 Ubuntu 22.04 上安裝和配置 Ansible: ansible/tutorial/how-to-install-and-configure-ansible-on-ubuntu-22-04.md
-  - SRE:
-    - 概念:
-      - 基於 SLO 告警: sre/concepts/slo-alerts/slo-alert.md
-    - 工具:
-      - Sloth:
-        - 概念:
-          - Sloth 是什麼？: sre/tools/sloth/what-is-sloth.md
-        - 安裝: 
-          - 使用 Helm 安裝: sre/tools/sloth/setup/helm-install.md
+
 
 
