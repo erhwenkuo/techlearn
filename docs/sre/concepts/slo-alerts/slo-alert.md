@@ -1,5 +1,14 @@
 # SLO 告警
 
+![](./assets/SLO_alerting_3.jpg)
+
+原文:
+
+- [基于 SLO 告警（Part 1）：基础概念](https://studygolang.com/topics/16114)
+- [基于SLO告警（Part 2）：为什么使用MWMB方法](https://studygolang.com/articles/36037)
+- [基于SLO告警（Part 3）：开源项目 sloth 使用](https://studygolang.com/topics/16125)
+- [基于SLO告警（Part 4）：开源项目 pyrra 使用](https://studygolang.com/topics/16130)
+
 看過 Google 網站可靠性工作手冊一書的朋友都知道，該書在第一部分重點講解了基於 SLO 的告警監控相關知識，可見基於 SLO 的監控告警依然成為一種趨勢，那在實際工作中，我們該如何實施和落地 SLO 監控告警呢?
 
 ## 基礎概念
@@ -512,6 +521,8 @@ pyrra 生成的 Prometheus 規則類型主要有:
 3. 啟動 Prometheus，加載生成的規則文件，並收集 MyService 指標。
 4. 啟動 Grafana 和 pyrra api，查看 SLO 列表和詳情頁面。
 
+![](./assets/pyrra-practice.webp)
+
 **啟動程序:**
 
 示例程序已提交到 https://github.com/grafanafans/play-with-pyrra 倉庫，歡迎查看。
@@ -548,4 +559,4 @@ curl http://localhost:8080/errrate?value=0.005
 
 可以看到 pyrra 和 sloth 做的事情類似，它也提供命令行和 K8s Controller 方式實現 Prometheus 規則的自動生成。相較於 sloth，它在服務化方面做的更多一些，不僅提供了一個開箱即用的 SLO 頁面還支持 filesystem 模式對 SLO 目錄進行監聽。
 
-總的來說，如果您有 SLO 狀態頁面的需求（不方便使用 Grafa
+總的來說，如果您有 SLO 狀態頁面的需求（不方便使用 Grafana），pyrra 是個不錯的選擇。
