@@ -110,6 +110,15 @@ nav:
     - CICD 路線圖: index.md
     - Networking Basics:
       - 無類別區隔路由 CIDR: networking/cidr/cidr-intro.md
+      - Dnsmasq 本地 DNS 解析器: networking/dns/dnsmasq/setup-dnsmasq-resolve-dns.md
+    - SSL 憑證:
+      - 在憑證信任庫中安裝根CA證書: networking/ssl/security-trust-store.md
+      - Openssl 證書生成命令大全: kubernetes/03-tasks/tls/reference/openssl-certificate.md
+      - 帶 IP 地址的自簽 SSL/TLS: kubernetes/03-tasks/tls/reference/self-signed-cert.md
+      - 使用 mkcert 製作本機憑證: kubernetes/03-tasks/tls/reference/mkcert-quickstart.md
+    - Identity:
+      - Dex:
+        - 簡介: identity/dex/index.md
     - YAML:
       - YAML 入門教程: yaml/yaml-intro.md
       - Learn YAML: yaml/yaml-tutorial.md
@@ -143,6 +152,13 @@ nav:
           - Sloth 是什麼？: sre/tools/sloth/what-is-sloth.md
         - 安裝: 
           - Helm 安裝與功能驗證: sre/tools/sloth/setup/helm-install.md
+      - Pyrra:
+        - 概念:
+          - Pyrra 是什麼？: sre/tools/pyrra/what-is-pyrra.md
+        - 安裝: 
+          - Helm 安裝與功能驗證: sre/tools/pyrra/setup/helm-install.md
+        - SLO 範例:
+          - Prometheus: sre/tools/pyrra/setup/pyrra-prometheus-slo.md
   - MLOps:
     - Getting started:
       - 學習環境:
@@ -284,7 +300,7 @@ nav:
             - K8S 應用部署之 Helm 初探: kubernetes/package/helm-app-deploy.md
       - Config 管理:
           - Kustomize:
-            - Kustomize 入門教學: kubernetes/package/helm-intro.md  
+            - Kustomize 入門教學: kubernetes/package/helm-intro.md
   - Prometheus:
     - 基礎:
       - Prometheus 簡介: prometheus/prometheus/overview.md
@@ -403,6 +419,7 @@ nav:
       - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
       - Istio+OTel+Tempo 大全配: istio/setup/install/helm/helm-install2.md
       - Istio+OTel+Tempo 大全配 (RKE2): istio/setup/install/helm/rke2-istio.md
+      - Istio+OTel+Tempo 大全配 (CCoE): istio/setup/install/helm/rke2-istio2.md
       - 更多指南:
         - 安裝配置文件: istio/setup/additional-setup/config-profiles.md
     - 示例:

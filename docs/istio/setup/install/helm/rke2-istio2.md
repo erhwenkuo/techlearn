@@ -1,4 +1,4 @@
-# Istio+OTel+Tempo 大全配 (RKE2)
+# Istio+OTel+Tempo 大全配 (RKE2/CCoE)
 
 ![](./assets/istio-ecosystem.png)
 
@@ -26,17 +26,6 @@
 ## 步驟 01 - 環境安裝
 
 ![](./assets/lab-env.png)
-
-### 先決條件
-
-- 安裝 Helm 客戶端，版本 3.6 或更高版本。
-- 配置 Helm 存儲庫：
-
-```bash title="執行下列命令  >_"
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-
-helm repo update
-```
 
 ### 申請兩個在同網段的IP
 
@@ -135,7 +124,7 @@ NAME          STATUS   ROLES                       AGE     VERSION
 dxlab-dt-01   Ready    control-plane,etcd,master   3m13s   v1.24.10+rke2r1
 ```
 
-### 安裝/設定 calicoctl CLI
+#### 安裝/設定 calicoctl CLI (Option)
 
 從 Calico 的 [github release](https://github.com/projectcalico/calico/releases) 來下載 `calicoctl`。
 
@@ -145,6 +134,18 @@ wget https://github.com/projectcalico/calico/releases/download/v3.24.5/calicoctl
 mv calicoctl-linux-amd64 calicoctl
 
 chmode +x calicoctl
+```
+
+#### 安裝 kubens (option)
+
+從 Kubectx 的 [github release](https://github.com/ahmetb/kubectx/releases) 來下載 `kubens`。
+
+```bash
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens_v0.9.4_linux_x86_64.tar.gz
+
+tar -xzvf kubens_v0.9.4_linux_x86_64.tar.gz
+
+sudo mv kubens /usr/local/bin
 ```
 
 ### 安裝/設定 MetalLB
@@ -167,21 +168,62 @@ chmod 700 get_helm.sh
 sudo ./get_helm.sh
 ```
 
-使用 Helm 的手法來進行 Ｍetallb 安裝:
+添加 CCoE Helm 存儲庫。
 
-```bash
+```bash hl_lines="2"
 #　setup helm repo
-helm repo add metallb https://metallb.github.io/metallb
+helm repo add ccoe https://harbor.wistron.com/chartrepo/k8sprdwhqcog
 
 helm repo update
 ```
 
-安裝:
+檢查 CCoE Helm 有什麼 charts:
+
+```bash
+helm search repo -l
+```
+
+結果:
 
 ```
+NAME                         	CHART VERSION   	APP VERSION	DESCRIPTION                                       
+ccoe/base                    	1.17.1          	1.17.1     	Helm chart for deploying Istio cluster resource...
+ccoe/cert-manager            	v1.11.0         	v1.11.0    	A Helm chart for cert-manager                     
+ccoe/gateway                 	1.17.1          	1.17.1     	Helm chart for deploying Istio gateways           
+ccoe/grafana                 	6.48.0          	9.3.1      	The leading tool for querying and visualizing t...
+ccoe/istiod                  	1.17.1          	1.17.1     	Helm chart for istio control plane                
+ccoe/kiali-operator          	1.64.0          	v1.64.0    	Kiali is an open source project for service mes...
+ccoe/kubernetes-dashboard    	6.0.0           	2.7.0      	General-purpose web UI for Kubernetes clusters    
+ccoe/loki                    	2.13.3          	v2.6.1     	Loki: like Prometheus, but for logs.              
+ccoe/loki-distributed        	0.67.0          	2.6.1      	Helm chart for Grafana Loki in microservices mode 
+ccoe/longhorn                	100.2.0+up1.3.0 	v1.3.0     	Longhorn is a distributed block storage system ...
+ccoe/longhorn-crd            	100.2.0+up1.3.0 	           	Installs the CRDs for longhorn.                   
+ccoe/metallb                 	0.13.9          	v0.13.9    	A network load-balancer implementation for Kube...
+ccoe/metallb                 	0.13.7          	v0.13.7    	A network load-balancer implementation for Kube...
+ccoe/opentelemetry-operator  	0.24.0          	0.70.0     	OpenTelemetry Operator Helm chart for Kubernetes  
+ccoe/rancher                 	2.6.8           	v2.6.8     	Install Rancher Server to manage Kubernetes clu...
+ccoe/rancher-logging         	100.1.2+up3.17.4	3.17.4     	Collects and filter logs using highly configura...
+ccoe/rancher-logging-crd     	100.1.2+up3.17.4	           	Installs the CRDs for rancher-logging.            
+ccoe/rancher-monitoring      	100.1.3+up19.0.3	0.50.0     	Collects several related Helm charts, Grafana d...
+ccoe/rancher-monitoring      	100.1.2+up19.0.3	0.50.0     	Collects several related Helm charts, Grafana d...
+ccoe/rancher-monitoring-crd  	100.1.3+up19.0.3	           	Installs the CRDs for rancher-monitoring.         
+ccoe/rancher-monitoring-crd  	100.1.2+up19.0.3	           	Installs the CRDs for rancher-monitoring.         
+ccoe/secrets-store-csi-driver	1.2.4           	1.2.4      	A Helm chart to install the SecretsStore CSI Dr...
+ccoe/tempo                   	1.0.0           	2.0.0      	Grafana Tempo Single Binary Mode                  
+ccoe/vault                   	0.22.1          	1.12.0     	Official HashiCorp Vault Chart 
+```
+
+!!! info
+    為了降低各個 site 拉取外部 helm chart 可能遇到外網的網路存取問題, 在進行 CCoE 的標準安裝之前都會先把相關的 helm chart 上傳至內部的 harbor 之中便於使用。
+
+    Url: https://harbor.wistron.com/harbor/projects/222/helm-charts
+
+使用 Helm 的手法來進行 Ｍetallb 安裝:
+
+```bash
 # install metallb to specific namespace
 helm upgrade --install --create-namespace --namespace metallb-system \
-  metallb metallb/metallb
+  metallb ccoe/metallb
 ```
 
 !!! tips
@@ -267,7 +309,7 @@ rke2-ingress-nginx-controller-v4z7h                     1/1     Running     0   
 檢查 RKE2 的 Ingress Controller 佈署:
 
 ```bash
-kubectl describe daemonset/rke2-ingress-nginx-controller
+kubectl describe daemonset/rke2-ingress-nginx-controller -n kube-system
 ```
 
 結果:
@@ -479,19 +521,11 @@ ingress-nginx-svc   <none>   nginx.dxlab.wistron.com   10.34.124.114   80      3
 
 #### Helm 安裝
 
-使用以下命令添加 Istio 的 chart 存儲庫：
-
-```bash
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-
-helm repo update
-```
-
 1. 安裝 `Istio base chart`，它包含了 Istio 控制平面用到的集群範圍的資源:
 
     ```bash title="執行下列命令  >_"
     helm upgrade --install --create-namespace --namespace istio-system \
-      istio-base istio/base
+      istio-base ccoe/base
     ```
 
 3. 安裝 Istio discovery chart，它用於部署 istiod 服務:
@@ -504,14 +538,14 @@ helm repo update
       defaultConfig:
         tracing:
           zipkin:
-            address: otelc-collector.otel-system.svc.cluster.local:9411
+            address: otel-collector.otel-system.svc.cluster.local:9411
             # address=<jaeger-collector-address>:9411 
     ```
 
 
     ```bash title="執行下列命令  >_"
     helm upgrade --install --create-namespace --namespace istio-system \
-      istiod istio/istiod \
+      istiod ccoe/istiod \
       --values istiod-values.yaml
     ```
 
@@ -520,17 +554,17 @@ helm repo update
 
     設定 `istio-ingressgateway` 要從 metallb 取得特定的預設 IP:
 
-```yaml title="istio-ingressgateway-values.yaml"
-# add annotations to get specific ip from metallb
-service:
-  annotations:
-    metallb.universe.tf/address-pool: ip-pool
-  loadBalancerIP: "10.34.124.115"
-```
+    ```yaml title="istio-ingressgateway-values.yaml"
+    # add annotations to get specific ip from metallb
+    service:
+      annotations:
+        metallb.universe.tf/address-pool: ip-pool
+      loadBalancerIP: "10.34.124.115"
+    ```
 
     ```bash title="執行下列命令  >_"
     helm upgrade --install --create-namespace --namespace istio-system \
-      istio-ingressgateway istio/gateway \
+      istio-ingressgateway ccoe/gateway \
       --values istio-ingressgateway-values.yaml      
     ```
 
@@ -564,7 +598,7 @@ data:
       discoveryAddress: istiod.istio-system.svc:15012
       tracing:
         zipkin:
-          address: opentelemetry-operator.otel-system.svc.cluster.local:9411
+          address: otel-collector.otel-system.svc.cluster.local:9411
     enablePrometheusMerge: true
     enableTracing: true
     rootNamespace: null
@@ -589,7 +623,7 @@ metadata:
 ```
 
 !!! tip
-    特別注意 `istio-ingressgateway` 的 EXTERNAL-IP 是否從 metallb 取得 `172.20.0.15`
+    特別注意 `istio-ingressgateway` 的 EXTERNAL-IP 是否從 metallb 取得 `10.34.124.115`
 
 #### 驗證 Istio IngressGateway
 
@@ -681,20 +715,12 @@ virtualservice-nginx-svc   ["gateway-nginx-svc"]   ["nginx.istio-dxlab.wistron.c
 
 ### 安裝/設定 Grafana Tempo
 
-使用以下命令添加 Tempo 的 chart 存儲庫：
-
-```bash
-helm repo add grafana https://grafana.github.io/helm-charts
-
-helm repo update
-```
-
-將 Tempo (v2) 安裝到 monitoring 命名空間中：
+將 Tempo (v2) 安裝到 `cattle-monitoring-system` 命名空間中：
 
 ```bash
 helm upgrade --install \
-     --create-namespace --namespace monitoring \
-     tempo grafana/tempo
+     --create-namespace --namespace cattle-monitoring-system \
+     tempo ccoe/tempo
 ```
 
 ??? info "Tempo v2 Helm 設定參考"
@@ -952,7 +978,7 @@ helm upgrade --install \
 安裝之後檢查:
 
 ```bash
-kubectl get all -n monitoring
+kubectl get all -n cattle-monitoring-system
 ```
 
 結果:
@@ -1018,6 +1044,7 @@ grafana:
       - grafana.dxlab.wistron.com
   # specify tag to ensure grafana version
   image:
+    repository: grafana/grafana
     tag: "9.3.6"
   # change timezone setting base on browser
   defaultDashboardsTimezone: browser
@@ -1025,7 +1052,7 @@ grafana:
   additionalDataSources:
     - name: Tempo
       type: tempo
-      url: http://tempo.monitoring:3100
+      url: http://tempo.cattle-monitoring-system:3100
       access: proxy
   grafana.ini:
     users:
@@ -1079,7 +1106,7 @@ prometheus:
       additionalDataSources:
         - name: Tempo
           type: tempo
-          url: http://tempo.tracing:3100
+          url: http://tempo.cattle-monitoring-system:3100
           access: proxy    
     ...
     ...
@@ -1087,17 +1114,27 @@ prometheus:
 
 使用 Helm 在命名空間監控中部署 `kube-stack-prometheus` chart:
 
+先安裝相關的 CRD:
+
 ```bash
 helm upgrade --install \
-  --create-namespace --namespace monitoring \
-  kube-stack-prometheus prometheus-community/kube-prometheus-stack \
+  --create-namespace --namespace cattle-monitoring-system \
+  rancher-monitoring-crd ccoe/rancher-monitoring-crd
+```
+
+再安排元件:
+
+```bash
+helm upgrade --install \
+  --create-namespace --namespace cattle-monitoring-system \
+  rancher-monitoring ccoe/rancher-monitoring \
   --values kube-stack-prometheus-values.yaml
 ```
 
 檢查看這個所創建的 ingress 是否有取得 IP ADDRESS:
 
 ```bash
-kubectl get ing -n monitoring
+kubectl get ing -n cattle-monitoring-system
 ```
 
 結果:
@@ -1116,15 +1153,6 @@ kube-stack-prometheus-kube-prometheus   <none>   prometheus.dxlab.wistron.com   
 10.34.124.114 prometheus.dxlab.wistron.com
 ...
 ```
-
-該 Helm chart 安裝了 Prometheus 組件和 Operator、Grafana 以及以下 exporters:
-
-- [prometheus-node-exporter](https://github.com/prometheus/node_exporter) 暴露底層硬件和操作系統的相關指標
-- [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) 監聽 Kubernetes API 服務器並生成有關對象狀態的指標
-
-有關 `kube-stack-prometheus` 的詳細說明:
-
-- [Prometheus Operator](../../../../prometheus/operator/install.md)
 
 #### 整合 Istio 與 Prometheus
 
@@ -1265,35 +1293,40 @@ kubectl port-forward --namespace monitoring \
 
 ### Opentelemetry Collector
 
-使用以下命令添加 Opentelemetry operator 與 cert-manager 的 chart 存儲庫：
-
-```bash
-helm repo add jetstack https://charts.jetstack.io
-
-helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-
-helm repo update
-```
-
 安裝 Cert-Manager:
 
 ```bash
 helm upgrade --install --create-namespace --namespace cert-manager \
-  cert-manager jetstack/cert-manager \
-  --version v1.10.1 \
+  cert-manager ccoe/cert-manager \
   --set installCRDs=true
 ```
 
 將 Opentelemetry operator 安裝起來：
 
-```bashotelc-collector
+```bash
+helm upgrade --install --create-namespace --namespace otel-system  \
+  opentelemetry-operator ccoe/opentelemetry-operator
+```
+
+宣告創建一個 Otel Collector:
+
+將 Opentelemetry operator 安裝起來：
 
 ```bash hl_lines="14-19"
 kubectl apply -n otel-system -f -<<EOF
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: otelcotelc-collector
+  name: otel
+spec:
+  mode: deployment # This configuration is omittable.
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc: # endpoint = 0.0.0.0:4317 (default)
+          http: # endpoint = 0.0.0.0:4318 (default)
+      jaeger:
         protocols:
           grpc:
           thrift_binary:
@@ -1309,7 +1342,7 @@ metadata:
     exporters:
       otlp:
         # otlp grpc protocol
-        endpoint: "tempo.monitoring:4317"
+        endpoint: "tempo.cattle-monitoring-system:4317"
         tls:
           insecure: true
       logging:
@@ -1320,7 +1353,7 @@ metadata:
         traces:
           receivers: [otlp, jaeger, zipkin]
           processors: []
-          exporters: [logging, otlp]
+          exporters: [otlp]
 EOF
 ```
 
@@ -1358,7 +1391,7 @@ spec:
         env:
           - name: OTEL_EXPORTER_JAEGER_ENDPOINT
             # endpoint for tracing data collector
-            value: http://otelc-collector.otel-system.svc.cluster.local:14268/api/traces
+            value: http://otel-collector.otel-system.svc:14268/api/traces
         ports:
           - containerPort: 8080
             name: frontend
@@ -1451,30 +1484,14 @@ sudo nano /etc/hosts
 
 ### 安裝 Kiali
 
-使用以下命令添加 Kiali Helm Charts 存儲庫：
-
-```bash title="執行下列命令  >_"
-helm repo add kiali https://kiali.org/helm-charts
-
-helm repo update
-```
-
-### 使用 Kiali operator 安裝 Kiali
-
-添加 Kiali Helm Charts 存儲庫後，您可以通過運行以下命令安裝最新的 Kiali Operator 以及最新的 Kiali 服務器：
+通過運行以下命令安裝最新的 Kiali Operator：
 
 ```bash title="執行下列命令  >_"
 helm upgrade --install \
   --create-namespace \
-  --namespace monitoring \
-  --set cr.create=true \
-  --set cr.namespace=istio-system \
-  kiali-operator \
-  kiali/kiali-operator
+  --namespace cattle-monitoring-system \
+  kiali-operator ccoe/kiali-operator
 ```
-
-- `--namespace kiali-operator` 和 `--create-namespace` 標誌指示創建 `monitoring` 命名空間（如果需要），並在其上部署 Kiali operator。 
-- `-set cr.create=true` 和 `--set cr.namespace=istio-system` 標誌指示在 `istio-system` 命名空間中創建 Kiali CR。由於 Kiali CR 是提前創建的，所以 Kiali operator 一啟動，就會對其進行處理以部署 Kiali。
 
 #### 創建和更新 Kiali CR
 
@@ -1516,7 +1533,7 @@ spec:
       enabled: false
     prometheus:
       # Prometheus service name is "metrics" and is in the "telemetry" namespace
-      url: "http://kube-stack-prometheus-kube-prometheus.monitoring:9090/"
+      url: "http://rancher-monitoring-prometheus.cattle-monitoring-system:9090/"
     grfana:
       enabled: false
     istio:
@@ -1528,7 +1545,7 @@ spec:
           namespace: istio-system
         enabled: true
     tracing:
-      enabled: false  
+      enabled: false
 ```
 
 !!! tip
@@ -1618,16 +1635,19 @@ Bookinfo 應用中的幾個微服務是由不同的語言編寫的。這些服�
 
 所有的微服務都和 Envoy sidecar 集成在一起，被集成服務所有的出入流量都被 sidecar 所劫持，這樣就為外部控制準備了所需的 Hook，然後就可以利用 Istio 控制平面為應用提供服務路由、遙測數據收集以及策略實施等功能。
 
-下載 istio repo:
+下載 istio 範例:
 
 ```bash title="執行下列命令  >_"
-git clone https://github.com/istio/istio.git
+curl -L https://istio.io/downloadIstio | sh -
 ```
 
-接著切換至 `istio` 的目錄:
+!!! info
+    在執行下載 istio 範例之後要去檢查正載下來的 istio 版本, 它會在本地目錄上產生一個目錄: `istio-1.XX.XX`
+
+接著切換至 `istio-1.17.1` 的目錄:
 
 ```bash title="執行下列命令  >_"
-cd istio
+cd istio-1.17.1
 ```
 
 1. 部署 Bookinfo 示例應用程序:
@@ -1699,7 +1719,6 @@ cd istio
 
 ### 對外部暴露應用程序
 
-
 Bookinfo 應用程序已部署，但無法從 Kubernetes 外部來訪問它。為了使其可訪問，需要創建一個 Istio Ingress Gateway，它將路徑映射到網格邊緣的路由。
 
 ![](./assets/istio-crd-gateway.png)
@@ -1711,6 +1730,7 @@ kubectl apply -f bookinfo-gateway.yaml
 ```
 
 讓我們來看一下這個設定檔的內容:
+
 
 ```yaml title="bookinfo-gateway.yaml"
 apiVersion: networking.istio.io/v1alpha3
@@ -1726,7 +1746,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "bookinfo.istio-example.it"
+    - "bookinfo.istio-dxlab.wistron.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -1734,7 +1754,7 @@ metadata:
   name: bookinfo
 spec:
   hosts:
-  - "bookinfo.istio-example.it"
+  - "bookinfo.istio-dxlab.wistron.com"
   gateways:
   - bookinfo-gateway
   http:
@@ -1756,21 +1776,13 @@ spec:
           number: 9080
 ```
 
-修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
+創建相關 gateway 與 virtualservice 物件:
 
-```bash
-sudo nano /etc/hosts
+```bash title="執行下列命令  >_"
+kubectl apply -f bookinfo-gateway.yaml
 ```
 
-修改內容:
-
-``` title="/etc/hosts"
-...
-172.20.0.15  bookinfo.istio-example.it
-...
-```
-
-使用瀏覽器瀏覽 `http://bookinfo.istio-example.it`:
+使用瀏覽器瀏覽 `http://bookinfo.istio-dxlab.wistron.com/productpage`:
 
 ![](./assets/gateway-test-book-info.png)
 
@@ -1779,7 +1791,7 @@ sudo nano /etc/hosts
 要了解 istio 的功能是否正常的簡單方式就是去模擬一些對服務的流量。下列的指命會向 productpage 服務持續發送 10000 個請求：
 
 ```bash
-for i in $(seq 1 10000); do curl -s -o /dev/null "http://bookinfo.istio-example.it/productpage"; done
+for i in $(seq 1 10000); do curl -s -o /dev/null "http://bookinfo.istio-dxlab.wistron.com/productpage"; done
 ```
 
 !!! info
