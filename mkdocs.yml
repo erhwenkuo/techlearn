@@ -429,10 +429,11 @@ nav:
       - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
   - Kubeflow:
     - 環境:
+      - 架構: kubeflow/env/architecture.md
       - 手動安裝 Kubeflow: kubeflow/env/kubeflow-install.md
-      - RKE2:
-        - 在 RKE2 Kubernetes 集群上安裝 Nvidia GPU Operator: kubeflow/env/rke2/rke2-nvidia-gpu-operator.md
     - 組件:
+      - Kubeflow Notebooks:
+        - 概述: kubeflow/components/notebooks/overview.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
