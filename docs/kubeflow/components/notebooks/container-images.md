@@ -11,7 +11,7 @@ Kubeflow 提供了許多範例容器鏡像來幫助使用者入門。
 這些鏡像為 Kubeflow Notebook 容器提供了一個共同的起點。查看 custom images 以了解如何使用您自己的包或套件來擴展它們。
 
 |Dockerfile 	|Registry 	|Notes|
-|===============|===========|=====|
+|---------------|-----------|-----|
 |[base](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/base) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/base:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/base) 	|common base image|
 |[codeserver](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/codeserver) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/codeserver:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/codeserver) 	|base [code-server](https://github.com/cdr/code-server) (Visual Studio Code) image|
 |[jupyter](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/jupyter) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter) 	|base [JupyterLab](https://github.com/jupyterlab/jupyterlab) image|
@@ -22,7 +22,7 @@ Kubeflow 提供了許多範例容器鏡像來幫助使用者入門。
 下列鏡像使用數據科學家和 ML 工程師使用的常用包來擴展了 base images。
 
 |Dockerfile 	|Registry 	|Notes|
-|===============|===========|=====|
+|---------------|-----------|-----|
 |[codeserver-python](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/codeserver-python) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/codeserver-python:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/codeserver-python) 	|code-server (Visual Studio Code) + Conda Python|
 |[jupyter-pytorch (CPU)](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/jupyter-pytorch) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-pytorch:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-pytorch) 	|JupyterLab + PyTorch (CPU)|
 |[jupyter-pytorch (CUDA)](https://github.com/kubeflow/kubeflow/tree/master/components/example-notebook-servers/jupyter-pytorch) 	|[public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-pytorch-cuda:{TAG}](https://gallery.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-pytorch-cuda) 	|JupyterLab + PyTorch (CUDA)|

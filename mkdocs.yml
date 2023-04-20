@@ -434,6 +434,12 @@ nav:
     - 組件:
       - Kubeflow Notebooks:
         - 概述: kubeflow/components/notebooks/overview.md
+        - 快速入門: kubeflow/components/notebooks/quickstart-guide.md
+        - 容器鏡像: kubeflow/components/notebooks/container-images.md
+        - 範例: 
+          - Tesorflow(Mnist): kubeflow/components/notebooks/examples/jupyter-tensorflow-examples.md
+        - 提交 Kubernetes 資源: kubeflow/components/notebooks/submit-kubernetes.md
+        - 除錯: kubeflow/components/notebooks/troubleshooting.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md

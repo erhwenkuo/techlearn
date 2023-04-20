@@ -1,4 +1,4 @@
-# Troubleshooting
+# 除錯
 
 Kubeflow Notebooks 常見問題及解決方案。
 
