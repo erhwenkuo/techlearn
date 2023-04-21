@@ -25,7 +25,7 @@ sudo apt -y upgrade && sudo systemctl reboot
 
 ### 2. 安裝單節點 Minikube
 
-參考[如何在 Ubuntu 20.04 LTS 上安裝 Minikube](../../kubernetes/minikube/how-to-install-minikube-on-ubuntu.md)來啟動單節點的 Kubernetes。
+參考[如何在 Ubuntu 20.04 LTS 上安裝 Minikube](../../kubernetes/01-getting-started/learning-env/minikube/how-to-install-minikube-on-ubuntu.md)來啟動單節點的 Kubernetes。
 
 ```bash
 $ minikube start --cpus=4 --memory=6g --addons=ingress

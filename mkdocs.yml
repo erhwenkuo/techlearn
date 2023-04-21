@@ -389,8 +389,7 @@ nav:
         - Kustomize: argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
         - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
-    - 同步選項:
-      - 簡介: argocd
+
 
     - 維運:
       - 指標 Metrics: 
@@ -440,9 +439,13 @@ nav:
           - Tesorflow(Mnist): kubeflow/components/notebooks/examples/jupyter-tensorflow-examples.md
         - 提交 Kubernetes 資源: kubeflow/components/notebooks/submit-kubernetes.md
         - 除錯: kubeflow/components/notebooks/troubleshooting.md
+      - Kubeflow Pipelines:
+        - v1:
+          - 簡介: kubeflow/components/pipelines/v1/introduction.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
+        - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:

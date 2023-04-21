@@ -8,7 +8,7 @@ AWX 是一個開源 Web 應用程序，它為 Ansible 提供用戶界面、REST 
 
 在本教程中，我們將使用 Ansible AWX 儀表板部署和運行 Ansible playbook 以進行基本 LEMP 安裝。
 
-首先請根據[如何在 Ubuntu 20.04 上安裝 Ansible AWX](how-to-install-anixbile-awx.md)的教程來安裝與啟動 Ansible AWX。
+首先請根據[如何在 Ubuntu 20.04 上安裝 Ansible AWX](./how-to-install-ansible-awx.md)的教程來安裝與啟動 Ansible AWX。
 
 ```bash
 $ minikube service awx-demo-service --url -n awx
