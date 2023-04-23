@@ -446,6 +446,10 @@ nav:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
         - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
+  - Dex:
+    - 概述:
+      - 入門: dex/overview/getting-started.md
+      
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
