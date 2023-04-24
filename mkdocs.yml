@@ -450,6 +450,7 @@ nav:
     - 概述:
       - 入門: dex/overview/getting-started.md
       - ID 令牌: dex/overview/id-tokens.md
+      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md
 
   - Seldon:
     - 簡介: seldon/index.md
