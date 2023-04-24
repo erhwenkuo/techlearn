@@ -449,7 +449,8 @@ nav:
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
-      
+      - ID 令牌: dex/overview/id-tokens.md
+
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
