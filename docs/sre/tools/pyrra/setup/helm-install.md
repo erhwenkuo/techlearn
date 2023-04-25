@@ -474,7 +474,8 @@ prometheusUrl: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
 helm upgrade --install \
      --create-namespace --namespace sre-system \
      pyrra rlex/pyrra \
-     --values pyrra-values.yaml
+     --values pyrra-values.yaml \
+     --version 0.6.0
 ```
 
 檢查:
@@ -517,11 +518,11 @@ replicaset.apps/pyrra-dcb5566c   1         1         1       6m17s
 
 1. 佈署範例應用程式
 2. 設定錯誤率
-3. 設定 PrometheusServiceLevel (CRD)
+3. 設定 ServiceLevelObjective (CRD)
 4. 檢視 Pyrra 產生的 record rules
 5. 檢視 Grafana Dashboard
 
-![](./assets/sloth-practice.png)
+![](./assets/pyrra-practice.png)
 
 ### 1. 佈署範例應用程式
 
@@ -722,7 +723,7 @@ http_request_duration_seconds_count{code="500"} 23
 
 ### 3. 設定 SLO
 
-Pyrra 提供了在 Kubernetes 宣告 SLO 的 CRD, 詳細內容見: [Sloth SLO API and specs](https://sloth.dev/specs/kubernetes/)。
+Pyrra 提供了在 Kubernetes 宣告 SLO 的 CRD, 範例見: [Pyrra Demo Site](https://demo.pyrra.dev/)。
 
 接下來我們使用 Pyrra 的 CRD 來定義監控 `sre-sample-app` 的 **Availability** 的 `SLO: 99.9%`:
 
