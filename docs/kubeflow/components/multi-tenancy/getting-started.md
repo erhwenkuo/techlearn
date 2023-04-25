@@ -4,13 +4,60 @@
 
 ## 使用概覽
 
-安裝和配置 Kubeflow 後，您將默認訪問您的主要配置 `profile`。一個 `profile` 物件擁有同名的 Kubernetes 命名空間以及 Kubernetes 資源的集合。用戶可以查看和修改其主要配置文件的訪問權限。您可以與系統中的其他用戶共享對您個人資料的訪問​​權限。
+安裝和配置 Kubeflow 後，您將預設訪問您的主要配置 `profile`。一個 `profile` 物件擁有同名的 Kubernetes 命名空間以及 Kubernetes 資源的集合。用戶可以查看和修改其主要配置文件的訪問權限。您可以與系統中的其他用戶共享對您個人資料的訪問​​權限。
 
 與其他用戶共享配置文件的訪問權限時，您可以選擇是只提供讀取訪問權限還是讀取/修改訪問權限。出於所有實際目的，在通過 Kubeflow 中央儀表板工作時，活動命名空間直接與活動配置文件相關聯。
 
-## 使用示例
+## 使用範例
 
 接著我們將使用 kubelfow 安裝時預建置的使用者帳號來進行後續的說明與演示。
+
+```yaml title="Profile(CRD)"
+apiVersion: kubeflow.org/v1
+kind: Profile
+metadata:
+  name: kubeflow-user-example-com
+spec:
+  owner:
+    kind: User
+    name: user@example.com
+  resourceQuotaSpec: {}
+```
+
+```yaml title="MANIFESTS/common/dex/base/config-map.yaml" hl_lines="21 22 25"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex
+data:
+  config.yaml: |
+    issuer: http://dex.auth.svc.cluster.local:5556/dex
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+    web:
+      http: 0.0.0.0:5556
+    logger:
+      level: "debug"
+      format: text
+    oauth2:
+      skipApprovalScreen: true
+    enablePasswordDB: true
+    staticPasswords:
+    - email: user@example.com
+      hash: $2y$12$4K/VkmDd1q1Orb3xAt82zu8gk7Ad6ReFR4LCP9UeYE90NLiN9Df72
+      # https://github.com/dexidp/dex/pull/1601/commits
+      # FIXME: Use hashFromEnv instead
+      username: user
+      userID: "15841185641784"
+    staticClients:
+    # https://github.com/dexidp/dex/pull/1664
+    - idEnv: OIDC_CLIENT_ID
+      redirectURIs: ["/authservice/oidc/callback"]
+      name: 'Dex Login Application'
+      secretEnv: OIDC_CLIENT_SECRET
+```
 
 使用下列的帳密登入 kubeflow:
 
@@ -67,13 +114,13 @@ Kubeflow v1.6.0 可配置地為首次登錄而且經過身份驗證的用戶提�
 apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
-  name: ewkuo   # replace with the name of profile you want, this will be user's namespace name
+  name: dxlab 
 spec:
   owner:
     kind: User
-    name: ewkuo@example.com   # replace with the email of the user
+    name: dxlab@example.com 
 
-  resourceQuotaSpec:    # resource quota can be set optionally
+  resourceQuotaSpec: 
     hard:
       requests.cpu: "2"
       requests.memory: 2Gi
@@ -90,10 +137,34 @@ kubectl create -f profile.yaml
 kubectl apply -f profile.yaml  #if you are modifying the profile
 ```
 
-上面的命令創建一個名為 `dxlab` 的配置文件。配置文件所有者是 `userid@email.com` 並且具有查看和修改該配置文件的權限。以下資源是作為配置文件創建的一部分創建的：
+執行下列指令來查看 Kubeflow 是怎麼控制用戶的權限：
 
-- 與相應配置文件同名的 Kubernetes 命名空間。
-- Kubernetes RBAC（Role-based access control）角色綁定角色綁定命名空間：`Admin`。這使得配置文件所有者成為命名空間管理員，從而使他們能夠使用 kubectl（通過 Kubernetes API）訪問命名空間。
+```bash
+kubectl get rolebinding
+```
+
+結果:
+
+```
+NAME             ROLE                         AGE
+default-editor   ClusterRole/kubeflow-edit    62s
+default-viewer   ClusterRole/kubeflow-view    62s
+namespaceAdmin   ClusterRole/kubeflow-admin   62s
+```
+
+從上面三個 rolebind 的內容可理解 Kubeflow 對於用戶角色的綁定:
+
+| Account | Type | ClusterRole |
+|---------|------|-------------|
+|default-editor| ServiceAccount | kubeflow-edit | 
+|default-viewer| ServiceAccount | kubeflow-view |
+|dxlab@example.com| User | kubeflow-admin |
+
+
+在上述的範例 **Profile** 物件中配置了一個名為 `dxlab` 的用戶。配置文件所有者 (User ID) 是 `dxlab@example.com` 並且具有查看和修改該配置文件的權限。以下資源是作為配置文件創建的一部分創建的：
+
+- 與相應配置文件同名的 Kubernetes 命名空間 `dxlab`。
+- Kubernetes RBAC（Role-based access control）角色綁定角色綁定命名空間：`kubeflow-admin`。這使得配置文件所有者成為命名空間管理員，從而使他們能夠使用 `kubectl`（通過 Kubernetes API）訪問命名空間。
 - Istio 命名空間範圍的 `AuthorizationPolicy：user-userid-email-com-clusterrole-edit`。這允許用戶訪問屬於創建 AuthorizationPolicy 的名稱空間的數據
 - 命名空間範圍內的服務帳戶 `default-editor` 和 `default-viewer`，供命名空間中用戶創建 pod 的時候來使用。
 - 命名空間範圍內的資源配額限制將被設定。
@@ -108,18 +179,18 @@ kubectl apply -f -<<EOF
 apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
-  name: ewkuo   # replace with the name of profile you want, this will be user's namespace name
+  name: dxlab
 spec:
   owner:
     kind: User
-    name: ewkuo@example.com   # replace with the email of the user
+    name: dxlab@example.com
 EOF
 ```
 
 結果:
 
 ```
-profile.kubeflow.org/test created
+profile.kubeflow.org/dxlab created
 ```
 
 檢查:
@@ -129,10 +200,9 @@ $ kubectl get profile
 NAME                        AGE
 dxlab                       5h39m
 kubeflow-user-example-com   46h
-test                        61s
 ```
 
-```bash hl_lines="17"
+```bash hl_lines="6"
 $ kubectl get namespaces
 NAME                        STATUS   AGE
 auth                        Active   46h
@@ -149,14 +219,19 @@ kubeflow                    Active   46h
 kubeflow-user-example-com   Active   39h
 kubernetes-dashboard        Active   40h
 local-path-storage          Active   46h
-test                        Active   112s
 ```
 
 **如何增加一個 dex 的 User:**
 
+如果使用 dex 的靜態帳密的功能來增加一個新的 dex 用戶。
+
+執行下列命令來取出 dex 的配置 configmap:
+
 ```bash
 kubectl get configmap dex -n auth -o yaml > dex.yaml
 ```
+
+使用文字編輯器打開 `dex.yaml`:
 
 ```yaml hl_lines="18-23"
 apiVersion: v1
@@ -200,6 +275,8 @@ metadata:
   uid: af06ce57-8096-4e2c-a1ae-747eee5a4ce0
 ```
 
+我們需要在 `staticPasswords` 的區塊多增加一筆用戶帳密。由於 dex 的用戶密碼使用了 `BCrypt` 的手法來進行編碼, 接下來利用相關工具來產生用戶密碼。
+
 產生一個 [BCrypt Hash Generator](https://bcrypt.online/):
 
 ```bash
@@ -211,13 +288,16 @@ pass1234 -> $2y$10$954iLS0YaItcIN9Xnc6woOSeFcuM4q3TPZZAbHwUMGRgnBRCqnrRS
     
     - `2`  BCrypt 的第一個修訂版，它有一個小的安全漏洞，一般不再使用。
     - `2a` 一些實現遭遇罕見的安全漏洞，被 2b 取代。
-    - `2y` 特定於 crypt_blowfish BCrypt 實現的格式，除名稱外與“2b”完全相同。
+    - {==`2y` 特定於 crypt_blowfish BCrypt 實現的格式，除名稱外與“2b”完全相同==}。
     - `2b` 官方 BCrypt 算法的最新版本。
+
+如果不想使用線上的工具, 那麼也可使用 Python 來產生用戶密碼。
 
 ```bash
 python3 -c 'from passlib.hash import bcrypt; import getpass; print(bcrypt.using(rounds=12, ident="2y").hash(getpass.getpass()))'
 ```
 
+最後修改 dex 的 configmap 物件:
 
 ```bash
 kubectl apply -f - <<EOF
@@ -242,12 +322,9 @@ data:
       hash: $2y$12$4K/VkmDd1q1Orb3xAt82zu8gk7Ad6ReFR4LCP9UeYE90NLiN9Df72
       username: user
       userID: "15841185641784"
-    - email: test@company.com
-      hash: $2y$12$4K/VkmDd1q1Orb3xAt82zu8gk7Ad6ReFR4LCP9UeYE90NLiN9Df72
-      username: test
-    - email: ewkuo@example.com
-      hash: $2y$12$4K/VkmDd1q1Orb3xAt82zu8gk7Ad6ReFR4LCP9UeYE90NLiN9Df72
-      username: ewkuo
+    - email: dxlab@example.com
+      hash: $2y$10$954iLS0YaItcIN9Xnc6woOSeFcuM4q3TPZZAbHwUMGRgnBRCqnrRS
+      username: dxlab
     staticClients:
     - idEnv: OIDC_CLIENT_ID
       redirectURIs: ["/login/oidc"]
@@ -260,12 +337,18 @@ metadata:
 EOF
 ```
 
-重新啟動dex:
+重新啟動 dex:
 
 參考:[Correct way of adding new dex static users #5918](https://github.com/kubeflow/kubeflow/issues/5918)
 
 ```bash
 kubectl rollout restart deployment dex -n auth
+```
+
+或是刪掉現有的 pod 來觸發修改:
+
+```bash
+kubectl delete pods -n auth -l app=dex
 ```
 
 
@@ -308,7 +391,7 @@ kubectl apply -f profile.yaml  #if you are modifying the profiles
 
 Kubeflow v1.6.0 提供自動 `profile` 創建：
 
-- 默認情況下不會啟動自動 `profile` 創建，需要將其作為部署的一部分明確包含在內。在部署期間啟用自動用戶配置 `profile` 創建後，將在首次登錄時為經過身份驗證的用戶創建新的用戶配置 `profile`。用戶將能夠在 Kubeflow 中央儀表板的下拉列表中看到他們的新 `profile`。
+- 預設情況下不會啟動自動 `profile` 創建，需要將其作為部署的一部分明確包含在內。在部署期間啟用自動用戶配置 `profile` 創建後，將在首次登錄時為經過身份驗證的用戶創建新的用戶配置 `profile`。用戶將能夠在 Kubeflow 中央儀表板的下拉列表中看到他們的新 `profile`。
 
 - 通過將 `CD_REGISTRATION_FLOW` 的環境變量設置為 `true`，可以啟用自動配置 `profile` 創建作為部署的一部分。修改 `<manifests-path>/apps/centraldashboard/upstream/base/params.env` 將註冊變量設置為 `true`。
 
@@ -361,7 +444,7 @@ Kubeflow v1.6.0 允許與系統中的其他用戶共享 `profile` 的資源。�
 
 ![](./assets/multi-user-contributors.png)
 
-以下是 “Management Contributors” 選項卡視圖的示例：
+以下是 “Management Contributors” 選項卡視圖的範例：
 
 ![](./assets/manage-contributors.png)
 

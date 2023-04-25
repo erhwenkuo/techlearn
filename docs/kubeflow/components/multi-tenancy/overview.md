@@ -6,17 +6,19 @@
 
 ## 簡介
 
-在 Kubeflow 集群中，經常需要將用戶隔離成一個群組，一個群組包括一個或多個用戶。此外，用戶可能需要歸屬於多個群組。 Kubeflow 的多用戶隔離 (multi-user isolation) 簡化了對 **用戶** 運維管理，因為每個用戶只能查看和編輯在其配置中定義的 Kubeflow 組件和模型 artifacts。用戶的視圖不會被不在其配置中的組件或模型 artifacts 弄亂。這種隔離還提供了高效的基礎架構和操作，{==即單個集群支持多個隔離的用戶，並且不需要管理員操作不同的集群來隔離用戶==}。
+在 Kubeflow 集群中，經常需要將用戶隔離成一個群組，一個群組包括一個或多個用戶。此外，用戶可能需要歸屬於多個群組。 Kubeflow 的多用戶隔離 (multi-user isolation) 簡化了對 **用戶** 運維管理，因為每個用戶只能查看和編輯在其配置中定義的 Kubeflow 組件和模型 artifacts。
+
+用戶的視圖不會被不在其配置中的組件或模型 artifacts 弄亂。這種隔離還提供了高效的基礎架構和操作，{==即單個集群支持多個隔離的用戶，並且不需要管理員操作不同的集群來隔離用戶==}。
 
 ## 關鍵概念
 
-- **Administrator**: 管理員是創建和維護 Kubeflow 集群的人。此人為其他用戶配置權限（即查看、編輯）。
+- **Administrator**: `管理員`是創建和維護 Kubeflow 集群的人。此人為其他`用戶`配置權限（即view、edit）。
 
-- **User**: 用戶是有權訪問集群中某些資源集的人。用戶需要獲得管理員的訪問權限。
+- **User**: `用戶`是有權訪問集群中某些資源集的人。`用戶`需要獲得`管理員`的訪問權限。
 
-- **Profile**: 在 kubeflow 中 `profile` 物件是並由管理員定義對用戶的唯一配置，它決定了用戶的訪問權限。
+- **Profile**: 在 kubeflow 中 `profile` 物件是並由`管理員`定義對用戶的唯一配置，它決定了`用戶`的訪問權限。
 
-- **Isolation**: 隔離使用 Kubernetes 命名空間。命名空間隔離用戶或一組用戶，即 Bob 的命名空間或由 Bob 和 Sara 共享的 ML Eng 命名空間。
+- **Isolation**: 隔離使用了 `Kubernetes 命名空間`。`命名空間`隔離`用戶`或`一組用戶`，即 Bob 的命名空間或由 Bob 和 Sara 共享的 ML Eng 命名空間。
 
 - **Authentication**: 身份驗證由 Istio 和 OIDC 的集成提供，並由 mTLS 保護。更多詳情可參考: [Authentication with Istio + Dex](https://journal.arrikto.com/kubeflow-authentication-with-istio-dex-5eafdfac4782)。
 
@@ -25,27 +27,30 @@
 ![](./assets/multi-tenance-diagram.webp)
 
 
-Kubeflow 多用戶隔離由 Kubeflow 管理員配置。管理員為每個用戶配置 Kubeflow 用戶配置文件。創建並應用配置後，用戶只能訪問管理員為其配置的 Kubeflow 組件。該配置限制未經授權的 UI 用戶查看或意外刪除模型。
+Kubeflow 多用戶隔離由 Kubeflow `管理員`配置。`管理員`為每個`用戶`配置 Kubeflow 用戶配置文件。創建並應用配置後，`用戶`只能訪問`管理員`為其配置的 Kubeflow 組件。該配置限制未經授權的 UI 用戶查看或意外刪除模型。
 
-通過多用戶隔離，用戶經過身份驗證和授權，然後提供基於時間的令牌，即 json 網絡令牌 (JWT)。訪問令牌作為用戶請求中的 Web 標頭攜帶，並授權用戶訪問其配置文件中配置的資源。配置文件配置了幾個項目，包括用戶的命名空間、RBAC RoleBinding、Istio ServiceRole 和 ServiceRoleBindings 以及資源配額和自定義插件。有關配置文件定義和相關 CRD 的更多信息，請參見[此處](./profile-controller.md)。
+通過多用戶隔離，用戶經過身份驗證和授權，然後提供基於時間的令牌，即 json 網絡令牌 (JWT)。訪問令牌作為用戶請求中的 Web 標頭攜帶，並授權用戶訪問其配置文件中配置的資源。配置文件配置了幾個項目，包括用戶的命名空間、RBAC RoleBinding、Istio ServiceRole 和 ServiceRoleBindings 以及資源配額和自定義插件。
+
+有關配置文件定義和相關 CRD 的更多信息，請參見[此處](./profile-controller.md)。
 
 ```yaml title="profile (CRD) 範例"
 apiVersion: kubeflow.org/v1beta1
 kind: Profile
 metadata:
-  name: profileName   # replace with the name of profile you want, this will be user's namespace name
+  # 替換為您想要的配置文件名稱，這將是用戶的命名空間名稱
+  name: profileName
 spec:
   owner:
     kind: User
-    name: userid@email.com   # replace with the email of the user
+    name: userid@email.com   # 替換為用戶的電子郵件
 
-  resourceQuotaSpec:    # resource quota can be set optionally
-    hard:               # hard is the set of desired hard limits for each named resource. 
-      requests.cpu: "2"             # Across all pods, the sum of CPU requests cannot exceed this value.
-      requests.memory: 2Gi          # Across all pods, the sum of memory requests cannot exceed this value.
-      requests.nvidia.com/gpu: "1"  # Across all pods, the sum of nvidia GPU requests cannot exceed this value.
-      persistentvolumeclaims: "1"   # The total number of PersistentVolumeClaims that can exist in the namespace.
-      requests.storage: "5Gi"       # Across all persistent volume claims, the sum of storage requests cannot exceed this value.
+  resourceQuotaSpec:    # 資源配額(optional)
+    hard:               # hard 是每個命名資源的一組所需的硬限制。
+      requests.cpu: "2"             # 在所有 pod 中，CPU 請求的總和不能超過這個值。
+      requests.memory: 2Gi          # 在所有 pod 中，內存請求的總和不能超過此值。
+      requests.nvidia.com/gpu: "1"  # 在所有 pod 中，nvidia GPU 請求的總和不能超過此值。
+      persistentvolumeclaims: "1"   # 命名空間中可以存在的 PersistentVolumeClaims 總數。
+      requests.storage: "5Gi"       # 在所有持久卷聲明中，存儲請求的總和不能超過此值。
 ```
 
 ## 元件整合

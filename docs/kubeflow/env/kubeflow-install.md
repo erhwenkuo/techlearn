@@ -16,23 +16,25 @@ Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於�
 
 ## Kubeflow 組件版本
 
+**Kubeflow Version: v1.7.0**
+
 該存儲庫會定期從各自的上游存儲庫同步所有官方 Kubeflow 組件。以下矩陣顯示了 Kubeflow 為每個組件包含的 git 版本：
 
 | Component | Local Manifests Path | Upstream Revision |
 | - | - | - |
-| Training Operator | apps/training-operator/upstream | [v1.6.0-rc.0](https://github.com/kubeflow/training-operator/tree/v1.6.0-rc.0/manifests) |
-| Notebook Controller | apps/jupyter/notebook-controller/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/notebook-controller/config) |
-| Tensorboard Controller | apps/tensorboard/tensorboard-controller/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/tensorboard-controller/config) |
-| Central Dashboard | apps/centraldashboard/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/centraldashboard/manifests) |
-| Profiles + KFAM | apps/profiles/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/profile-controller/config) |
-| PodDefaults Webhook | apps/admission-webhook/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/admission-webhook/manifests) |
-| Jupyter Web App | apps/jupyter/jupyter-web-app/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/crud-web-apps/jupyter/manifests) |
-| Tensorboards Web App | apps/tensorboard/tensorboards-web-app/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/crud-web-apps/tensorboards/manifests) |
-| Volumes Web App | apps/volumes-web-app/upstream | [v1.6.0-rc.1](https://github.com/kubeflow/kubeflow/tree/v1.6.0-rc.1/components/crud-web-apps/volumes/manifests) |
-| Katib | apps/katib/upstream | [v0.14.0-rc.0](https://github.com/kubeflow/katib/tree/v0.14.0-rc.0/manifests/v1beta1) |
-| KServe | contrib/kserve/kserve | [release-0.8](https://github.com/kserve/kserve/tree/8079f375cbcedc4d45a1b4aade2e2308ea6f9ae8/install/v0.8.0) |
-| KServe Models Web App | contrib/kserve/models-web-app | [v0.8.1](https://github.com/kserve/models-web-app/tree/v0.8.1/config) |
-| Kubeflow Pipelines | apps/pipeline/upstream | [2.0.0-alpha.3](https://github.com/kubeflow/pipelines/tree/2.0.0-alpha.3/manifests/kustomize) |
+| Training Operator | apps/training-operator/upstream | [v1.6.0](https://github.com/kubeflow/training-operator/tree/v1.6.0/manifests) |
+| Notebook Controller | apps/jupyter/notebook-controller/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/notebook-controller/config) |
+| Tensorboard Controller | apps/tensorboard/tensorboard-controller/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/tensorboard-controller/config) |
+| Central Dashboard | apps/centraldashboard/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/centraldashboard/manifests) |
+| Profiles + KFAM | apps/profiles/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/profile-controller/config) |
+| PodDefaults Webhook | apps/admission-webhook/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/admission-webhook/manifests) |
+| Jupyter Web App | apps/jupyter/jupyter-web-app/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/crud-web-apps/jupyter/manifests) |
+| Tensorboards Web App | apps/tensorboard/tensorboards-web-app/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/crud-web-apps/tensorboards/manifests) |
+| Volumes Web App | apps/volumes-web-app/upstream | [v1.7.0](https://github.com/kubeflow/kubeflow/tree/v1.7.0/components/crud-web-apps/volumes/manifests) |
+| Katib | apps/katib/upstream | [v0.15.0](https://github.com/kubeflow/katib/tree/v0.15.0/manifests/v1beta1) |
+| KServe | contrib/kserve/kserve | [v0.10.0](https://github.com/kserve/kserve/tree/v0.10.0/install/v0.10.0) |
+| KServe Models Web App | contrib/kserve/models-web-app | [v0.10.0](https://github.com/kserve/models-web-app/tree/v0.10.0/config) |
+| Kubeflow Pipelines | apps/pipeline/upstream | [2.0.0-alpha.7](https://github.com/kubeflow/pipelines/tree/2.0.0-alpha.7/manifests/kustomize) |
 | Kubeflow Tekton Pipelines | apps/kfp-tekton/upstream | [v1.5.1](https://github.com/kubeflow/kfp-tekton/tree/v1.5.1/manifests/kustomize) |
 
 以下也是一個矩陣，其中包含來自常見組件的版本
@@ -62,8 +64,6 @@ Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於�
 ### 先決條件
 
 - 具有預設 `StorageClass` 的 Kubernetes
-    - Kubeflow 1.5.0 與 Kubernetes 1.22 及更高版本不兼容。您可以在 [kubeflow/kubeflow#6353](https://github.com/kubeflow/kubeflow/issues/6353) 中跟踪 K8s 1.22 支持的剩餘工作
-    - Kubeflow 1.6.0 與 Kubernetes 1.22
     - Kubeflow 1.7.0 與 Kubernetes 1.24/1.25
 
 - kustomize (version 5.0.0)
@@ -338,7 +338,19 @@ ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 git clone https://github.com/kubeflow/manifests.git
 
 cd manifests
+```
 
+在本次的教程中將使用 Kubeflow v1.7 版本來進行安裝與設定, 在 manifests 的 repo 中需要切換到 `v1.7-branch`。
+
+執行下列命令來切換 branch:
+
+```bash
+git checkout v1.7-branch
+```
+
+使用下列一行命令來安裝 Kubeflow 相關的元件:
+
+```bash
 # while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
 
 while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
