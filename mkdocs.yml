@@ -446,7 +446,7 @@ nav:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
         - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
-        - Authn:
+        - 身份驗證設計:
             - OIDC 身份感知代理: kubeflow/components/multi-tenancy/authn/oidc-authservice.md
   - Dex:
     - 概述:
