@@ -446,14 +446,13 @@ nav:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
         - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
+        - Authn:
+            - OIDC 身份感知代理: kubeflow/components/multi-tenancy/authn/oidc-authservice.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
       - ID 令牌: dex/overview/id-tokens.md
-      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md
-
-        - Authn:
-            - OIDC 身份感知代理: kubeflow/components/multi-tenancy/authn/oidc-authservice.md
+      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md        
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
