@@ -452,7 +452,11 @@ nav:
     - 概述:
       - 入門: dex/overview/getting-started.md
       - ID 令牌: dex/overview/id-tokens.md
-      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md        
+      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md
+      - OpenID Connect 概述: dex/overview/openid-connect.md
+      - v2 中的新功能: dex/overview/v2.md
+      - Scopes,Claims與Client功能: dex/overview/custom-scopes-claims-clients.md
+      - 存儲選項: dex/overview/storage.md
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
