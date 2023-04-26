@@ -2,7 +2,7 @@
 
 參考: [arrikto/oidc-authservice](https://github.com/arrikto/oidc-authservice)
 
-AuthService 是 API 網關（例如 Ambassador、Envoy）詢問傳入請求是否獲得授權的 HTTP 服務器。
+**AuthService** 是 API 網關（例如 Ambassador、Envoy）詢問傳入請求是否獲得授權的 HTTP 服務器。
 
 有關詳細信息，請參閱[Kubeflow: Authentication with Istio + Dex](https://journal.arrikto.com/kubeflow-authentication-with-istio-dex-5eafdfac4782)。
 
@@ -14,7 +14,7 @@ AuthService 是 API 網關（例如 Ambassador、Envoy）詢問傳入請求是�
 
 ### 身份驗證流程的序列圖
 
-![](./assets/oidc_authservice_sequence_diagram.svg)
+![](./assets/oidc_authservice_sequence_diagram.png)
 
 ## 架構
 
@@ -75,9 +75,9 @@ AuthService 為 Web 服務器提供了一些默認頁面，用於主頁和 after
 
 | Setting | Default | Description |
 | - | - | - |
-| `TEMPLATE_PATH` | `web/templates/default` | A comma-separated list of dirs to look under for templates. Templates with the same name override previously registered ones. For more information, see [the templating guide](docs/templates.md). It always contains the default templates. |
+| `TEMPLATE_PATH` | `web/templates/default` | A comma-separated list of dirs to look under for templates. Templates with the same name override previously registered ones. For more information, see [the templating guide](./templates.md). It always contains the default templates. |
 | `CLIENT_NAME` | `AuthService` | A human-readable name for the client. Used in the web server's pages. |
-| `THEMES_URL` | `themes` | URL where the themes are served. Theme assets are found under `THEMES_URL/THEME`. To learn how you can create your own theme, see [the templating guide](docs/templates.md). |
+| `THEMES_URL` | `themes` | URL where the themes are served. Theme assets are found under `THEMES_URL/THEME`. To learn how you can create your own theme, see [the templating guide](./templates.md). |
 | `THEME` | `kubeflow` | Path under `THEMES_URL` where the theme assets are served. |
 | `TEMPLATE_CONTEXT_<key>` | `empty` | Variables that will end up in the user-defined map in the template context. For example, if you define `TEMPLATE_CONTEXT_KEY=VALUE`, then a `KEY: VALUE` entry will be added to the user-defined map in the template context. Used to pass values to site templates and allow for further customization. |
 

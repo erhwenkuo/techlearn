@@ -4,7 +4,7 @@
 
 Repo: https://github.com/kubeflow/manifests
 
-Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於安裝的清單：
+[Kubeflow Manifests 存儲庫](https://github.com/kubeflow/manifests) 組織在三個主要目錄下，其中包括用於安裝的清單：
 
 | 目錄 | 目的 |
 | --------- | ------- |
@@ -16,9 +16,9 @@ Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於�
 
 ## Kubeflow 組件版本
 
-**Kubeflow Version: v1.7.0**
+本教程將會使用 **Kubeflow Version: v1.7.0** 來進行安裝與展示。
 
-該存儲庫會定期從各自的上游存儲庫同步所有官方 Kubeflow 組件。以下矩陣顯示了 Kubeflow 為每個組件包含的 git 版本：
+[Kubeflow Manifests 存儲庫](https://github.com/kubeflow/manifests) 會定期從各自的上游存儲庫同步所有官方 Kubeflow 組件。以下矩陣顯示了 Kubeflow 為每個組件包含的 git 版本：
 
 | Component | Local Manifests Path | Upstream Revision |
 | - | - | - |
@@ -37,8 +37,7 @@ Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於�
 | Kubeflow Pipelines | apps/pipeline/upstream | [2.0.0-alpha.7](https://github.com/kubeflow/pipelines/tree/2.0.0-alpha.7/manifests/kustomize) |
 | Kubeflow Tekton Pipelines | apps/kfp-tekton/upstream | [v1.5.1](https://github.com/kubeflow/kfp-tekton/tree/v1.5.1/manifests/kustomize) |
 
-以下也是一個矩陣，其中包含來自常見組件的版本
-從 Kubeflow 的不同項目中使用：
+以下也是一個矩陣，其中包含來自常見組件（從 Kubeflow 的不同項目中使用）的版本：
 
 | Component | Local Manifests Path | Upstream Revision |
 | - | - | - |
@@ -46,17 +45,16 @@ Kubeflow Manifests 存儲庫組織在三個主要目錄下，其中包括用於�
 | Knative | common/knative/knative-serving <br /> common/knative/knative-eventing | [1.8.1](https://github.com/knative/serving/releases/tag/knative-v1.8.1) <br /> [1.8.1](https://github.com/knative/eventing/releases/tag/knative-v1.8.1) |
 | Cert Manager | common/cert-manager | [1.10.1](https://github.com/cert-manager/cert-manager/releases/tag/v1.10.1) |
 
-## 安裝
+## 步驟 01 - 環境安裝
 
 從 Kubeflow 1.3 開始，Manifests WG 提供了兩種安裝 Kubeflow 官方組件和使用 kustomize 的常用服務的選項。目的是幫助最終用戶輕鬆安裝 Kubeflow:
 
-1. Single-command 安裝 `apps` 和 `common` 下的所有組件
-2. Multi-command 安裝 `apps` 和 `common` 下的組件
+1. 選項#1: Single-command 安裝 `apps` 和 `common` 下的所有組件
+2. 選項#2: Multi-command 安裝 `apps` 和 `common` 下的組件
 
-選項 1 旨在簡化最終用戶的部署。
-選項 2 的目標是自定義和挑選單個組件的能力。
+`選項#1`旨在簡化最終用戶的部署。而`選項#2`的目標是自定義和挑選單個組件的能力。
 
-示例目錄 `example` 包含使用單一個命令 (利用 kustomize) 來安裝與運行 Kubelfow 的範例。
+示例目錄 `example` 包含使用單一個命令 (利用 `kustomize`) 來安裝與運行 Kubelfow 的範例。
 
 !!! warn
     在這兩個選項中，都使用了預設的電子郵件 `user@example.com` 和密碼 `12341234` 來作範例使用者帳密。對於任何生產環境的 Kubeflow 部署，您應該按照相關參考文件來更改預設的密碼。
@@ -330,9 +328,9 @@ ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 ![](./assets/ingress-test-nginx.png)
 
 
-## Kubeflow 安裝 (Single Command )
+### 安裝 Kubeflow 
 
-您可以使用以下命令安裝所有 Kubeflow 官方組件(位於 `apps`)和所有公共服務(位於 `common`):
+首先使用下列命令來取得安裝 Kubeflow 元件的 `Manifest` repo。
 
 ```bash
 git clone https://github.com/kubeflow/manifests.git
@@ -340,7 +338,7 @@ git clone https://github.com/kubeflow/manifests.git
 cd manifests
 ```
 
-在本次的教程中將使用 Kubeflow v1.7 版本來進行安裝與設定, 在 manifests 的 repo 中需要切換到 `v1.7-branch`。
+在本次的教程中將使用 Kubeflow v1.7 版本來進行安裝與設定, 因此在 manifests 的 repo 中需要切換到 `v1.7-branch`。
 
 執行下列命令來切換 branch:
 
@@ -348,7 +346,7 @@ cd manifests
 git checkout v1.7-branch
 ```
 
-使用下列一行命令來安裝 Kubeflow 相關的元件:
+接著我們將使用下列一行命令來安裝 Kubeflow 相關的元件:
 
 ```bash
 # while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
@@ -381,6 +379,98 @@ while ! kustomize build example | awk '!/well-defined/' | kubectl apply -f -; do
     kustomize build apps/profiles/upstream/overlays/kubeflow | kubectl apply -f -
     ```
 
+### 配置 oidc-authservice
+
+本教程的環境是在本地環境來啟動 Kubeflow, 在身份驗證的整合上會經由 [arrikto/oidc-authservice](https://github.com/arrikto/oidc-authservice) 元件來作 OIDC 的代理。
+
+詳細的架構與說明, 請見: 
+
+- [Kubeflow OIDC 身份感知代理 (OIDC AuthService)](../components/multi-tenancy/authn/oidc-authservice.md)
+- [使用 Istio + Dex 進行身份驗證](../components/multi-tenancy/authn/kubeflow-authentication-with-istio-dex.md)
+
+`AuthService` 提供了一些 UI 頁面用來幫助用戶身份驗證的相關流程。 
+
+默認情況下，此 `AuthService` 服務器偵聽端口 8080，其相關 UI 端點為：
+
+| Endpoint|Description|
+|----------|-------------|
+|/site/homepage	|Landing page|
+|/site/after_logout	|After Logout page|
+|/site/themes	|Themes|
+
+要在帶有 Istio 的 Kubernetes 等環境中公開 `AuthService` 服務器相關 UI，您需要：
+
+1. 創建指向 `AuthService` 的 Web 服務器端口 (8080) 的服務。
+    
+    在上述的安裝過程中己經執行完成了, 執行下列命令來檢查:
+
+        ```bash
+        kubectl get svc/authservice -n istio-system
+
+        NAME          TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+        authservice   ClusterIP   10.43.21.152   <none>        8080/TCP   4h2m
+        ```
+
+2. 創建一個 Istio `VirtualService` 以將流量與 `$AUTHSERVICE_URL_PREFIX` 路徑前綴匹配，並將其定向到您創建的服務。通常，`AUTHSERVICE_URL_PREFIX` 的格式為 `<url>/<path>`（例如，.`<url>/authservice`）。確保您的 `VirtualService` 使用 `<path>` 來捕獲請求。
+
+    執行下列命令來構建 VirtualSerivce 物件來捕獲對 AuthService 的請求：
+
+    ```bash
+    kubectl apply -n istio-system -f -<<EOF
+    apiVersion: networking.istio.io/v1alpha3
+    kind: VirtualService
+    metadata:
+      name: authservice-web
+    spec:
+      gateways:
+        - kubeflow/kubeflow-gateway
+      hosts:
+        - '*'
+      http:
+        - match:
+            - uri:
+                prefix: /authservice/
+          rewrite:
+            uri: /
+          route:
+            - destination:
+                host: authservice.istio-system.svc.cluster.local
+                port:
+                  number: 8080
+    EOF
+    ```
+
+    !!! info
+        `AuthService` 的配置參數可使用下列命令來查看:
+
+        ```bash
+        kubectl get cm/oidc-authservice-parameters -o yaml
+        ```
+
+        結果:
+
+        ```yaml hl_lines="7"
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: oidc-authservice-parameters
+          namespace: istio-system
+        data:
+          AUTHSERVICE_URL_PREFIX: /authservice/
+          OIDC_AUTH_URL: /dex/auth
+          OIDC_PROVIDER: http://dex.auth.svc.cluster.local:5556/dex
+          OIDC_SCOPES: profile email groups
+          PORT: '"8080"'
+          SKIP_AUTH_URLS: /dex
+          STORE_PATH: /var/lib/authservice/data.db
+          USERID_CLAIM: email
+          USERID_HEADER: kubeflow-userid
+          USERID_PREFIX: ""
+        ```
+
+
+## 步驟 02 - Kubeflow 功能驗證
+
 ### 連接到 Kubeflow 集群
 
 安裝後，所有 Pod 準備就緒需要一些時間。在嘗試連接之前確保所有 Pod 都準備就緒，否則您可能會遇到意外錯誤。要檢查所有與 Kubeflow 相關的 Pod 是否準備就緒，請使用以下命令：
@@ -395,23 +485,23 @@ kubectl get pods -n kubeflow
 kubectl get pods -n kubeflow-user-example-com
 ```
 
+!!! info
+    根據不同的環境與網速，Kubeflow 的安裝時間約莫需要 5 ~ 15 分鐘。
+
+### Kubeflow Central Dashboard
+
 當所有的元件都安裝成功之後，您可以通過登錄到您的集群來訪問 Kubeflow Central Dashboard。
 
 #### Port-Forward
 
-訪問 Kubeflow 的默認方式是通過端口轉發。這使您能夠快速開始，而無需對您的環境提出任何要求。運行以下命令將 Istio 的 `Ingress-Gateway` 端口轉發到本地端口 `8080`：
+訪問 Kubeflow 的默認方式是通過端口轉發。這使您能夠快速開始，而無需對您的環境提出任何要求。運行以下命令將 Istio 的 `Ingress-Gateway` 端口轉發到本地端口 `7080`：
 
 ```bash
-kubectl port-forward --address 0.0.0.0 svc/istio-ingressgateway -n istio-system 8080:80
+kubectl port-forward --address 0.0.0.0 svc/istio-ingressgateway -n istio-system 7080:80
 ```
 
-運行命令後，您可以通過執行以下操作訪問 Kubeflow Central Dashboard：
-
-- 打開瀏覽器並訪問 http://localhost:8080。您應該會看到 Dex 登錄屏幕。
-- 使用默認用戶的憑據登錄。默認電子郵件地址為 `user@example.com`，默認密碼為 `12341234`。
-
-
-![](./assets/kubeflow-login.png)
+!!! tip
+    一般來說我們使用 port `8080` 來把網頁應用曝露出來給外部存取, 由於 K3D 會使用 port `8080` 給外部的 load balancer 元件使用, 因此我們避開使用這個 port no。
 
 #### NodePort / LoadBalancer / Ingress
 
@@ -452,8 +542,6 @@ kubectl port-forward --address 0.0.0.0 svc/istio-ingressgateway -n istio-system 
 
 創建 Ingress 來曝露這個測試的 Nginx 網站:
 
-svc/istio-ingressgateway -n istio-system
-
 ```bash
 kubectl apply -n istio-system -f -<<EOF
 apiVersion: networking.k8s.io/v1
@@ -474,6 +562,13 @@ spec:
               number: 80
 EOF
 ```
+
+當 Kubeflow Central Dashboard 被正確配置並曝露出來給外部存取後，您可以通過執行以下操作訪問：
+
+- 打開瀏覽器並訪問 `http://localhost:7080` 或是 `http://kubeflow.example.it`。您應該會看到 Dex 登錄屏幕。
+- 使用默認用戶的憑據登錄。默認電子郵件地址為 `user@example.com`，默認密碼為 `12341234`。
+
+![](./assets/kubeflow-login.png)
 
 ### 更改默認用戶密碼
 

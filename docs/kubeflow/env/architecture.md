@@ -1,4 +1,4 @@
-# Kubeflow 架構
+# 架構概述
 
 原文: [Architecture](https://www.kubeflow.org/docs/started/architecture/)
 

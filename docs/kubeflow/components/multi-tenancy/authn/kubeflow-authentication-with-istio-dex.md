@@ -116,3 +116,18 @@ Dex 支持多種身份驗證後端，包括靜態用戶、LDAP 和外部身份�
 
 ![](./assets/kubeflow-authn-architecture.webp)
 
+## 展示 Demo
+
+所有上述功能都適用於 [Kubeflow v1.7](https://v1-7-branch.kubeflow.org/)。
+
+要安裝這個參考架構的方式, 請參考:[手動安裝 Kubeflow](../../../env/kubeflow-install.md)。
+
+只需按照上述文檔中的說明進行操作，您就應該擁有一個帶有 Kubeflow、Istio 和用於身份驗證的 Dex 的 Kubernetes 集群。
+
+![](./assets/kubeflow-login.png)
+
+## 最後的想法
+
+在本文中，我們解鎖了 Envoy Proxy 的強大功能，並使用 Istio 與 Dex 和 OIDC AuthService 一起構成了一個完整的 Authentication 架構。這使應用程序能夠將所有身份驗證邏輯卸載到 Istio 並專注於業務邏輯，這非常適合 Kubeflow 的面向微服務的架構。
+
+Envoy 的 `ext_authz` 功能在 Istio 用戶群中並不是很出名，但它是一個非常強大的功能，使我們能夠與幾乎任何身份驗證方案集成。

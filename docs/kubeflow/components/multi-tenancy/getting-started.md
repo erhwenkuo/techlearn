@@ -102,7 +102,7 @@ tebook-0                                    2/2     Running   0               19
 
 我們推薦這種方法，因為它鼓勵採用 **GitOps** 流程來處理配置文件創建。
 
-Kubeflow v1.6.0 可配置地為首次登錄而且經過身份驗證的用戶提供自動配置 `profile` 的工作流。
+Kubeflow v1.7.0 可配置地為首次登錄而且經過身份驗證的用戶提供自動配置 `profile` 的工作流。
 
 ### 手動配置/創建 Profile
 
@@ -355,47 +355,47 @@ kubectl delete pods -n auth -l app=dex
 
 ### 批量創建用戶 Profile 文件
 
-管理員可能希望為多個用戶批量創建 `profile` 配置。您可以通過在本地計算機上創建一個包含多個配置文件描述部分的 `profile.yaml` 來執行此操作，如下所示：
+管理員可能希望為多個用戶批量創建 `profile` 配置。您可以通過在本地計算機上創建一個包含多個配置文件描述部分的 `profiles.yaml` 來執行此操作，如下所示：
 
-```yaml
+```yaml title="profiles.yaml"
 apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
-  name: profileName1   # replace with the name of profile you want
+  name: profileName1
 spec:
   owner:
     kind: User
-    name: userid1@email.com   # replace with the email of the user
+    name: userid1@email.com
 ---
 apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
-  name: profileName2   # replace with the name of profile you want
+  name: profileName2
 spec:
   owner:
     kind: User
-    name: userid2@email.com   # replace with the email of the user
+    name: userid2@email.com
 ```
 
 運行以下命令將命名空間應用到 Kubernetes 集群：
 
 ```bash
-kubectl create -f profile.yaml
+kubectl create -f profiles.yaml
 
-kubectl apply -f profile.yaml  #if you are modifying the profiles
+kubectl apply -f profiles.yaml  #if you are modifying the profiles
 ```
 
-這將創建多個配置文件。
+這將一次性地創建多個用戶配置文件。
 
 ### 自動創建 Profile
 
-Kubeflow v1.6.0 提供自動 `profile` 創建：
+Kubeflow v1.6.0 之後提供自動 `profile` 創建的功能：
 
 - 預設情況下不會啟動自動 `profile` 創建，需要將其作為部署的一部分明確包含在內。在部署期間啟用自動用戶配置 `profile` 創建後，將在首次登錄時為經過身份驗證的用戶創建新的用戶配置 `profile`。用戶將能夠在 Kubeflow 中央儀表板的下拉列表中看到他們的新 `profile`。
 
 - 通過將 `CD_REGISTRATION_FLOW` 的環境變量設置為 `true`，可以啟用自動配置 `profile` 創建作為部署的一部分。修改 `<manifests-path>/apps/centraldashboard/upstream/base/params.env` 將註冊變量設置為 `true`。
 
-```bash
+```bash hl_lines="4"
 CD_CLUSTER_DOMAIN=cluster.local
 CD_USERID_HEADER=kubeflow-userid
 CD_USERID_PREFIX=
@@ -440,11 +440,11 @@ kubectl delete profile <profileName>
 
 ## 通過 Kubeflow UI 管理貢獻者
 
-Kubeflow v1.6.0 允許與系統中的其他用戶共享 `profile` 的資源。個人資料的所有者可以使用儀表板提供的 “Management Contributors” 選項卡共享對其個人資料的訪問​​權限。
+Kubeflow v1.6.0 之後允許與系統中的其他用戶共享用戶自己的 `profile` 的資源。個人資料的所有者可以使用儀表板提供的 “Management Contributors” 選項卡共享對其個人資料的訪問​​權限。
 
 ![](./assets/multi-user-contributors.png)
 
-以下是 “Management Contributors” 選項卡視圖的範例：
+以下是 “Management Contributors” 選項卡的範例：
 
 ![](./assets/manage-contributors.png)
 
@@ -466,7 +466,7 @@ Kubeflow v1.6.0 允許與系統中的其他用戶共享 `profile` 的資源。�
 
 在本地計算機上創建一個包含以下內容的 `rolebinding.yaml` 文件：
 
-```yaml
+```yaml title="rolebinding.yaml"
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -489,7 +489,7 @@ subjects:
 
 在本地計算機上創建一個包含以下內容的 `authorizationpolicy.yaml` 文件：
 
-```yaml
+```yaml title="authorizationpolicy.yaml"
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:

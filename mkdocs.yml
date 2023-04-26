@@ -59,6 +59,8 @@ plugins:
   - search
   - minify:
       minify_html: true
+  - mkdocs-video:
+      video_controls: True
 
 # Extensions
 markdown_extensions:
@@ -389,8 +391,6 @@ nav:
         - Kustomize: argocd/tutorial/03-kustomize.md
         - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
         - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
-
-
     - 維運:
       - 指標 Metrics: 
         - 說明: argocd/operation-manual/metrics/index.md
@@ -427,10 +427,14 @@ nav:
       - 應用程序部署策略: istio/reference/deployment-strategies.md
       - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
   - Kubeflow:
-    - 環境:
+    - 簡介:
+      - 概述: kubeflow/env/index.md
       - 架構: kubeflow/env/architecture.md
-      - 手動安裝 Kubeflow: kubeflow/env/kubeflow-install.md
+      - 安裝: kubeflow/env/kubeflow-install.md
     - 組件:
+      - Central Dashboard:
+        - 簡介: kubeflow/components/central-dash/overview.md
+        - 自定義 menu 項: kubeflow/components/central-dash/customizing-menu.md
       - Kubeflow Notebooks:
         - 概述: kubeflow/components/notebooks/overview.md
         - 快速入門: kubeflow/components/notebooks/quickstart-guide.md
@@ -447,7 +451,9 @@ nav:
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
         - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
         - 身份驗證設計:
-            - OIDC 身份感知代理: kubeflow/components/multi-tenancy/authn/oidc-authservice.md
+            - AuthService (OIDC代理): kubeflow/components/multi-tenancy/authn/oidc-authservice.md
+            - AuthService 網頁模板: kubeflow/components/multi-tenancy/authn/templates.md
+            - 使用Istio+Dex進行身份驗證: kubeflow/components/multi-tenancy/authn/kubeflow-authentication-with-istio-dex.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
