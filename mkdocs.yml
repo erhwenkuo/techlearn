@@ -446,6 +446,23 @@ nav:
       - Kubeflow Pipelines:
         - v1:
           - 簡介: kubeflow/components/pipelines/v1/introduction.md
+          - 概述:
+            - Quickstart: kubeflow/components/pipelines/v1/overview/quickstart.md
+            - 管道 interface: kubeflow/components/pipelines/v1/overview/quickstart.md
+            - Multi-user 隔離: kubeflow/components/pipelines/v1/overview/multi-user.md
+            - Pipeline Root: kubeflow/components/pipelines/v1/overview/pipeline-root.md
+          - 概念:
+            - Pipeline: kubeflow/components/pipelines/v1/concepts/pipeline.md
+            - Component: kubeflow/components/pipelines/v1/concepts/component.md
+            - Graph: kubeflow/components/pipelines/v1/concepts/graph.md
+            - Experiment: kubeflow/components/pipelines/v1/concepts/experiment.md
+            - Run 與 Recurring Run: kubeflow/components/pipelines/v1/concepts/run.md
+            - Run Trigger: kubeflow/components/pipelines/v1/concepts/run.md
+            - Step: kubeflow/components/pipelines/v1/concepts/step.md
+            - Output Artifact: kubeflow/components/pipelines/v1/concepts/output-artifact.md
+            - ML Metadata: kubeflow/components/pipelines/v1/concepts/metadata.md
+          - 範例和教程:
+            - Pipelines 輕量級組件: kubeflow/components/pipelines/v1/tutorials/lightweight-components.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md

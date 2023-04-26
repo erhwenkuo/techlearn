@@ -40,3 +40,486 @@ Kubeflow Pipelines 提供了一些示例，您可以使用它們快速試用 Kub
 
 您可以在 [Kubeflow Pipelines 存儲庫](https://github.com/kubeflow/pipelines/tree/sdk/release-1.8/samples/tutorials/Data%20passing%20in%20python%20components)中找到 `Data passing in python components tutorial` 的源碼。
 
+### 範例: Data passing in Python Components
+
+**數據傳遞**:
+
+數據傳遞是在設計 pipeline 時最重要思考方向。
+
+在 Kubeflow Pipelines 中，管道開發者通過創建 component 實例（任務）並將它們連接在一起來組合管道。
+
+component 有輸入 (input) 和輸出 (output)。他們可以消費和產生任意數據。
+
+管道開發者通過連接組件任務的數據輸入和輸出來建立組件任務之間的連接(通過將一個任務的輸出作為參數傳遞給另一個任務的輸入)。
+
+系統負責存儲組件生成的數據，然後按照管道的指示將該數據傳遞給其他組件以供使用。
+
+本教程展示瞭如何創建用於生成、使用和轉換數據的 Python 組件。它展示如何通過實例化組件並將它們連接在一起來創建數據傳遞管道。
+
+**小數據:**
+ 
+小數據是您可以輕鬆地作為程序的命令行參數傳遞的數據。小數據大小不應超過幾千字節。
+ 
+典型類型的小數據的一些示例是：數字、URL、小字符串（例如列名）。
+ 
+小型列表、字典和 JSON 結構都是很好小數據類型，但要注意大小並考慮切換到更適合更大數據（超過幾千字節）或二進制數據的基於文件的數據傳遞方法。
+ 
+所有小數據輸出將在某個時刻序列化為字符串，所有小數據輸入值將在某個時刻從字符串反序列化（作為命令行參數傳遞）。有針對幾種常見類型（例如 `str`、`int`、`float`、`bool`、`list`、`dict`）的內置序列化器和反序列化器。所有其他類型的數據都需要在返回數據之前手動序列化。確保正確指定類型註釋，否則不會系統將不會自動反序列化並且組件函數將接收字符串而不是反序列化的對象。
+
+**大數據 (文件):**
+
+應該從文件中讀取更大的數據並將其寫入文件。
+
+輸入和輸出文件的路徑由系統選擇並傳遞給函數（作為字符串）。
+
+使用 `InputPath` 參數註解告訴系統該函數要將相應的輸入數據作為文件使用。系統將下載數據，將其寫入本地文件，然後將該文件的**路徑**傳遞給函數。
+
+使用 `OutputPath` 參數註解告訴系統該函數要產生相應的輸出數據作為文件。系統將準備並傳遞函數應寫入輸出數據的文件的**路徑**。函數退出後，系統會將數據上傳到存儲系統，以便傳遞給下游組件。
+
+您可以通過為 “InputPath” 和 “OutputPath” 指定類型參數來指定消費/生產數據的類型。類型可以是 python 類型或任意類型名稱字符串。 `OutputPath('TFModel')` 表示該函數聲明它寫入文件的數據的類型為 “TFModel”。 `InputPath('TFModel')` 表示該函數聲明它期望從文件中讀取的數據具有 “TFModel” 類型。
+
+當管道開發者將輸入連接到輸出時，系統會檢查類型是否匹配。
+
+!!! note
+    關於輸入/輸出名稱的注意事項：當函數轉換為組件時，輸入和輸出名稱通常跟在參數名稱之後，但是 `\_path` 和 `\_file` 後綴會從文件/路徑輸入和輸出中被剝離。例如。 `number_file_path: InputPath(int)` 參數成為 `number: int` 輸入。這使得參數傳遞看起來更自然：`number=42` 而不是 `number_file_path=42`。
+
+```python title="Data passing in python components - Files.py"
+#!/usr/bin/env python3
+from typing import NamedTuple
+
+import kfp
+from kfp.components import func_to_container_op, InputPath, OutputPath
+
+# ### Writing and reading bigger data
+
+# Writing bigger data
+@func_to_container_op
+def repeat_line(line: str, output_text_path: OutputPath(str), count: int = 10):
+    '''Repeat the line specified number of times'''
+    with open(output_text_path, 'w') as writer:
+        for i in range(count):
+            writer.write(line + '\n')
+
+
+# Reading bigger data
+@func_to_container_op
+def print_text(text_path: InputPath()): # The "text" input is untyped so that any data can be printed
+    '''Print text'''
+    with open(text_path, 'r') as reader:
+        for line in reader:
+            print(line, end = '')
+
+def print_repeating_lines_pipeline():
+    repeat_lines_task = repeat_line(line='Hello', count=5000)
+    print_text(repeat_lines_task.output) # Don't forget .output !
+
+# Submit the pipeline for execution:
+#kfp.Client(host=kfp_endpoint).create_run_from_pipeline_func(print_repeating_lines_pipeline, arguments={})
+
+# ### Processing bigger data
+
+@func_to_container_op
+def split_text_lines(source_path: InputPath(str), odd_lines_path: OutputPath(str), even_lines_path: OutputPath(str)):
+    with open(source_path, 'r') as reader:
+        with open(odd_lines_path, 'w') as odd_writer:
+            with open(even_lines_path, 'w') as even_writer:
+                while True:
+                    line = reader.readline()
+                    if line == "":
+                        break
+                    odd_writer.write(line)
+                    line = reader.readline()
+                    if line == "":
+                        break
+                    even_writer.write(line)
+
+def text_splitting_pipeline():
+    text = '\n'.join(['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'])
+    split_text_task = split_text_lines(text)
+    print_text(split_text_task.outputs['odd_lines'])
+    print_text(split_text_task.outputs['even_lines'])
+
+# Submit the pipeline for execution:
+#kfp.Client(host=kfp_endpoint).create_run_from_pipeline_func(text_splitting_pipeline, arguments={})
+
+# ### Example: Pipeline that generates then sums many numbers
+
+# Writing many numbers
+@func_to_container_op
+def write_numbers(numbers_path: OutputPath(str), start: int = 0, count: int = 10):
+    with open(numbers_path, 'w') as writer:
+        for i in range(start, count):
+            writer.write(str(i) + '\n')
+
+
+# Reading and summing many numbers
+@func_to_container_op
+def sum_numbers(numbers_path: InputPath(str)) -> int:
+    sum = 0
+    with open(numbers_path, 'r') as reader:
+        for line in reader:
+            sum = sum + int(line)
+    return sum
+
+
+
+# Pipeline to sum 100000 numbers
+def sum_pipeline(count: int = 100000):
+    numbers_task = write_numbers(count=count)
+    print_text(numbers_task.output)
+
+    sum_task = sum_numbers(numbers_task.outputs['numbers'])
+    print_text(sum_task.output)
+
+
+# Submit the pipeline for execution:
+#kfp.Client(host=kfp_endpoint).create_run_from_pipeline_func(sum_pipeline, arguments={})
+
+# Combining all pipelines together in a single pipeline
+def file_passing_pipelines():
+    print_repeating_lines_pipeline()
+    text_splitting_pipeline()
+    sum_pipeline()
+
+
+if __name__ == '__main__':
+    # Compiling the pipeline
+    kfp.compiler.Compiler().compile(file_passing_pipelines, 'sample-pipeline.yaml')
+```
+
+## 運行 ML pipeline
+
+本部分向您展示如何運行 Pipeline UI 中可用的 XGBoost 範例。與上述基本範例不同，XGBoost 範例確實包含 ML 組件。
+
+按照以下步驟運行範例：
+
+1. 在管道 UI 上點擊範本名稱 `[Demo] XGBoost - Iterative model training`：
+
+    ![](./assets/v1-pipeline-xgboost.png)
+
+2. 點擊 "Create experiment"：
+
+    ![](./assets/v1-pipelne-xgboost-create-experiment.png)
+
+3. 按照提示創建 experiment，然後創建 run。該示例為您需要的所有參數提供默認值。以下屏幕截圖假設您已經創建了一個名為 `XGBoost experiment` 的實驗，現在正在創建一個名為 `XGBoost run` 的運行：
+
+    ![](./assets/v1-pipeline-xgboost-create-experiment.png)
+
+    ![](./assets/v1-pipeline-xgboost-experiment-run.png)
+
+4. 點擊 **Start** 以運行管道。
+
+5. 點擊 experiment 儀表板上的 **run** 名稱：
+
+    ![](./assets/v1-pipeline-xgboost-experiment-run-view.png)
+
+6. 通過點擊圖形的組件和其他 UI 元素來探索圖形和 run 的其他方面資訊：
+
+    ![](./assets/v1-pipeline-xgboost-experiment-run-detail.png)
+
+您可以在 Kubeflow Pipelines 存儲庫中找到 [XGBoost - 迭代模型訓練](https://github.com/kubeflow/pipelines/tree/sdk/release-1.8/samples/core/xgboost_training_cm)演示的源代碼。
+
+
+### 範例: XGBoost-Iterative model training
+
+
+```python
+#!/usr/bin/env python3
+
+import json
+import kfp
+from kfp import components
+from kfp import dsl
+import os
+import subprocess
+
+diagnose_me_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/566dddfdfc0a6a725b6e50ea85e73d8d5578bbb9/components/diagnostics/diagnose_me/component.yaml')
+
+confusion_matrix_op = components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0/components/local/confusion_matrix/component.yaml')
+
+roc_op = components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0/components/local/roc/component.yaml')
+
+dataproc_create_cluster_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0-rc.3/components/gcp/dataproc/create_cluster/component.yaml')
+
+dataproc_delete_cluster_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0-rc.3/components/gcp/dataproc/delete_cluster/component.yaml')
+
+dataproc_submit_pyspark_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0-rc.3/components/gcp/dataproc/submit_pyspark_job/component.yaml'
+)
+
+dataproc_submit_spark_op = components.load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/1.7.0-rc.3/components/gcp/dataproc/submit_spark_job/component.yaml'
+)
+
+_PYSRC_PREFIX = 'gs://ml-pipeline/sample-pipeline/xgboost' # Common path to python src.
+
+_XGBOOST_PKG = 'gs://ml-pipeline/sample-pipeline/xgboost/xgboost4j-example-0.8-SNAPSHOT-jar-with-dependencies.jar'
+
+_TRAINER_MAIN_CLS = 'ml.dmlc.xgboost4j.scala.example.spark.XGBoostTrainer'
+
+_PREDICTOR_MAIN_CLS = 'ml.dmlc.xgboost4j.scala.example.spark.XGBoostPredictor'
+
+
+def delete_directory_from_gcs(dir_path):
+  """Delete a GCS dir recursively. Ignore errors."""
+  try:
+    subprocess.call(['gsutil', '-m', 'rm', '-r', dir_path])
+  except:
+    pass
+
+
+# ! Please do not forget to enable the Dataproc API in your cluster https://console.developers.google.com/apis/api/dataproc.googleapis.com/overview
+
+# ================================================================
+# The following classes should be provided by components provider.
+
+
+def dataproc_analyze_op(
+    project,
+    region,
+    cluster_name,
+    schema,
+    train_data,
+    output):
+  """Submit dataproc analyze as a pyspark job.
+  :param project: GCP project ID.
+  :param region: Which zone to run this analyze.
+  :param cluster_name: Name of the cluster.
+  :param schema: GCS path to the schema.
+  :param train_data: GCS path to the training data.
+  :param output: GCS path to store the output.
+  """
+  return dataproc_submit_pyspark_op(
+      project_id=project,
+      region=region,
+      cluster_name=cluster_name,
+      main_python_file_uri=os.path.join(_PYSRC_PREFIX, 'analyze_run.py'),
+      args=['--output', str(output), '--train', str(train_data), '--schema', str(schema)]
+  )
+
+
+def dataproc_transform_op(
+    project,
+    region,
+    cluster_name,
+    train_data,
+    eval_data,
+    target,
+    analysis,
+    output
+):
+  """Submit dataproc transform as a pyspark job.
+  :param project: GCP project ID.
+  :param region: Which zone to run this analyze.
+  :param cluster_name: Name of the cluster.
+  :param train_data: GCS path to the training data.
+  :param eval_data: GCS path of the eval csv file.
+  :param target: Target column name.
+  :param analysis: GCS path of the analysis results
+  :param output: GCS path to use for output.
+  """
+
+  # Remove existing [output]/train and [output]/eval if they exist.
+  delete_directory_from_gcs(os.path.join(output, 'train'))
+  delete_directory_from_gcs(os.path.join(output, 'eval'))
+
+  return dataproc_submit_pyspark_op(
+      project_id=project,
+      region=region,
+      cluster_name=cluster_name,
+      main_python_file_uri=os.path.join(_PYSRC_PREFIX,
+                                        'transform_run.py'),
+      args=[
+        '--output',
+        str(output),
+        '--analysis',
+        str(analysis),
+        '--target',
+        str(target),
+        '--train',
+        str(train_data),
+        '--eval',
+        str(eval_data)
+      ])
+
+
+def dataproc_train_op(
+    project,
+    region,
+    cluster_name,
+    train_data,
+    eval_data,
+    target,
+    analysis,
+    workers,
+    rounds,
+    output,
+    is_classification=True
+):
+
+  if is_classification:
+    config='gs://ml-pipeline/sample-data/xgboost-config/trainconfcla.json'
+  else:
+    config='gs://ml-pipeline/sample-data/xgboost-config/trainconfreg.json'
+
+  return dataproc_submit_spark_op(
+      project_id=project,
+      region=region,
+      cluster_name=cluster_name,
+      main_class=_TRAINER_MAIN_CLS,
+      spark_job=json.dumps({'jarFileUris': [_XGBOOST_PKG]}),
+      args=json.dumps([
+        str(config),
+        str(rounds),
+        str(workers),
+        str(analysis),
+        str(target),
+        str(train_data),
+        str(eval_data),
+        str(output)
+      ]))
+
+
+def dataproc_predict_op(
+    project,
+    region,
+    cluster_name,
+    data,
+    model,
+    target,
+    analysis,
+    output
+):
+
+  return dataproc_submit_spark_op(
+      project_id=project,
+      region=region,
+      cluster_name=cluster_name,
+      main_class=_PREDICTOR_MAIN_CLS,
+      spark_job=json.dumps({'jarFileUris': [_XGBOOST_PKG]}),
+      args=json.dumps([
+        str(model),
+        str(data),
+        str(analysis),
+        str(target),
+        str(output)
+      ]))
+
+# =======================================================================
+
+@dsl.pipeline(
+    name='xgboost-trainer',
+    description='A trainer that does end-to-end distributed training for XGBoost models.'
+)
+def xgb_train_pipeline(
+    output='gs://{{kfp-default-bucket}}',
+    project='{{kfp-project-id}}',
+    diagnostic_mode='HALT_ON_ERROR',
+    rounds=5,
+):
+    output_template = str(output) + '/' + dsl.RUN_ID_PLACEHOLDER + '/data'
+    region='us-central1'
+    workers=2
+    quota_check=[{'region':region,'metric':'CPUS','quota_needed':12.0}]
+    train_data='gs://ml-pipeline/sample-data/sfpd/train.csv'
+    eval_data='gs://ml-pipeline/sample-data/sfpd/eval.csv'
+    schema='gs://ml-pipeline/sample-data/sfpd/schema.json'
+    true_label='ACTION'
+    target='resolution'
+    required_apis='dataproc.googleapis.com'
+    cluster_name='xgb-%s' % dsl.RUN_ID_PLACEHOLDER
+
+    # Current GCP pyspark/spark op do not provide outputs as return values, instead,
+    # we need to use strings to pass the uri around.
+    analyze_output = output_template
+    transform_output_train = os.path.join(output_template, 'train', 'part-*')
+    transform_output_eval = os.path.join(output_template, 'eval', 'part-*')
+    train_output = os.path.join(output_template, 'train_output')
+    predict_output = os.path.join(output_template, 'predict_output')
+    
+    _diagnose_me_op = diagnose_me_op(
+        bucket=output,
+        execution_mode=diagnostic_mode,
+        project_id=project, 
+        target_apis=required_apis,
+        quota_check=quota_check)
+    
+    with dsl.ExitHandler(exit_op=dataproc_delete_cluster_op(
+        project_id=project,
+        region=region,
+        name=cluster_name
+    )):
+        _create_cluster_op = dataproc_create_cluster_op(
+            project_id=project,
+            region=region,
+            name=cluster_name,
+            initialization_actions=[
+              os.path.join(_PYSRC_PREFIX,
+                           'initialization_actions.sh'),
+            ],
+            image_version='1.5'
+        ).after(_diagnose_me_op)
+
+        _analyze_op = dataproc_analyze_op(
+            project=project,
+            region=region,
+            cluster_name=cluster_name,
+            schema=schema,
+            train_data=train_data,
+            output=output_template
+        ).after(_create_cluster_op).set_display_name('Analyzer')
+
+        _transform_op = dataproc_transform_op(
+            project=project,
+            region=region,
+            cluster_name=cluster_name,
+            train_data=train_data,
+            eval_data=eval_data,
+            target=target,
+            analysis=analyze_output,
+            output=output_template
+        ).after(_analyze_op).set_display_name('Transformer')
+
+        _train_op = dataproc_train_op(
+            project=project,
+            region=region,
+            cluster_name=cluster_name,
+            train_data=transform_output_train,
+            eval_data=transform_output_eval,
+            target=target,
+            analysis=analyze_output,
+            workers=workers,
+            rounds=rounds,
+            output=train_output
+        ).after(_transform_op).set_display_name('Trainer')
+
+        _predict_op = dataproc_predict_op(
+            project=project,
+            region=region,
+            cluster_name=cluster_name,
+            data=transform_output_eval,
+            model=train_output,
+            target=target,
+            analysis=analyze_output,
+            output=predict_output
+        ).after(_train_op).set_display_name('Predictor')
+
+        _cm_op = confusion_matrix_op(
+            predictions=os.path.join(predict_output, 'part-*.csv'),
+            output_dir=output_template
+        ).after(_predict_op)
+
+        _roc_op = roc_op(
+            predictions_dir=os.path.join(predict_output, 'part-*.csv'),
+            true_class=true_label,
+            true_score_column=true_label,
+            output_dir=output_template
+        ).after(_predict_op)
+
+if __name__ == '__main__':
+    kfp.compiler.Compiler().compile(xgb_train_pipeline, __file__ + '.yaml')
+```
+
