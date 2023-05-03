@@ -463,6 +463,9 @@ nav:
             - ML Metadata: kubeflow/components/pipelines/v1/concepts/metadata.md
           - 範例和教程:
             - Pipelines 輕量級組件: kubeflow/components/pipelines/v1/tutorials/lightweight-components.md
+        - v2:
+          - 簡介: kubeflow/components/pipelines/v2/introduction.md
+          - Hello World 範例管道: kubeflow/components/pipelines/v2/hello-world.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
