@@ -1,342 +1,437 @@
-# 通過 OpenID Connect 提供商 (Keycloak) 進行身份驗證
+# 通過 OpenID Connect 提供商進行身份驗證
 
 ## 步驟 01 - 環境安裝
 
-### 創建本機 Docker Network
+### Keycloak (IdP)
 
-使用 docker 創建一個虛擬的網路來做為本次教程的網路架構。
-
-|   |   |
-|--- |---|
-|CIDR|172.22.0.0/24|
-|CIDR IP Range|172.20.0.0 - 172.20.0.255|
-|IPs|256|
-|Subnet Mask|255.255.255.0|
-|Gateway|172.20.0.1|
+使用 Docerk 來啟動一個 Keycloak 服務:
 
 ```bash
-docker network create \
-  --driver=bridge \
-  --subnet=172.20.0.0/24 \
-  --gateway=172.20.0.1 \
-  lab-network
+docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
+quay.io/keycloak/keycloak:21.1.1 start-dev
 ```
 
-檢查 Docker 虛擬網絡 `lab-network` 的設定。
+此命令啟動 Keycloak 服務並暴露在本地端口 `8080` 上的 ，並使用用戶名 `admin` 和密碼 `admin` 創建一個初始管理員用戶。
+
+使用瀏覽器到 `http://127.0.0.1:8080` 網址:
+
+![](./assets/keycloak-adm.png)
+
+#### 構建 oidc client
+
+1. 點擊 "Adminstration Console" 並輸入用戶名 `admin` 和密碼 `admin`
+
+  ![](./assets/keycloak-adm-login.png)    
+
+2. 點擊左側導般菜單 "Realm settings", 然後點擊左下方的 “OpenID Endpoing Configuration" 連結
+
+  ![](./assets/keycloak-realm-openid-cfg.png)
+
+3. 在新的瀏覽頁裡會看到 Keycloak 的相關服務元數據與服務端點 URL
+
+  ![](./assets/keycloak-well-known.png)
+
+  讓我們截取後續動作所需要的資訊出來給大家參考:
+
+  ```json hl_lines="2 3 4"
+  {
+    "issuer":"http://localhost:8080/realms/master",
+    "authorization_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/auth",
+    "token_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token",
+    "introspection_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token/introspect",
+    "userinfo_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/userinfo",
+    "end_session_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/logout",
+    "frontchannel_logout_session_supported":true,
+    "frontchannel_logout_supported":true,
+    "jwks_uri":"http://localhost:8080/realms/master/protocol/openid-connect/certs",
+    "check_session_iframe":"http://localhost:8080/realms/master/protocol/openid-connect/login-status-iframe.html",
+    "grant_types_supported":[
+      "authorization_code",
+      "implicit",
+      "refresh_token",
+      "password",
+      "client_credentials",
+      "urn:ietf:params:oauth:grant-type:device_code",
+      "urn:openid:params:grant-type:ciba"
+    ],
+    "claims_supported":[
+      "aud",
+      "sub",
+      "iss",
+      "auth_time",
+      "name",
+      "given_name",
+      "family_name",
+      "preferred_username",
+      "email",
+      "acr"
+    ],
+    "scopes_supported":[
+      "openid",
+      "microprofile-jwt",
+      "address",
+      "web-origins",
+      "offline_access",
+      "profile",
+      "roles",
+      "email",
+      "acr",
+      "phone"
+    ]
+  }
+  ```
+
+4. 點擊左側導般菜單 "Clients", 然後點擊 “Create client" 按鈕
+
+  ![](./assets/keycloak-create-client.png)
+
+5. 設定 "General Settings":
+  - Client ID: `dex-oidc-keycloak`
+  - Name: `dex-oidc-keycloak`
+
+  點擊 "Next"
+
+  ![](./assets/keycloak-cleint-general.png)
+
+6. 設定 "Capability config":
+  - Client authentication: `On`
+  - Authentication flow: [v] Standard flow
+
+  點擊 "Next"
+
+  ![](./assets/keycloak-capability-config.png)
+
+7. 設定 "Login settings":
+  - Valid redirect URIs: `http://127.0.0.1:5556/dex/callback`
+  - Web origins: `*`
+
+  點擊 "Save"
+
+  ![](./assets/keycloak-login-settings.png)
+
+!!! info
+  在第 7 步裡頭很重要的設定是要把 `Valid redirect URIs` 設成 Dex 服務的端點。特別注意 `dex/callback` 的路徑。
+
+8. 點擊 "Credentials" 頁籤並截取 "Client secret" 後續備用
+  - Client secret: `JiaBlyreunTlfFV0CLi0rH4eHRXrKExD`
+
+#### 創建 user 帳戶
+
+讓我們在 Keycloak 中創建一個一個 user account 來便於後續的驗證。
+
+1. 點擊左側導般菜單 "Users", 然後點擊 “Add user" 按鈕
+
+  ![](./assets/keycloak-add-user.png)
+
+2. 設定 user 的基本資訊
+  - Username: `dxlab`
+  - Email: `dxlab@example.it`
+  - Email verified: `Yes`
+
+  點擊 "Create"
+
+  ![](./assets/keycloak-create-user.png)
+
+3. 點擊 "Credentials" 頁籤, 然後點擊 “Set password" 按鈕
+
+  ![](./assets/keycloak-set-credentials.png)
+
+4. 設定 user 的密碼
+  - Password: `12341234`
+  - Temporary: `Off`
+
+  點擊 "Save"
+
+  ![](./assets/keycloak-set-credentials2.png)
+
+  確認 "Save password"
+
+  ![](./assets/keycloak-confirm-setting-credentials.png)
+
+### Dex 服務
+
+#### 構建 dex 二進製文件
+
+**先決條件:**
+
+- 安裝好 [Golang](https://go.dev/) 的機器 (在本文中, 使用 Ubuntu 22.04)
+
+要從源代碼構建 dex，請根據[官方文檔](https://go.dev/doc/install) 安裝 1.19 或更高版本的工作 Go 環境。然後克隆存儲庫並使用 `make` 編譯 dex 二進製文件。
 
 ```bash
-docker network inspect lab-network
+$ git clone https://github.com/dexidp/dex.git
+$ cd dex/
+$ make build
 ```
 
-結果:
+#### 配置
 
-```json hl_lines="14-15"
-[
-    {
-        "Name": "lab-network",
-        "Id": "2e2ca22fbb712cbc19d93acb16fc4e1715488c4c18b82d12dba4c1634ac5b1b6",
-        "Created": "2023-02-09T23:07:33.186003336+08:00",
-        "Scope": "local",
-        "Driver": "bridge",
-        "EnableIPv6": false,
-        "IPAM": {
-            "Driver": "default",
-            "Options": {},
-            "Config": [
-                {
-                    "Subnet": "172.20.0.0/24",
-                    "Gateway": "172.20.0.1"
-                }
-            ]
-        },
-        "Internal": false,
-        "Attachable": false,
-        "Ingress": false,
-        "ConfigFrom": {
-            "Network": ""
-        },
-        "ConfigOnly": false,
-        "Containers": {},
-        "Options": {},
-        "Labels": {}
-    }
-]
-```
-
-讓我們從這個虛擬網段裡的 CIDR IP Range 中保留 5 個 IP (`172.20.0.10-172.20.0.15`) 來做本次的練習。
-
-### 創建 K8S 集群
-
-執行下列命令來創建實驗 Kubernetes 集群:
-
-```bash title="執行下列命令  >_"
-k3d cluster create  --api-port 6443 \
-  --port 8080:80@loadbalancer --port 8443:443@loadbalancer \
-  --k3s-arg "--disable=traefik@server:0" \
-  --k3s-arg "--disable=servicelb@server:0" \
-  --network lab-network
-```
-
-參數說明:
-
-- `--k3s-arg "--disable=servicelb@server:0"` 不安裝 K3D 預設的 traefik (IngressController), 我們將使用　nginx ingress controller
-- `--k3s-arg "--disable=traefik@server:0"` 不安裝 K3D 預設的 servicelb (klipper-lb), 我們將使用 metallb
-- `--network lab-network` 使用預先創建的 docker 虛擬網段
-
-### 安裝/設定 Metallb
-
-在本次的結構裡, 有兩個負責南北向 traffic 的亓件, 主要原因是 Nginx Ingress Controller 是很多團隊己經使用的 ingress 的元件, 雖說 Istio Ingress Gateway 也可負責對外開放在 Kubernetes 裡頭的服務, 但是對大多數的團隊來說這樣的轉換需要熟悉與過渡。因此在本次的 lab 架構會同時並存這兩個元件並且使用 metallb 來配置固定的 IP。
-
-![](./assets/dual-north-south-traffic.png)
-
-#### Helm 安裝
-
-使用 Helm 的手法來進行 Metallb 安裝:
+Dex 專門從配置文件中提取配置選項。使用 `examples/` 目錄中的示例配置文件啟動一個帶有 sqlite3 數據存儲和一組預定義 OAuth2 客戶端的 dex 實例。
 
 ```bash
-#　setup helm repo
-helm repo add metallb https://metallb.github.io/metallb
-
-helm repo update
-
-# install metallb to specific namespace
-helm upgrade --install --create-namespace --namespace metallb-system \
-  metallb metallb/metallb
+./bin/dex serve examples/config-dev.yaml
 ```
 
-!!! tips
-    Ｍetallb 在[Version 0.13.2](https://metallb.universe.tf/release-notes/#version-0-13-2) 版本有一個很重大的修改:
+![](./assets/dex-running.png)
 
-    - 新功能:　支持CRD！期待已久的功能 Metallb 現在可通過 CR 進行配置。
-    - 行為變化:　最大的變化是引入了 CRD 並刪除了對通過 ConfigMap 進行配置的支持。
+範例[配置文件](https://github.com/dexidp/dex/blob/master/examples/config-dev.yaml)通過註釋記錄了許多配置選項。有關其它的配置選項，請查看該文件。
 
-#### 設定 IP Adress Pool
+我們將在本配置文件中額外配置 dex `oidc` 的 connector 資訊來讓 dex 訪問 keycloak:
 
-我們將使用 Metallb 的 Layer 2 模式是最簡單的配置：在大多數的情況下，你不需要任何特定於協議的配置，只需要 IP 地址範圍。
+```yaml title="dex/examples/config-dev.yaml" hl_lines="135-146"
+# dex 的基本路徑和 OpenID Connect 服務的外部名稱。
+# 這是所有客戶端必須用來引用 dex 的規範 URL。
+issuer: http://127.0.0.1:5556/dex
 
-Layer 2 模式模式不需要將 IP 綁定到工作程序節點的網絡接口。它通過直接響應本地網絡上的 ARP 請求來工作，將機器的 MAC 地址提供給客戶端。
+# 存儲配置決定了 dex 存儲其狀態的位置。支持的
+# 選項包括 SQL 資料庫和 Kubernetes 第三方資源。
+#
+# 有關詳細信息，請參閱文檔 (https://dexidp.io/docs/storage/)。
+storage:
+  type: sqlite3
+  config:
+    file: examples/dex.db
 
-確定 Metallb 所有的 pod 都正常運行後力, 讓我們使用 CRD 來設定 Metallb:
+  # type: mysql
+  # config:
+  #   host: localhost
+  #   port: 3306
+  #   database: dex
+  #   user: mysql
+  #   password: mysql
+  #   ssl:
+  #     mode: "false"
 
-```bash hl_lines="9"
-cat <<EOF | kubectl apply -n metallb-system -f -
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: ip-pool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.20.0.10-172.20.0.15
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: l2advertise
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - ip-pool
-EOF
+  # type: postgres
+  # config:
+  #   host: localhost
+  #   port: 5432
+  #   database: dex密碼
+  #   user: postgres
+  #   password: postgres
+  #   ssl:
+  #     mode: disable
+
+  # type: etcd
+  # config:
+  #   endpoints:
+  #     - http://localhost:2379
+  #   namespace: dex/
+
+  # type: kubernetes
+  # config:
+  #   kubeConfigFile: $HOME/.kube/config
+
+# HTTP 端點的配置。
+web:
+  http: 0.0.0.0:5556
+  # 如果要配置 HTTPS 選項請使用下列的註釋。
+  # https: 127.0.0.1:5554
+  # tlsCert: /etc/dex/tls.crt
+  # tlsKey: /etc/dex/tls.key
+
+# dex外觀的配置
+# frontend:
+#   issuer: dex
+#   logoURL: theme/logo.png
+#   dir: web/
+#   theme: light
+
+# 遙測配置
+telemetry:
+  http: 0.0.0.0:5558
+  # enableProfiling: true
+
+# 取消下列註釋以啟用 gRPC API。這個值必須不同於在 "HTTP 端點的配置"。
+# grpc:
+#   addr: 127.0.0.1:5557
+#   tlsCert: examples/grpc-client/server.crt
+#   tlsKey: examples/grpc-client/server.key
+#   tlsClientCA: examples/grpc-client/ca.crt
+
+# 取消此區塊註釋以啟用相關token有效持續時間的配置。
+# 可以僅使用 s、m 和 h 後綴指定單位。
+# expiry:
+#   deviceRequests: "5m"
+#   signingKeys: "6h"
+#   idTokens: "24h"
+#   refreshTokens:
+#     reuseInterval: "3s"
+#     validIfNotUsedFor: "2160h" # 90 days
+#     absoluteLifetime: "3960h" # 165 days
+
+# 用於控制日誌的選項。
+# logger:
+#   level: "debug"
+#   format: "text" # can also be "json"
+
+# 預設值如下所示
+# oauth2:
+    # 使用 ["code", "token", "id_token"] 為 web-only 客戶端啟用 implicit flow
+#   responseTypes: [ "code" ] # also allowed are "token" and "id_token"
+
+    # 默認情況下，Dex 會請求批准與應用程序共享數據
+    #（批准從連接的 IdP 到 Dex 的共享數據是 IdP 上的單獨過程）
+#   skipApprovalScreen: false
+
+    # 如果只啟用一種身份驗證方法，則默認行為是直接去吧。
+    # 對於已連接的 IdP，這會將瀏覽器重定向到上游 IdP 提供商，例如 Google 登錄頁面
+#   alwaysShowLoginScreen: false
+
+    # 取消下列註釋以使用特定連接器進行密碼授予
+#   passwordConnector: local
+
+# 若不是從外部存儲讀取，也可使用這個靜態配置的客戶端列表。
+#
+# 如果不使用靜態配置，也可以通過 gRPC API 添加客戶端。
+staticClients:
+- id: example-app
+  redirectURIs:
+  - 'http://127.0.0.1:5555/callback'
+  name: 'Example App'
+  secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+#  - id: example-device-client
+#    redirectURIs:
+#      - /device/callback
+#    name: 'Static Client for Device Flow'
+#    public: true
+
+connectors:
+- type: mockCallback
+  id: mock
+  name: Example
+# - type: google
+#   id: google
+#   name: Google
+#   config:
+#     issuer: https://accounts.google.com
+#     # Connector config values starting with a "$" will read from the environment.
+#     clientID: $GOOGLE_CLIENT_ID
+#     clientSecret: $GOOGLE_CLIENT_SECRET
+#     redirectURI: http://127.0.0.1:5556/dex/callback
+#     hostedDomains:
+#     - $GOOGLE_HOSTED_DOMAIN
+
+- type: oidc
+  id: keycloak
+  name: Keycloak
+  config:
+    issuer: http://127.0.0.1:8080/realms/master
+#     # Connector config values starting with a "$" will read from the environment.
+    clientID: dex-oidc-keycloak
+    clientSecret: JiaBlyreunTlfFV0CLi0rH4eHRXrKExD
+    redirectURI: http://127.0.0.1:5556/dex/callback
+    # 由於 keycloak 的 JWT 令牌的 claims 裡並沒有 `name` 的 claim
+    # 因此把 preferred_username 映射成 dex 所需要的 `name` claim
+    userNameKey: preferred_username
+
+# 讓 dex 保留一個密碼列表，可以用來登錄 dex。
+enablePasswordDB: true
+
+# 用於登錄最終用戶的靜態密碼列表。通過在這裡識別，dex
+# 不會在其底層存儲中查找密碼。
+#
+# 如果不是使用此選項，則可以通過 gRPC API 添加用戶與密碼。
+staticPasswords:
+- email: "admin@example.com"
+  # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+  hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+  username: "admin"
+  userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
 ```
 
-結果:
+## 步驟 02 - Dex 身份驗證展示
+
+### 運行客戶端
+
+Dex 與大多數其他 OAuth2 provider 有著一樣的運作原理。用戶從客戶端應用程序重定向到 dex 以登錄。 Dex 附帶一個[客戶端應用程序範例](https://github.com/dexidp/dex/blob/master/examples/example-app/main.go)（使用 `make examples` 命令構建），用於測試和演示。
+
+下面截取範例客戶端程式中有關的關鍵設定:
+
+  - issuer: `http://127.0.0.1:5556/dex`
+  - client-id: `example-app`
+  - client-secret: `ZXhhbXBsZS1hcHAtc2VjcmV0`
+  - redirect-uri: `http://127.0.0.1:5555/callback`
+
+```golang title="examples/example-app/main.go"
+c.Flags().StringVar(&a.clientID, "client-id", "example-app", "OAuth2 client ID of this application.")
+	c.Flags().StringVar(&a.clientSecret, "client-secret", "ZXhhbXBsZS1hcHAtc2VjcmV0", "OAuth2 client secret of this application.")
+	c.Flags().StringVar(&a.redirectURI, "redirect-uri", "http://127.0.0.1:5555/callback", "Callback URL for OAuth2 responses.")
+	c.Flags().StringVar(&issuerURL, "issuer", "http://127.0.0.1:5556/dex", "URL of the OpenID Connect issuer.")
+	c.Flags().StringVar(&listen, "listen", "http://127.0.0.1:5555", "HTTP(S) address to listen at.")
+	c.Flags().StringVar(&tlsCert, "tls-cert", "", "X509 cert file to present when serving HTTPS.")
+	c.Flags().StringVar(&tlsKey, "tls-key", "", "Private key for the HTTPS cert.")
+	c.Flags().StringVar(&rootCAs, "issuer-root-ca", "", "Root certificate authorities for the issuer. Defaults to host certs.")
+	c.Flags().BoolVar(&debug, "debug", false, "Print all request and responses from the OpenID Connect issuer.")
+```
+
+預設情況下，範例客戶端配置有與 `examples/config-dev.yaml` 中定義的相同 `OAuth2 credentials` 以與 dex 通信。運行範例應用程序將觸發它查詢 dex 的 discovery endpoint 並確定 OAuth2 端點。
+
+!!! info
+    作為 OpenID Connect 或 OAuth2 的服務 provider, 必需提供很多 endpoint 以滿足各種流程運作需要。
+    
+    **Discovery endpoint** 正是解決此問題的好方法，它定義 OpenID/OAuth2 Provider 需要一個提供 URL 如：
+
+    ```
+    http://example.com/.well-known/openid-configuration
+    ```
+
+    例如: 使用瀏覽器到 `http://127.0.0.1:5556/dex/.well-known/openid-configuration` 
+
+    ![](./assets/dex-service-discovery.png)
+
+    從回傳的結果可了解 OpenConnect provider 的元數據與相關服務的 URL 端點資訊。
+
+    詳細的說明可參考: [Standard OAuth 2.0 / OpenID Connect endpoints](https://connect2id.com/products/server/docs/api)
+
 
 ```bash
-ipaddresspool.metallb.io/ip-pool created
-l2advertisement.metallb.io/l2advertise created
+$ cd dex/
+$ make examples
 ```
 
-!!! tip
-    如果只有一個 IP 要讓 Metallb 來給予，那麼 CIDR 的設定可設成 172.20.0.5/32 (也就是只有一個 IP: `172.20.0.5` 可被指派使用)
-
-### 安裝/設定 Nginx Ingress Controller
-
-#### Helm 安裝
-
-使用以下命令添加 Nginx Ingress Controller 的 chart 存儲庫：
+接下來讓我們來執行這個客戶端應用程序範例:
 
 ```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-
-helm repo update
+./bin/example-app
 ```
 
-設定 `ingress-nginx` 要從 metallb 取得特定的預設 IP (`172.20.0.13`), 使用文字編輯器創建一個設定檔 `ingress-nginx-values.yaml`:
+![](./assets/dex-example-app.png)
 
-```yaml title="ingress-nginx-values.yaml"
-controller:
-  # add annotations to get ip from metallb
-  service:
-    annotations:
-      metallb.universe.tf/address-pool: ip-pool
-    loadBalancerIP: "172.20.0.13"
-  # set ingressclass as default
-  ingressClassResource:
-    default: true
-```
+使用以下步驟通過範例應用程序來體驗如何使用 dex 完成身份驗證並且取得 JWT token。
 
-將 Nginx Ingress Controller 安裝到 kube-system 命名空間中：
+1. 在瀏覽器中導航到位於 http://localhost:5555/ 的範例應用程序。
 
-```bash
-helm upgrade --install \
-     --create-namespace --namespace kube-system \
-     ingress-nginx ingress-nginx/ingress-nginx \
-     --values ingress-nginx-values.yaml
-```
+    ![](./assets/dex-example-app-web.png)
 
-檢查:
+2. 在範例應用程序上點擊 “login” 以重導向到 dex。
 
-```bash
-kubectl get svc -n kube-system
-```
+    ![](./assets/dex-example-app-login-options.png)
 
-結果:
+3. 選擇 "Login with Keycloak" 進行身份驗證：
 
-```
-NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-ingress-nginx-controller             LoadBalancer   10.43.160.250   172.20.0.13    80:30672/TCP,443:30990/TCP   91s
-```
+    ![](./assets/dex-login-with-keycloak.png)
 
-!!! tip
-    特別注意 `ingress-nginx-controller` 的 EXTERNAL-IP 是否從 metallb 取得 `172.20.0.13`
+4. 在跳出來的 Keycloak 登入視窗中輸入之前設定的用戶帳密:
 
-#### 驗證 Ingress 設定
+  - Username: `dxlab`
+  - Password: `12341234`
 
-創建一個 Nginx 的 Deployment 與 Service:
+    ![](./assets/keycloak-login-credentials.png)
 
-```bash
-kubectl create deployment nginx --image=nginx
+5. 批准範例應用程序的請求。
 
-kubectl create service clusterip nginx --tcp=80:80
-```
+    ![](./assets/dex-example-app-grant-access.png)
 
-創建 Ingress 來曝露這個測試的 Nginx 網站:
+    點擊 "Grant Access"。
 
-```bash
-kubectl apply -f -<<EOF
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress-nginx-svc
-spec:
-  rules:
-  - host: "nginx.example.it"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: nginx
-            port:
-              number: 80
-EOF
-```
+5. 查看範例應用程序通過 dex 身份驗證後所取回的令牌資訊。
 
-檢查看這個 ingress 是否有取得 IP ADDRESS:
-
-```bash
-kubectl get ing/ingress-nginx-svc
-```
-
-結果:
-
-```
-NAME                CLASS    HOSTS              ADDRESS       PORTS   AGE
-ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
-```
-
-修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
-
-``` title="/etc/hosts"
-...
-172.20.0.13  nginx.example.it
-...
-```
-
-使用瀏覽器瀏覽 `http://nginx.example.it`:
-
-![](./assets/ingress-test-nginx.png)
+    ![](./assets/dex-keycloak-jwt.png)
 
 
-### 安裝/設定 Keycloak
+參考下列的圖表來了解範例應用程序與 dex (IDP) 互動的過程:
 
-#### Helm 安裝
+![](./assets/oauth2-authz-code-flow.png)
 
-使用以下命令添加 Nginx Ingress Controller 的 chart 存儲庫：
 
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-
-helm repo update
-```
-
-使用文字編輯器創建一個設定檔 `keycloak-values.yaml`:
-
-```yaml title="keycloak-values.yaml"
-auth:
-  adminUser: admin
-  adminPassword: wistron888
-ingress:
-  enabled: true
-  hostname: keycloak.example.it
-```
-
-將 Keycloak 安裝到 auth 命名空間中：
-
-```bash
-helm upgrade --install \
-     --create-namespace --namespace auth \
-     keycloak bitnami/keycloak --version 14.4.0 \
-     --values keycloak-values.yaml
-```
-
-結果:
-
-```
-CHART NAME: keycloak
-CHART VERSION: 14.4.0
-APP VERSION: 21.0.2
-
-** Please be patient while the chart is being deployed **
-
-Keycloak can be accessed through the following DNS name from within your cluster:
-
-    keycloak.auth.svc.cluster.local (port 80)
-
-To access Keycloak from outside the cluster execute the following commands:
-
-1. Get the Keycloak URL and associate its hostname to your cluster external IP:
-
-   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
-   echo "Keycloak URL: http://keycloak.example.it/"
-   echo "$CLUSTER_IP  keycloak.example.it" | sudo tee -a /etc/hosts
-
-2. Access Keycloak using the obtained URL.
-3. Access the Administration Console using the following credentials:
-
-  echo Username: admin
-  echo Password: $(kubectl get secret --namespace auth keycloak -o jsonpath="{.data.admin-password}" | base64 -d)
-```
-
-檢查:
-
-```bash
-kubectl get ing -n auth
-```
-
-結果:
-
-``` hl_lines="5"
-NAME       CLASS   HOSTS                 ADDRESS       PORTS   AGE
-keycloak   nginx   keycloak.example.it   172.20.0.13   80      10m
-```
-
-修改 `/etc/hosts` 來增加一筆 entry 來模擬 DNS 解析:
-
-``` title="/etc/hosts"
-...
-172.20.0.13  keycloak.example.it
-...
-```
