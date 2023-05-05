@@ -492,11 +492,17 @@ nav:
       - v2 中的新功能: dex/overview/v2.md
       - Scopes,Claims與Client功能: dex/overview/custom-scopes-claims-clients.md
       - 存儲選項: dex/overview/storage.md
+    - Connectors:
+      - 概述: dex/connectors/index.md
+      - OpenID Connect: dex/connectors/oidc.md
+      - OAuth 2.0: dex/connectors/oauth.md
+      - 範例:
+        - OpenID Connect: dex/connectors/tutorials/oidc.md
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
       - Seldon 核心組件概述: seldon/concepts/overview.md
-    - 示例:
+    - 範例:
       - 學習環境: seldon/env/jupyter-hub.md
       - 快速入門指南: seldon/examples/quickstart.md
   - Vault:
