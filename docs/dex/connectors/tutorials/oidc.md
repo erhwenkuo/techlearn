@@ -21,99 +21,103 @@ quay.io/keycloak/keycloak:21.1.1 start-dev
 
 1. 點擊 "Adminstration Console" 並輸入用戶名 `admin` 和密碼 `admin`
 
-  ![](./assets/keycloak-adm-login.png)    
+    ![](./assets/keycloak-adm-login.png)    
 
 2. 點擊左側導般菜單 "Realm settings", 然後點擊左下方的 “OpenID Endpoing Configuration" 連結
 
-  ![](./assets/keycloak-realm-openid-cfg.png)
+    ![](./assets/keycloak-realm-openid-cfg.png)
 
 3. 在新的瀏覽頁裡會看到 Keycloak 的相關服務元數據與服務端點 URL
 
-  ![](./assets/keycloak-well-known.png)
+    ![](./assets/keycloak-well-known.png)
 
-  讓我們截取後續動作所需要的資訊出來給大家參考:
+    讓我們截取後續動作所需要的資訊出來給大家參考:
 
-  ```json hl_lines="2 3 4"
-  {
-    "issuer":"http://localhost:8080/realms/master",
-    "authorization_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/auth",
-    "token_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token",
-    "introspection_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token/introspect",
-    "userinfo_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/userinfo",
-    "end_session_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/logout",
-    "frontchannel_logout_session_supported":true,
-    "frontchannel_logout_supported":true,
-    "jwks_uri":"http://localhost:8080/realms/master/protocol/openid-connect/certs",
-    "check_session_iframe":"http://localhost:8080/realms/master/protocol/openid-connect/login-status-iframe.html",
-    "grant_types_supported":[
-      "authorization_code",
-      "implicit",
-      "refresh_token",
-      "password",
-      "client_credentials",
-      "urn:ietf:params:oauth:grant-type:device_code",
-      "urn:openid:params:grant-type:ciba"
-    ],
-    "claims_supported":[
-      "aud",
-      "sub",
-      "iss",
-      "auth_time",
-      "name",
-      "given_name",
-      "family_name",
-      "preferred_username",
-      "email",
-      "acr"
-    ],
-    "scopes_supported":[
-      "openid",
-      "microprofile-jwt",
-      "address",
-      "web-origins",
-      "offline_access",
-      "profile",
-      "roles",
-      "email",
-      "acr",
-      "phone"
-    ]
-  }
-  ```
+    ```json hl_lines="2 3 4"
+    {
+      "issuer":"http://localhost:8080/realms/master",
+      "authorization_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/auth",
+      "token_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token",
+      "introspection_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/token/introspect",
+      "userinfo_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/userinfo",
+      "end_session_endpoint":"http://localhost:8080/realms/master/protocol/openid-connect/logout",
+      "frontchannel_logout_session_supported":true,
+      "frontchannel_logout_supported":true,
+      "jwks_uri":"http://localhost:8080/realms/master/protocol/openid-connect/certs",
+      "check_session_iframe":"http://localhost:8080/realms/master/protocol/openid-connect/login-status-iframe.html",
+      "grant_types_supported":[
+        "authorization_code",
+        "implicit",
+        "refresh_token",
+        "password",
+        "client_credentials",
+        "urn:ietf:params:oauth:grant-type:device_code",
+        "urn:openid:params:grant-type:ciba"
+      ],
+      "claims_supported":[
+        "aud",
+        "sub",
+        "iss",
+        "auth_time",
+        "name",
+        "given_name",
+        "family_name",
+        "preferred_username",
+        "email",
+        "acr"
+      ],
+      "scopes_supported":[
+        "openid",
+        "microprofile-jwt",
+        "address",
+        "web-origins",
+        "offline_access",
+        "profile",
+        "roles",
+        "email",
+        "acr",
+        "phone"
+      ]
+    }
+    ```
 
 4. 點擊左側導般菜單 "Clients", 然後點擊 “Create client" 按鈕
 
-  ![](./assets/keycloak-create-client.png)
+    ![](./assets/keycloak-create-client.png)
 
 5. 設定 "General Settings":
-  - Client ID: `dex-oidc-keycloak`
-  - Name: `dex-oidc-keycloak`
 
-  點擊 "Next"
+    - Client ID: `dex-oidc-keycloak`
+    - Name: `dex-oidc-keycloak`
 
-  ![](./assets/keycloak-cleint-general.png)
+    點擊 "Next"
+
+    ![](./assets/keycloak-cleint-general.png)
 
 6. 設定 "Capability config":
-  - Client authentication: `On`
-  - Authentication flow: [v] Standard flow
 
-  點擊 "Next"
+    - Client authentication: `On`
+    - Authentication flow: [v] Standard flow
 
-  ![](./assets/keycloak-capability-config.png)
+    點擊 "Next"
+
+    ![](./assets/keycloak-capability-config.png)
 
 7. 設定 "Login settings":
-  - Valid redirect URIs: `http://127.0.0.1:5556/dex/callback`
-  - Web origins: `*`
 
-  點擊 "Save"
+    - Valid redirect URIs: `http://127.0.0.1:5556/dex/callback`
+    - Web origins: `*`
 
-  ![](./assets/keycloak-login-settings.png)
+    點擊 "Save"
 
-!!! info
-  在第 7 步裡頭很重要的設定是要把 `Valid redirect URIs` 設成 Dex 服務的端點。特別注意 `dex/callback` 的路徑。
+    ![](./assets/keycloak-login-settings.png)
+
+    !!! info
+      在第 7 步裡頭很重要的設定是要把 `Valid redirect URIs` 設成 Dex 服務的端點。特別注意 `dex/callback` 的路徑。
 
 8. 點擊 "Credentials" 頁籤並截取 "Client secret" 後續備用
-  - Client secret: `JiaBlyreunTlfFV0CLi0rH4eHRXrKExD`
+
+    - Client secret: `JiaBlyreunTlfFV0CLi0rH4eHRXrKExD`
 
 #### 創建 user 帳戶
 
@@ -124,6 +128,7 @@ quay.io/keycloak/keycloak:21.1.1 start-dev
   ![](./assets/keycloak-add-user.png)
 
 2. 設定 user 的基本資訊
+
   - Username: `dxlab`
   - Email: `dxlab@example.it`
   - Email verified: `Yes`
@@ -137,6 +142,7 @@ quay.io/keycloak/keycloak:21.1.1 start-dev
   ![](./assets/keycloak-set-credentials.png)
 
 4. 設定 user 的密碼
+
   - Password: `12341234`
   - Temporary: `Off`
 
