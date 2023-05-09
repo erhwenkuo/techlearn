@@ -483,6 +483,9 @@ nav:
             - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
             - Keycloak:
               - 環境安裝配置: kubeflow/components/multi-tenancy/authn/keycloak/kubeflow-install.md
+      - 範例:
+        - Pipeline:
+          - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
