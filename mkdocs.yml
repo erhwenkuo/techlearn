@@ -484,6 +484,8 @@ nav:
             - Keycloak:
               - 環境安裝配置: kubeflow/components/multi-tenancy/authn/keycloak/kubeflow-install.md
       - 範例:
+        - MLOps:
+          - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
         - Pipeline:
           - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
   - Dex:
