@@ -26,12 +26,12 @@ theme:
   palette:
     - scheme: default
       primary: indigo
-      accent: red
+      accent: black
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
     - scheme: slate
-      primary: brown
+      primary: black
       accent: indigo
       toggle:
         icon: material/toggle-switch-off-outline
@@ -366,6 +366,8 @@ nav:
         - 簡介: opentelemetry/instrumentation/java/index.md
         - Automatic:
           - 簡介: opentelemetry/instrumentation/java/automatic/index.md
+      - Python:
+        - Tracing API: opentelemetry/instrumentation/python/tracing.md
     - Collector:
       - 簡介: opentelemetry/collector/index.md
     - K8s Operator:
@@ -470,6 +472,10 @@ nav:
           - 從 KFP SDK v1 遷移: kubeflow/components/pipelines/v2/migration.md
           - 安裝:
             - Quickstart: kubeflow/components/pipelines/v2/installation/quickstart.md
+          - Components:
+            - 簡介: kubeflow/components/pipelines/v2/component/index.md
+            - 輕量級 Python 組件: kubeflow/components/pipelines/v2/component/lightweight-python-components.md
+            - 容器化 Python 組件: kubeflow/components/pipelines/v2/component/containerized-python-components.md
       - Katib:
         - 簡介: kubeflow/components/katib/overview.md
       - Multi-Tenancy:
