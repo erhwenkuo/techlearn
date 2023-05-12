@@ -362,6 +362,7 @@ nav:
   - OpenTelemetry:
     - Instrumentation:
       - 簡介: opentelemetry/instrumentation/index.md
+      - 分佈式追踪概念: opentelemetry/distributed-tracing.md
       - Java:
         - 簡介: opentelemetry/instrumentation/java/index.md
         - Automatic:
@@ -374,6 +375,7 @@ nav:
       - 簡介: opentelemetry/k8s-operator/index.md
     - 範例:
       - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
+      - OpenTelemetry Demo: opentelemetry/demo/helm-install.md
   - Grafana:
     - Tempo:
       - 示例:
@@ -472,10 +474,11 @@ nav:
           - 從 KFP SDK v1 遷移: kubeflow/components/pipelines/v2/migration.md
           - 安裝:
             - Quickstart: kubeflow/components/pipelines/v2/installation/quickstart.md
-          - Components:
+          - 組件:
             - 簡介: kubeflow/components/pipelines/v2/component/index.md
             - 輕量級 Python 組件: kubeflow/components/pipelines/v2/component/lightweight-python-components.md
             - 容器化 Python 組件: kubeflow/components/pipelines/v2/component/containerized-python-components.md
+            - 容器組件: kubeflow/components/pipelines/v2/component/container-components.md
       - Katib:
         - 簡介: kubeflow/components/katib/overview.md
       - Multi-Tenancy:
