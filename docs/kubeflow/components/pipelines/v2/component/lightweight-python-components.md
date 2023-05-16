@@ -1,6 +1,6 @@
 # 輕量級 Python 組件
 
-開始編寫組件的最簡單方法是創建**輕量級 Python 組件**。我們在 Hello World 管道範例中看到了一個帶有 `say_hello` 的輕量級 Python 組件範例。這是另一個將兩個整數相加的輕量級 Python 組件：
+開始編寫組件的最簡單方法是創建 **輕量級 Python 組件**。我們在 [Hello World 管道範例](../hello-world.md)中看到了一個帶有 `say_hello` 的輕量級 Python 組件範例。這是另一個將兩個整數相加的輕量級 Python 組件：
 
 ```python
 from kfp import dsl
@@ -10,19 +10,19 @@ def add(a: int, b: int) -> int:
     return a + b
 ```
 
-輕量級 Python 組件是通過使用 `@dsl.component` 裝飾器裝飾 {==Python 函數==}來構建的。 `@dsl.component` 裝飾器將您的函數轉換為 KFP 組件，該組件可以由 KFP 一致性後端作為遠程函數執行，可以獨立執行，也可以作為更大管道中的單個步驟執行。
+輕量級 Python 組件是通過使用 `@dsl.component` 裝飾器裝飾 {==Python 函數==}來構建的。 `@dsl.component` 裝飾器將您的函數轉換為 KFP 組件，該組件可以由 KFP 一致性後端作為遠程函數執行，可以獨立執行，也可以作為更複雜管道中的單個步驟執行。
 
 ## Python 函數要求
 
 要使用 `@dsl.component` 裝飾器裝飾函數，它必須滿足兩個要求：
 
-1. **Type annotations**：函數輸入和輸出必須具有有效的 [KFP 類型註釋](https://www.kubeflow.org/docs/components/pipelines/v2/data-types)。
+1. **Type annotations**：函數輸入和輸出必須具有有效的 [KFP 資料型別註釋](../data-types/index.md)。
 
-    KFP 中有兩類輸入和輸出：`參數`和`工件`。每個類別中都有特定類型的參數和工件。每個輸入和輸出都將具有由其類型註釋指示的特定類型。
+    KFP 中有兩類輸入和輸出：`parameter` 和 `artifact`。每個類別中都有特定類型的參數和工件。每個輸入和輸出都將具有由其類型註釋指示的特定類型。
 
     在前面的 `add` 組件中，輸入 `a` 和 `b` 都是類型為 `int` 的參數。有一個輸出，類型也是 `int`。
 
-    有效的參數註釋包括 Python 內置的 int、float、str、bool、typing.Dict 和 typing.List。[Data Types: Artifacts](https://www.kubeflow.org/docs/components/pipelines/v2/data-types/artifacts)中詳細討論了對工件註釋。
+    有效的參數註釋包括 Python 內置的 `int`、`float`、`str`、`bool`、`typing.Dict` 和 `typing.List`。[Data Types: Artifacts](../data-types/artifacts.md) 中詳細討論了對工件註釋。
 
 2. **Hermetic**：Python 函數不能引用在其函數體之外定義的任何 symbols。
 
@@ -57,7 +57,7 @@ def add(a: int, b: int) -> int:
         print(os.environ)
     ```
 
-    對於許多組件的現實，氣密性(hermeticism)可能是一個相當嚴格的要求。[Containerized Python Components](https://www.kubeflow.org/docs/components/pipelines/v2/components/containerized-python-components) 是另一種更靈活的組件創作方法，可以降低對此氣密性(hermeticism)的要求。
+    對於許多組件的實現，氣密性(hermeticism)可能是一個相當嚴格的要求。[Containerized Python Components](https://www.kubeflow.org/docs/components/pipelines/v2/components/containerized-python-components) 是另一種更靈活的組件創作方法，可以降低對此氣密性 (hermeticism) 的要求。
 
 ## dsl.component 裝飾參數
 

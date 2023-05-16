@@ -31,11 +31,11 @@ KFP 根據下表將 Python 類型註釋映射到 [ML 元數據](https://github.c
 
 對於所有 Python 組件（`Lightweight Python Components` 和 `Containerized Python Components`），參數序列化和反序列化對用戶是不可見的； KFP 會自動處理此問題。
 
-對於 `Container Components`，傳入參數的反序列化對用戶是不可見的； KFP 自動將輸入傳遞給組件。對於容器組件輸出，{==容器組件中的用戶代碼必須處理輸出參數的序列化==}，如[Container Components: Create component outputs](https://www.kubeflow.org/docs/components/pipelines/v2/components/container-components#create-component-outputs) 所述。
+對於 `Container Components`，傳入參數的反序列化對用戶是不可見的； KFP 自動將輸入傳遞給組件。對於容器組件輸出，{==容器組件中的用戶代碼必須處理輸出參數的序列化==}，如 [Container Components: Create component outputs](https://www.kubeflow.org/docs/components/pipelines/v2/components/container-components#create-component-outputs) 所述。
 
 ## Input 參數
 
-使用輸入參數非常容易。只需使用**資料型別**和**可選的默認值**來註釋您的組件函數。以下管道演示了這一點，該管道使用 Python 組件、容器組件和將所有參數類型作為輸入的管道：
+使用輸入參數非常容易。只需使用 **資料型別** 和 **可選的默認值** 來註釋您的組件函數。以下管道演示了這一點，該管道使用 Python 組件、容器組件和將所有參數類型作為輸入的管道：
 
 ```python
 from typing import Dict, List
@@ -142,7 +142,7 @@ def my_pipeline() -> int:
 
 ## 多個 Output 參數
 
-您可以使用 `[typing.NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple)` 指定多個命名輸出參數。您可以在 `[PipelineTask](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.PipelineTask)` 上使用 `.output['<output-key>']` 訪問命名輸出：
+您可以使用 [`typing.NamedTuple`](https://docs.python.org/3/library/typing.html#typing.NamedTuple) 指定多個命名輸出參數。您可以在 [`PipelineTask`](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.PipelineTask) 上使用 `.output['<output-key>']` 訪問命名輸出：
 
 ```python
 from kfp import dsl

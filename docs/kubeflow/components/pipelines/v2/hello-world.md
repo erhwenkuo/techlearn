@@ -30,10 +30,10 @@ def hello_pipeline(recipient: str) -> str:
 ```python
 from kfp import compiler
 
-compiler.Compiler().compile(hello_pipeline, 'pipeline.yaml')
+compiler.Compiler().compile(hello_pipeline, package_path='pipeline.yaml')
 ```
 
-[dsl.component](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.component) 和 [dsl.pipeline](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.pipeline) 裝飾器分別將帶類型註釋的 Python 函數轉換為**組件**和**管道**。 KFP SDK 編譯器將域特定語言 (DSL) 對象編譯為獨立的[管道 YAML 文件](https://www.kubeflow.org/docs/components/pipelines/v2/compile-a-pipeline#ir-yaml)。
+[dsl.component](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.component) 和 [dsl.pipeline](https://kubeflow-pipelines.readthedocs.io/en/master/source/dsl.html#kfp.dsl.pipeline) 裝飾器分別將帶類型註釋的 Python 函數轉換為 **組件** 和 **管道**。KFP SDK 編譯器將域特定語言 (DSL) 對象編譯為獨立的[管道 YAML 文件](https://www.kubeflow.org/docs/components/pipelines/v2/compile-a-pipeline#ir-yaml)。
 
 您可以將 YAML 文件提交到符合 KFP 標準的後端以供執行。如果您已經部署了 KFP 開源後端實例並獲得了部署的端點，則可以使用 [KFP SDK 客戶端](https://kubeflow-pipelines.readthedocs.io/en/master/source/client.html#kfp.client.Client)提交管道以供執行。以下使用參數 `recipient='World'` 提交要執行的管道：
 

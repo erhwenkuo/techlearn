@@ -1,10 +1,10 @@
 # 容器化 Python 組件
 
-以下假定您基本熟悉[輕量級 Python 組件](./lightweight-python-components.md)。
+以下假定您基本熟悉 [輕量級 Python 組件](./lightweight-python-components.md) 的相關知識與原理。
 
-**容器化 Python 組件**通過放寬輕量級 Python 組件是密封的（即完全獨立的）限制來擴展輕量級 Python 組件。這意味著容器化 Python 組件函數可以依賴於函數外部定義的符號、函數外部的導入、相鄰 Python 模塊中的代碼等。為實現這一點，KFP SDK 提供了一種將 Python 代碼打包到容器中的便捷方法。
+**容器化 Python 組件** 通過放寬輕量級 Python 組件是密封的（即完全獨立的）限制來擴展輕量級 Python 組件。這意味著容器化 Python 組件函數可以依賴於函數外部定義的符號、函數外部的導入、相鄰 Python 模塊中的代碼等。為實現這一點，KFP SDK 提供了一種將 Python 代碼打包到容器中的便捷方法。
 
-下面展示如何通過修改**輕量級 Python 組件**範例來轉換成**容器化 Python 組件**：
+下面展示如何通過修改 **輕量級 Python 組件** 範例來轉換成 **容器化 Python 組件** ：
 
 ```python
 from kfp import dsl
@@ -69,7 +69,7 @@ def add(a: int, b: int) -> int:
 
 在容器化 Python 組件中，`base_image` 指定 KFP 在構建新容器鏡像時將使用的基礎鏡像。具體來說，KFP 在用於構建映像的 Dockerfile 中使用 FROM 指令的 `base_image` 參數。
 
-為清楚起見，前面的示例包括 `base_image`，但這不是必需的，因為如果省略，`base_image` 將默認為 “python:3.7”。
+為清楚起見，前面的示例包括 `base_image`，但這不是必需的，因為如果省略，`base_image` 將默認為 `python:3.7`。
 
 ## 3.構建組件
 

@@ -1,6 +1,6 @@
 # 組件
 
-組件是 KFP 管道的構建積木。一個組件是一個遠程函數定義；它指定**輸入**，在其主體中具有用戶定義的邏輯，並且可以創建**輸出**。當使用輸入參數實例化組件模板時，我們將其稱為 task。
+組件是 KFP 管道的構建積木。一個組件是一個遠程函數定義；它指定 **輸入**，在其主體中具有用戶定義的邏輯，並且可以創建 **輸出**。當使用輸入參數實例化組件模板時，我們將其稱為 task。
 
 KFP 提供了兩種編寫組件的高級方法：`Python Components` 和 `Container Components`。
 
@@ -12,22 +12,22 @@ KFP 提供了兩種編寫組件的高級方法：`Python Components` 和 `Contai
 
 ## 詳細說明
 
-**Lightweight Python Components**
+- [Lightweight Python Components](./lightweight-python-components.md)
 
-從獨立的 Python 函數創建組件
+    從獨立的 Python 函數創建組件
 
-**Containerized Python Components**
+- [Containerized Python Components](./containerized-python-components.md)
 
-創建具有更複雜依賴關係的 Python 組件
+    創建具有更複雜依賴關係的 Python 組件
 
-**Container Components**
+- [Container Components](./container-components.md)
 
-通過任意容器定義創建組件
+    通過任意容器定義創建組件
 
-**Special Case: Importer Components**
+- [Special Case: Importer Components](./importer-component.md)
 
-從管道外部導入 artifact
+    從管道外部導入 artifact
 
-**Additional Functionality**
+- [Additional Functionality](./additional-functionality.md)
 
-有關創作 KFP 組件的更多信息
+    有關創作 KFP 組件的更多信息
