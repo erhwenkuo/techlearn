@@ -435,6 +435,7 @@ nav:
       - 概述: kubeflow/env/index.md
       - 架構: kubeflow/env/architecture.md
       - 安裝: kubeflow/env/kubeflow-install.md
+      - 視頻教學: kubeflow/env/kubeflow-youtube.md
     - 組件:
       - Central Dashboard:
         - 簡介: kubeflow/components/central-dash/overview.md
