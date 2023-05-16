@@ -81,6 +81,34 @@ kfp component build src/ --component-filepattern my_component.py --no-push-image
 
 如果您已將 Docker 配置為使用私有 container registry 服務，則可以將 `--no-push-image` 標誌替換為 `--push-image` 以在構建後自動推送鏡像。
 
+!!! tip
+    如果想要了解 kfp 所構建容器鏡的資訊，則可以在呼叫 `kfp component build ..` 的命令時再增加 `--overwrite-dockerfile`
+
+    ```bash hl_lines="3"
+    kfp component build src/ --component-filepattern my_component.py \
+      --no-push-image 
+      --overwrite-dockerfile
+    ```
+
+    結果:
+
+    ```bash hl_lines="2-5"
+    src/
+    ├── component_metadata
+    │   └── add.yaml
+    ├── Dockerfile
+    ├── kfp_config.ini
+    ├── math_utils.py
+    ├── my_component.py
+    ├── __pycache__
+    │   ├── math_utils.cpython-38.pyc
+    │   └── my_component.cpython-38.pyc
+    └── runtime-requirements.txt
+    ```
+
+    `kfp` 會產生幫助大家了解這個組件的鏡像構建的結構。
+
+
 ## 4.在管道中使用組件
 
 最後，您可以在管道中使用該組件：
