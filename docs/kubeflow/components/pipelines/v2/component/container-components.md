@@ -115,7 +115,7 @@ compiler.Compiler().compile(hello_pipeline, 'pipeline.yaml')
 
 請注意，在構建管道時，您不需要向組件提供輸出參數；輸出參數總是在運行時由後端自動提供。
 
-這應該看起來與 [Hello World 管道](https://www.kubeflow.org/docs/components/pipelines/v2/hello-world)非常相似，但有一個關鍵區別：由於 greeting 是一個命名的輸出參數，我們使用 `hello_task.outputs['greeting']` 訪問它並從管道返回它，而不是 `hello_task.output`。數據傳遞在 [Pipelines Basics](https://www.kubeflow.org/docs/components/pipelines/v2/pipelines/pipeline-basics) 中有更詳細的討論。
+這應該看起來與 [Hello World 管道](https://www.kubeflow.org/docs/components/pipelines/v2/hello-world)非常相似，但有一個關鍵區別：{==由於 `greeting` 是一個命名的輸出參數，我們使用 `hello_task.outputs['greeting']` 訪問它並從管道返回它，而不是 `hello_task.output`==}。數據傳遞在 [Pipelines Basics](https://www.kubeflow.org/docs/components/pipelines/v2/pipelines/pipeline-basics) 中有更詳細的討論。
 
 ## 特殊佔位符
 
@@ -161,7 +161,7 @@ def hello_someone(optional_name: str = None):
         ])
 ```
 
-如果 `hello_someone` 組件作為 `optional_name` 的參數傳遞 'world'，該組件會將 `--name world` 傳遞給可執行文件 `say_hello`。如果未提供 `optional_name`，則省略 `--name world`。
+如果 `hello_someone` 組件作為 `optional_name` 的參數傳遞 world，該組件會將 `--name world` 傳遞給可執行文件 `say_hello`。如果未提供 `optional_name`，則省略 `--name world`。
 
 第三個參數 `else_` 可用於提供默認值，以便在未提供 `input_name` 時回退。例如：
 

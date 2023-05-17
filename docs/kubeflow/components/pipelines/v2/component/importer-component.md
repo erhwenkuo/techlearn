@@ -1,10 +1,10 @@
-# 特例：Importer 組件
+# 特定用例：Importer 組件
 
 **從管道外部導入組件**
 
-與其他三種 Pipeline 組件的創作方法不同，importer component 不是一般組件的創作風格，而是針對特定用例的預烘焙組件：將機器學習 pipeline 的某種工件(artifact)從 URI 加載到當前管道中，並因此加載到 [ML 元數據](https://github.com/google/ml-metadata)中.本節假定您基本熟悉 KFP [預建的組件 artifacts](https://www.kubeflow.org/docs/components/pipelines/v2/data-types/artifacts)。
+與其他三種 Pipeline 組件的創作方法不同，importer component 不是一般組件的創作風格，而是針對特定用例的預構建的組件：將機器學習 pipeline 的某種工件(artifact)從 URI 加載到當前管道中，並因此加載到 [ML 元數據](https://github.com/google/ml-metadata)中.本節假定您熟悉 KFP [預建的組件 artifacts](https://www.kubeflow.org/docs/components/pipelines/v2/data-types/artifacts)。
 
-如 [Pipeline Basics](https://www.kubeflow.org/docs/components/pipelines/v2/pipelines/pipeline-basics) 中所述，任務的輸入通常是上游任務的輸出。在這種情況下，可以使用 `my_task.outputs['<output-key>']` 在上游任務上輕鬆訪問工件。當上游任務創建工件時，它也會在 ML 元數據中註冊。
+如 [Pipeline Basics](https://www.kubeflow.org/docs/components/pipelines/v2/pipelines/pipeline-basics) 中所述，任務的輸入通常是上游任務的輸出。在這種情況下，可以使用 `my_task.outputs['<output-key>']` 在上游任務上輕鬆訪問工件。當上游任務創建工件時，它也會在 [ML 元數據](https://github.com/google/ml-metadata)中註冊。
 
 如果您希望使用不是由當前管道中的任務生成的現有工件，或者希望將根本不是由管道生成的外部文件用作工件，您可以使用 `dsl.importer` 組件加載來自其 URI 的工件。
 
