@@ -62,15 +62,15 @@ def pythagorean(a: float, b: float) -> float:
     ...
 ```
 
-另請參閱附加功能：組件文檔字符串格式，了解有關如何通過 docstrings 提供管道元數據的信息。
+另請參閱附加功能：組件文檔字符串格式，了解有關如何通過 `docstrings` 提供管道元數據的信息。
 
 ## 函數簽名中聲明的輸入和輸出
 
-與組件一樣，管道輸入和輸出由管道函數簽名中的參數和註釋定義。
+與組件一樣，管道`輸入`和`輸出`由管道函數簽名中的`參數`和`註釋`定義。
 
 在前面的示例中，`pythagorean` 接受輸入 `a` 和 `b`，每個類型都是 `float`，並創建一個 `float` 輸出。
 
-管道輸入通過函數輸入參數/註釋聲明，管道輸出通過函數輸出註釋聲明。管道輸出永遠不會通過管道函數輸入參數聲明，這與使用輸出工件的組件或使用 `dsl.OutputPath` 的容器組件不同。
+`管道輸入`通過`函數輸入參數/註釋`聲明，`管道輸出`通過`函數輸出註釋`聲明。{==`管道輸出`永遠不會通過`管道函數輸入參數`聲明，這與使用輸出工件的組件或使用 `dsl.OutputPath` 的容器組件不同==}。
 
 有關如何聲明管道函數輸入和輸出的更多信息，請參閱[Data Types](https://www.kubeflow.org/docs/components/pipelines/v2/data-types)。
 
@@ -80,11 +80,11 @@ def pythagorean(a: float, b: float) -> float:
 
 對於具有由單個返回註釋指示的單個未命名輸出的任務，使用 `PipelineTask.output` 訪問輸出。組件 `square`、`add` 和 `square_root` 就是這種情況，它們每個都有一個未命名的輸出。
 
-對於具有多個輸出或命名輸出的任務，使用 `PipelineTask.output['<output-key>']` 訪問輸出。[Data Types: Parameters](https://www.kubeflow.org/docs/components/pipelines/v2/data-types/parameters#multiple-output-parameters) 中更詳細地描述了使用命名輸出參數。
+對於具有多個輸出或命名輸出的任務，使用 `PipelineTask.outputs['<output-key>']` 訪問輸出。[Data Types: Parameters](https://www.kubeflow.org/docs/components/pipelines/v2/data-types/parameters#multiple-output-parameters) 中更詳細地描述了使用命名輸出參數。
 
-在沒有數據交換的情況下，任務將並行運行以實現高效的管道執行。這是不交換數據的 `a_sq_task` 和 `b_sq_task` 的情況。
+在沒有數據交換的情況下，任務將併行運行以實現高效的管道執行。這是任務之間沒有交換數據的 `a_sq_task` 和 `b_sq_task` 的情況。
 
-當任務交換數據時，將在這些任務之間建立執行順序。這是為了確保上游任務在下游任務嘗試使用這些輸出之前創建它們的輸出。例如，在 `pythagorean` 中，後端會先執行 `a_sq_task` 和`b_sq_task`，然後再執行 `sum_task`。同樣，它會在執行從 `square_root` 組件創建的最終任務之前執行 `sum_task`。
+當任務之間有交換數據的時候，Kubeflow 將在這些任務之間建立執行順序。這是為了確保上游任務在下游任務嘗試使用這些輸出之前創建它們的輸出。例如，在 `pythagorean` 中，後端會先執行 `a_sq_task` 和`b_sq_task`，然後再執行 `sum_task`。同樣，它會在執行從 `square_root` 組件創建的最終任務之前執行 `sum_task`。
 
 在某些情況下，您可能希望在沒有數據交換的情況下建立執行順序。在這些情況下，您可以在另一個任務上調用一個任務的 `.after()` 方法。例如，雖然 `a_sq_task` 和 `b_sq_task` 不交換數據，但我們可以指定 `a_sq_task` 在 `b_sq_task` 之前運行：
 

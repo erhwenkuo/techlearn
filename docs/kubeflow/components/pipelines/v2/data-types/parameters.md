@@ -25,9 +25,9 @@ KFP 根據下表將 Python 類型註釋映射到 [ML 元數據](https://github.c
 |`typing.List` / `list`	|object|
 |`typing.Dict` / `dict`	|object|
 
-與普通的 Python 函數一樣，輸入參數可以有默認值，以標準方式表示：`def func(my_string: str = 'default')`:
+與普通的 Python 函數一樣，輸入參數可以有預設值，以標準方式表示：`def func(my_string: str = 'default')`:
 
-在背後，KFP 通過將所有參數序列化為 `JSON` 將所有參數傳入和傳出組件。
+在背後，{==KFP 對要所有組件傳入和傳出的參數使用 `JSON` 來進行序列化與反序列化。
 
 對於所有 Python 組件（`Lightweight Python Components` 和 `Containerized Python Components`），參數序列化和反序列化對用戶是不可見的； KFP 會自動處理此問題。
 
@@ -35,7 +35,7 @@ KFP 根據下表將 Python 類型註釋映射到 [ML 元數據](https://github.c
 
 ## Input 參數
 
-使用輸入參數非常容易。只需使用 **資料型別** 和 **可選的默認值** 來註釋您的組件函數。以下管道演示了這一點，該管道使用 Python 組件、容器組件和將所有參數類型作為輸入的管道：
+使用輸入參數非常容易。只需使用 **資料型別** 和 **可選的預設值** 來註釋您的組件函數。以下管道演示了這一點，該管道使用 Python 組件、容器組件和將所有參數類型作為輸入的管道：
 
 ```python
 from typing import Dict, List

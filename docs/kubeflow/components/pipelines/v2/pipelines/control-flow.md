@@ -10,9 +10,9 @@
 
 ## Conditions (`dsl.Condition`)
 
-`dsl.Condition` 上下文管理器可以根據上游任務或管道輸入參數的輸出在其範圍內有條件地執行任務。上下文管理器有兩個參數：**一個必需的條件**和**一個可選的名稱**。`condition` 是一個比較表達式，其中兩個操作數中至少有一個是上游任務的輸出或管道輸入參數。
+`dsl.Condition` 上下文管理器可以根據上游任務或管道輸入參數的輸出在其範圍內有條件地執行任務。上下文管理器有兩個參數： **一個必需的條件** 和 **一個可選的名稱** 。`condition` 是一個比較表達式，其中兩個操作數中至少有一個是上游任務的輸出或管道輸入參數。
 
-在以下管道中，`conditional_task` 僅在 `coin_flip_task` 具有輸出 “heads” 時執行。
+在以下管道中，`conditional_task` 僅在 `coin_flip_task` 具有輸出結果為 “heads” 時執行。
 
 ```python
 from kfp import dsl
