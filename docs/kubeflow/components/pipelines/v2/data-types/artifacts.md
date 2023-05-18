@@ -46,14 +46,14 @@ def training_component(dataset: Input[Dataset], model: Output[Model]):
 
 |DSL 物件	|Artifact schema title|
 |-----------|---------------------|
-|`[Artifact](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Artifact)`	|system.Artifact|
-|`[Dataset](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Dataset)`	|system.Dataset|
-|`[Model](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Model)`	|system.Model|
-|`[Metrics](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Metrics)`	|system.Metrics|
-|`[ClassificationMetrics](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.ClassificationMetrics)`	|system.ClassificationMetrics|
-|`[SlicedClassificationMetrics](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.SlicedClassificationMetrics)`	|system.SlicedClassificationMetrics|
-|`[HTML](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.HTML)`	|system.HTML|
-|`[Markdown](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Markdown)`	|system.Markdown|
+|[`Artifact`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Artifact)	|system.Artifact|
+|[`Dataset`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Dataset)	|system.Dataset|
+|[`Model`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Model)	|system.Model|
+|[`Metrics`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Metrics)	|system.Metrics|
+|[`ClassificationMetrics`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.ClassificationMetrics)	|system.ClassificationMetrics|
+|[`SlicedClassificationMetrics`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.SlicedClassificationMetrics)	|system.SlicedClassificationMetrics|
+|[`HTML`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.HTML)	|system.HTML|
+|[`Markdown`](https://kubeflow-pipelines.readthedocs.io/en/latest/source/dsl.html#kfp.dsl.Markdown)	|system.Markdown|
 
 
 `Artifact`, `Dataset`, `Model` 和 `Metrics` 是最通用和最常用的工件類型。 `Artifact` 是默認的工件基本類型，應該在工件類型不能完全適合另一個工件類別的情況下使用。 `Artifact` 還與所有其他工件類型兼容。從這個意義上說，`Artifact` 類型也是一個 “any” 類型的工件。
