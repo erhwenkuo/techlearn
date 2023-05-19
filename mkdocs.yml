@@ -510,7 +510,9 @@ nav:
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
         - Pipeline:
+          - 從零開始的基本 Kubeflow 管道: kubeflow/tutorials/pipelines/basic-kubeflow-pipeline.md
           - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
+          - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
