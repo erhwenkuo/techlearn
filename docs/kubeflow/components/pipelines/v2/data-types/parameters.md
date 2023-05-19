@@ -27,7 +27,7 @@ KFP 根據下表將 Python 類型註釋映射到 [ML 元數據](https://github.c
 
 與普通的 Python 函數一樣，輸入參數可以有預設值，以標準方式表示：`def func(my_string: str = 'default')`:
 
-在背後，{==KFP 對要所有組件傳入和傳出的參數使用 `JSON` 來進行序列化與反序列化。
+在背後，{==KFP 對要所有組件傳入和傳出的參數使用 `JSON` 來進行序列化與反序列化==}。
 
 對於所有 Python 組件（`Lightweight Python Components` 和 `Containerized Python Components`），參數序列化和反序列化對用戶是不可見的； KFP 會自動處理此問題。
 
