@@ -489,6 +489,8 @@ nav:
             - 簡介: kubeflow/components/pipelines/v2/data-types/index.md
             - Parameters: kubeflow/components/pipelines/v2/data-types/parameters.md
             - Artifacts: kubeflow/components/pipelines/v2/data-types/artifacts.md
+            - 補充:
+              - 機器學習的效能衡量指標: kubeflow/components/pipelines/v2/data-types/artifacts/ml_metrics_intro.md
           - 編譯 Pipeline: kubeflow/components/pipelines/v2/compile-a-pipeline.md
           - 載入與分享組件: kubeflow/components/pipelines/v2/load-and-share-components.md
           - 運行管道: kubeflow/components/pipelines/v2/run-a-pipeline.md
