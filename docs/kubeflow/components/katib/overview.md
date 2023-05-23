@@ -75,7 +75,7 @@ Experiment 是單次調整運行，也稱為優化運行。
 
 您可指定配置來定義 experiment。以下是主要配置：
 
-- **Objective**: 您要優化的標地。這是 objective metric，也稱為目標變量(target variable)。一個常見的指標是模型在訓練作業的驗證通過中的準確性（驗證準確性）。您還可以指定是希望超參數調整作業最大化還是最小化指標。
+- **Objective**: 您要優化的標的。這是 objective metric，也稱為目標變量(target variable)。一個常見的指標是模型在訓練作業的驗證通過中的準確性（驗證準確性）。您還可以指定是希望超參數調整作業最大化還是最小化指標。
 
 - **Search space**: 超參數調整作業應考慮優化的所有可能超參數值的集合，以及每個超參數的約束。搜索空間的其他名稱包括可行集和解空間。例如，您可以提供要優化的超參數的名稱。對於每個超參數，您可以提供最小值和最大值或允許值列表。
 
@@ -87,7 +87,7 @@ Katib experiment 被定義為 [Kubernetes CRD (Custom Resource Definition)](http
 
 ### Suggestion
 
-建議是超參數調整過程提出的一組超參數值。 Katib 創建了一個試驗來評估建議的值集。
+Suggestion 是超參數調整過程提出的一組超參數值。 Katib 創建了一個試驗來評估建議的值集。
 
 Katib 的 suggestion 也被定義為 Kubernetes CRD。
 
@@ -108,20 +108,20 @@ Worker job 可以是任何類型的 Kubernetes 資源或 Kubernetes CRD。按照
 
 Katib 的 upstream 有這些相關的 CRD:
 
-- [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
+- [Kubernetes `Job`](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
 
-- [Kubeflow TFJob](https://www.kubeflow.org/docs/components/training/tftraining/)
+- [Kubeflow `TFJob`](https://www.kubeflow.org/docs/components/training/tftraining/)
 
-- [Kubeflow PyTorchJob](https://www.kubeflow.org/docs/components/training/pytorch/)
+- [Kubeflow `PyTorchJob`](https://www.kubeflow.org/docs/components/training/pytorch/)
 
-- [Kubeflow MXJob](https://www.kubeflow.org/docs/components/training/mxnet)
+- [Kubeflow `MXJob`](https://www.kubeflow.org/docs/components/training/mxnet)
 
-- [Kubeflow XGBoostJob](https://www.kubeflow.org/docs/components/training/xgboost)
+- [Kubeflow `XGBoostJob`](https://www.kubeflow.org/docs/components/training/xgboost)
 
-- [Kubeflow MPIJob](https://www.kubeflow.org/docs/components/training/mpi)
+- [Kubeflow `MPIJob`](https://www.kubeflow.org/docs/components/training/mpi)
 
-- [Tekton Pipelines](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/tekton)
+- [Tekton `Pipelines`](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/tekton)
 
-- [Argo Workflows](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/argo)
+- [Argo `Workflows`](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/argo)
 
 通過提供上述 worker 作業類型，Katib 支持多種 ML 框架。

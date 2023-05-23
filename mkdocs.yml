@@ -497,6 +497,7 @@ nav:
           - 命令行界面: kubeflow/components/pipelines/v2/cli.md
       - Katib:
         - 簡介: kubeflow/components/katib/overview.md
+        - 開始使用 Katib: kubeflow/components/katib/hyperparameter.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
