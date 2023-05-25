@@ -42,13 +42,13 @@ katib-ui-5767cfccdc-v9fcs           1/1     Running     0          80s
 
 ## 範例
 
-本節介紹一些示例，您可以運行這些示例來試用 Katib。
+本節介紹一些範例，您可以運行這些範例來試用 Katib。
 
-### 使用隨機搜索算法的示例
+### 使用隨機搜索算法的範例
 
 您可以通過在 YAML 配置文件中定義實驗來為 Katib 創建實驗。 YAML 文件定義了實驗的配置，包括超參數可行空間、優化參數、優化目標、建議算法等。
 
-此示例使用 YAML 文件作為[隨機搜索](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/hp-tuning/random.yaml)範例。
+此範例使用 YAML 文件作為[隨機搜索](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/hp-tuning/random.yaml)範例。
 
 ??? info
 
@@ -124,11 +124,11 @@ katib-ui-5767cfccdc-v9fcs           1/1     Running     0          80s
                 restartPolicy: Never
     ```
 
-隨機搜索算法示例使用 MXNet 神經網絡來訓練使用 MNIST 數據集的圖像分類模型。您可以在[此處](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/mxnet-mnist)查看訓練容器源代碼。該實驗使用各種超參數運行十二個訓練作業並保存結果。
+隨機搜索算法範例使用 MXNet 神經網絡來訓練使用 MNIST 數據集的圖像分類模型。您可以在[此處](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/mxnet-mnist)查看訓練容器源代碼。該實驗使用各種超參數運行十二個訓練作業並保存結果。
 
-如果您將 Katib 安裝為 Kubeflow 的一部分，則無法在 Kubeflow 命名空間中運行試驗。運行以下命令以更改命名空間並使用隨機搜索示例啟動實驗：
+如果您將 Katib 安裝為 Kubeflow 的一部分，則無法在 Kubeflow 命名空間中運行試驗。運行以下命令以更改命名空間並使用隨機搜索範例啟動實驗：
 
-1. 下載示例：
+1. 下載範例：
 
     ```bash
     curl https://raw.githubusercontent.com/kubeflow/katib/master/examples/v1beta1/hp-tuning/random.yaml --output random.yaml
@@ -142,17 +142,17 @@ katib-ui-5767cfccdc-v9fcs           1/1     Running     0          80s
 
 3. （可選）注意：Katib 的實驗不適用於 Istio sidecar 注入。如果您將 Kubeflow 與 Istio 結合使用，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。
 
-    對於提供的帶有 Kubernetes Job 試用模板的隨機搜索示例，註釋應位於 `.trialSpec.spec.template.metadata.annotations` 下。對於 Kubeflow `TFJob` 或其他 training operator，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
+    對於提供的帶有 Kubernetes Job 試用模板的隨機搜索範例，註釋應位於 `.trialSpec.spec.template.metadata.annotations` 下。對於 Kubeflow `TFJob` 或其他 training operator，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
 
-4. 部署示例：
+4. 部署範例：
 
     ```bash
     kubectl apply -f random.yaml
     ```
 
-此示例將超參數作為參數嵌入。您可以使用 YAML 文件的 `trialTemplate.trialSpec` 部分中定義的模板以其他方式（例如，使用環境變量）嵌入超參數。該模板使用非結構化格式並替換 `trialTemplate.trialParameters` 中的參數。按照[trial template guide](https://www.kubeflow.org/docs/components/katib/trial-template/)了解更多信息。
+此範例將超參數作為參數嵌入。您可以使用 YAML 文件的 `trialTemplate.trialSpec` 部分中定義的模板以其他方式（例如，使用環境變量）嵌入超參數。該模板使用非結構化格式並替換 `trialTemplate.trialParameters` 中的參數。按照[trial template guide](https://www.kubeflow.org/docs/components/katib/trial-template/)了解更多信息。
 
-此示例隨機生成以下超參數：
+此範例隨機生成以下超參數：
 
 - `--lr`：學習率。Type: double
 - `--num-layers`：神經網絡的層數。Type: integer
@@ -399,7 +399,7 @@ status:
     ...
     ```
 
-3. （可選）注意：Katib 的實驗不適用於 Istio sidecar 注入。如果您將 Kubeflow 與 Istio 結合使用，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。對於提供的 TFJob 示例，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
+3. （可選）注意：Katib 的實驗不適用於 Istio sidecar 注入。如果您將 Kubeflow 與 Istio 結合使用，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。對於提供的 TFJob 範例，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
 
     ??? info
 
@@ -583,7 +583,7 @@ status:
     ...
     ```
 
-3. （可選）注意：Katib 的實驗不適用於 Istio sidecar 注入。如果您將 Kubeflow 與 Istio 結合使用，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。對於提供的 `PyTorchJob` 示例，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
+3. （可選）注意：Katib 的實驗不適用於 Istio sidecar 注入。如果您將 Kubeflow 與 Istio 結合使用，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。對於提供的 `PyTorchJob` 範例，請在[此處](https://www.kubeflow.org/docs/components/training/tftraining/#what-is-tfjob)檢查如何設置註釋。
 
     ??? info
 

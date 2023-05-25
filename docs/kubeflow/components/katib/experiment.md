@@ -186,7 +186,7 @@ Katib 和 Kubeflow 是基於 Kubernetes 的系統。要使用 Katib，您必須�
 
 - **trialTemplate**: 定義試驗的模板。如上所述，您必須將 ML 訓練程式碼打包到 Docker 鏡像中。 `trialTemplate.trialSpec` 是帶有模型參數的非結構化模板，由 `trialTemplate.trialParameters` 替代。例如，您的訓練容器可以接收超參數作為 {==命令行參數==} 或 {==環境變量==}。您必須在 `trialTemplate.primaryContainerName` 中設置訓練容器的名稱。
 
-    Katib 動態支持任何類型的 Kubernetes CRD。在 Katib 示例中，您可以找到以下工作類型來訓練您的模型：
+    Katib 動態支持任何類型的 Kubernetes CRD。在 Katib 範例中，您可以找到以下工作類型來訓練您的模型：
 
     - Kubernetes [`Job`](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
     - Kubeflow [`TFJob`](https://www.kubeflow.org/docs/components/training/tftraining/)
@@ -245,7 +245,7 @@ Katib 和 Kubeflow 是基於 Kubernetes 的系統。要使用 Katib，您必須�
 
     - **operations**: 您要為 ML 模型調整的操作範圍。對於每個神經網絡層，NAS 算法選擇一個操作來構建神經網絡。每個操作都包含上面描述的參數集。請參閱 [`Operation` 類型](https://github.com/kubeflow/katib/blob/318f66890ebee00eba9893f7145d366795caa1d0/pkg/apis/controller/experiments/v1beta1/experiment_types.go#L316-L320)。
 
-        您可以在[此處](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/nas)找到所有 NAS 示例。
+        您可以在[此處](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/nas)找到所有 NAS 範例。
 
 - **resumePolicy**: 實驗恢復政策。可以是 `LongRunning`、`Never` 或 `FromVolume` 之一。默認值為 `Never`。請參考 [`ResumePolicy` 類型](https://github.com/kubeflow/katib/blob/318f66890ebee00eba9893f7145d366795caa1d0/pkg/apis/controller/experiments/v1beta1/experiment_types.go#L60)。要了解如何修改正在運行的實驗並使用各種重啟策略，請遵循 [resume an experiment guide](https://www.kubeflow.org/docs/components/katib/resume-experiment/)。
 
@@ -402,7 +402,7 @@ Katib 支持以下算法設置：
 
 - Katib 存儲庫中有關 [Efficient Neural Architecture Search (ENAS)](https://github.com/kubeflow/katib/tree/master/pkg/suggestion/v1beta1/nas/enas)的文檔。
 
-- ENAS 示例 — [`enas-gpu.yaml`](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/nas/enas-gpu.yaml) 試圖顯示所有可能的操作。由於搜索空間很大，該示例不太可能生成好的結果。
+- ENAS 範例 — [`enas-gpu.yaml`](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/nas/enas-gpu.yaml) 試圖顯示所有可能的操作。由於搜索空間很大，該範例不太可能生成好的結果。
 
 ### Differentiable Architecture Search (DARTS)
 
@@ -436,7 +436,7 @@ Katib 支持以下算法設置：
 
 - Katib repo 中有關 [Differentiable Architecture Search](https://github.com/kubeflow/katib/tree/master/pkg/suggestion/v1beta1/nas/darts) 的文檔。
 
-- DARTS 示例 — [`darts-gpu.yaml`](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/nas/darts-gpu.yaml)。
+- DARTS 範例 — [`darts-gpu.yaml`](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/nas/darts-gpu.yaml)。
 
 ### Population Based Training (PBT)
 
@@ -568,7 +568,7 @@ Katib 是一個基於 Kubernetes 的超參數調優 (HPT) 和神經架構搜索 
 
         檢查文件指標收集器範例以了解 `TEXT` 和 `JSON` 格式。此外，默認文件路徑為 `/var/log/katib/metrics.log`，默認文件格式為 `TEXT`。
 
-    - `TensorFlowEvent`：Katib 從包含 tf.Event 的目錄路徑中收集指標。您應該在 `.source.fileSystemPath.path` 欄位中指定路徑。查看 [TFJob 示例](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/kubeflow-training-operator/tfjob-mnist-with-summaries.yaml#L16-L22)。默認目錄路徑為 `/var/log/katib/tfevent/`。
+    - `TensorFlowEvent`：Katib 從包含 tf.Event 的目錄路徑中收集指標。您應該在 `.source.fileSystemPath.path` 欄位中指定路徑。查看 [TFJob 範例](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/kubeflow-training-operator/tfjob-mnist-with-summaries.yaml#L16-L22)。默認目錄路徑為 `/var/log/katib/tfevent/`。
 
     - `Custom`：如果您需要使用自定義方式收集指標，請指定此值。您必須在 `.collector.customCollector` 字段中定義自定義指標收集器容器。查看 [custom metrics collector example](https://github.com/kubeflow/katib/blob/master/examples/v1beta1/metrics-collector/custom-metrics-collector.yaml#L13-L35)。
 
@@ -605,9 +605,9 @@ kubectl apply -f <your-path/your-experiment-config.yaml>
 注意：
 
 - 如果您將 Katib 部署為 Kubeflow 的一部分（您的 Kubeflow 部署應包括 Katib），則需要將 Kubeflow 命名空間更改為您的配置文件命名空間。
-- （可選）Katib 的實驗不適用於 Istio sidecar 注入。如果您使用 Istio 運行 Kubeflow，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。有關如何為 Job、TFJob (TensorFlow) 或 PyTorchJob (PyTorch) 執行此操作的示例，請參閱入門指南。
+- （可選）Katib 的實驗不適用於 Istio sidecar 注入。如果您使用 Istio 運行 Kubeflow，則必須禁用 sidecar 注入。為此，請在實驗的試用模板中指定此註釋：`sidecar.istio.io/inject: "false"`。有關如何為 Job、TFJob (TensorFlow) 或 PyTorchJob (PyTorch) 執行此操作的範例，請參閱入門指南。
 
-運行以下命令以使用隨機搜索算法示例啟動實驗：
+運行以下命令以使用隨機搜索算法範例啟動實驗：
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubeflow/katib/master/examples/v1beta1/hp-tuning/random.yaml

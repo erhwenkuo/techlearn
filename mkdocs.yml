@@ -494,11 +494,17 @@ nav:
           - 編譯 Pipeline: kubeflow/components/pipelines/v2/compile-a-pipeline.md
           - 載入與分享組件: kubeflow/components/pipelines/v2/load-and-share-components.md
           - 運行管道: kubeflow/components/pipelines/v2/run-a-pipeline.md
+          - 管道運行比對: kubeflow/components/pipelines/v2/run-comparison.md
           - 命令行界面: kubeflow/components/pipelines/v2/cli.md
       - Katib:
         - 簡介: kubeflow/components/katib/overview.md
         - 開始使用 Katib: kubeflow/components/katib/hyperparameter.md
         - 運行實驗: kubeflow/components/katib/experiment.md
+        - 回復實驗: kubeflow/components/katib/resume-experiment.md
+        - Trial Templates 概述: kubeflow/components/katib/trial-template.md
+        - 使用 Early Stopping: kubeflow/components/katib/early-stopping.md
+        - Katib Configuration 簡介: kubeflow/components/katib/katib-config.md
+        - Katib 組件的環境變量: kubeflow/components/katib/env-variables.md
       - Multi-Tenancy:
         - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
         - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
@@ -581,6 +587,3 @@ nav:
       - 如何在 Ubuntu 20.04 上安裝 Docker: ansible/tutorial/ubuntu-insall-docker.md
       - 如何使用 Ansible 在 Ubuntu 20.04 上安裝和設置 Docker: ansible/tutorial/ansible-install-docker.md
       - 如何在 Ubuntu 22.04 上安裝和配置 Ansible: ansible/tutorial/how-to-install-and-configure-ansible-on-ubuntu-22-04.md
-
-
-
