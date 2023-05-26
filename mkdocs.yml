@@ -516,6 +516,10 @@ nav:
             - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
             - Keycloak:
               - 環境安裝配置: kubeflow/components/multi-tenancy/authn/keycloak/kubeflow-install.md
+      - 外部整合插件:
+        - KServe:
+          - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
+          - Model UI: kubeflow/external-add-ons/kserve/webapp.md
       - 範例:
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
