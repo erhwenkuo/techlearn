@@ -519,7 +519,17 @@ nav:
       - 外部整合插件:
         - KServe:
           - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
+          - 快速入門:
+            - KServe 入門: kubeflow/external-add-ons/kserve/get_started/get_started.md
+            - InferenceService 初試: kubeflow/external-add-ons/kserve/get_started/first_isvc.md
+            - 啟用 Swagger UI: kubeflow/external-add-ons/kserve/get_started/swagger_ui.md
           - Model UI: kubeflow/external-add-ons/kserve/webapp.md
+          - 用戶指南:
+            - 概念:
+              - Control Plane:
+                - 簡介: kubeflow/external-add-ons/kserve/user_guide/control_plane/control_plane.md
+              - Data Plane:
+                - 簡介: kubeflow/external-add-ons/kserve/user_guide/data_plane/data_plane.md
       - 範例:
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
