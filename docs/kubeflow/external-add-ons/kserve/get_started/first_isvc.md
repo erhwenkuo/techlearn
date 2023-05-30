@@ -155,6 +155,8 @@ istio-ingressgateway   LoadBalancer   10.43.211.196   172.20.0.10   15021:30544/
 
 首先，在文件中準備您的推理輸入請求：
 
+`v1` 版本的 payload:
+
 ```bash
 cat <<EOF > "./iris-input-v1.json"
 {
@@ -166,11 +168,14 @@ cat <<EOF > "./iris-input-v1.json"
 EOF
 ```
 
+
 根據您的設置，使用以下命令之一來呼叫 InferenceService：
 
 === "From Ingress gateway with HOST Header"
 
     如果您沒有 DNS，您仍然可以使用 HOST 標頭使用入口網關外部 IP 進行 curl。
+
+    呼叫 `v1` 版本的 API:
 
     ```bash
     SERVICE_HOSTNAME=$(kubectl get inferenceservice sklearn-iris -n kserve-test -o jsonpath='{.status.url}' | cut -d "/" -f 3)
@@ -225,3 +230,7 @@ Error Set:
 502 Bad Gateway
 ```
 
+|Model |Serving Runtime	|Exported model	|HTTP	|gRPC	|Serving Runtime Version|
+|------|----------------|---------------|-----|-----|-----------------------|
+|SKLearn |MLServer	|Pickled Model	|v2	|v2	|v1.0.0 (MLServer)|
+|SKLearn |ModelServer	|Pickled Model	|v1	|--	|v0.10 (KServe)	1	SKLearn Iris|

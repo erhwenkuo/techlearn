@@ -530,6 +530,14 @@ nav:
                 - 簡介: kubeflow/external-add-ons/kserve/user_guide/control_plane/control_plane.md
               - Data Plane:
                 - 簡介: kubeflow/external-add-ons/kserve/user_guide/data_plane/data_plane.md
+                - Data Plane (V1): kubeflow/external-add-ons/kserve/user_guide/data_plane/v1_protocol.md
+                - Data Plane (V2): kubeflow/external-add-ons/kserve/user_guide/data_plane/v2_protocol.md
+                - 模型推論 Runtimes: kubeflow/external-add-ons/kserve/user_guide/data_plane/servingruntimes.md
+            - 單一模型推論 Runtime:
+              - 模型框架/格式:
+                - 模型推論 Runtime 簡介: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/overview.md
+                - Tensorflow: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/tensorflow.md
+                - PyTorch: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/torchserve.md
       - 範例:
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
