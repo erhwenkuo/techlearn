@@ -262,7 +262,7 @@ curl -v -H "Host: ${SERVICE_HOSTNAME}" http://${INGRESS_HOST}:${INGRESS_PORT}/v1
 
 結果:
 
-```
+```bash
 $ *   Trying 10.0.1.16...
 * TCP_NODELAY set
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
