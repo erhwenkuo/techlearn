@@ -567,6 +567,14 @@ nav:
       - OAuth 2.0: dex/connectors/oauth.md
       - 範例:
         - OpenID Connect: dex/connectors/tutorials/oidc.md
+  - Minio:
+      - Administration:
+        - Minio Console:
+          - 簡介: minio/administration/minio-console/index.md
+          - 安全和訪問: minio/administration/minio-console/security-and-access.md
+        - 身份和訪問管理:
+          - 訪問管理: minio/administration/identity-access-management/policy-based-access-control.md
+
   - Seldon:
     - 簡介: seldon/index.md
     - 概念:
