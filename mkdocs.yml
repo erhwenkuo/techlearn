@@ -576,6 +576,8 @@ nav:
           - 訪問管理: minio/administration/identity-access-management/policy-based-access-control.md
       - 教學範例:
         - Minio 簡介: minio/tutorials/minio-intro.md
+        - Minio Bucket Policy 教程: minio/tutorials/minio-bucket-policy.md
+        - Minio policy 使用: minio/tutorials/minio-policy-usage.md
 
   - Seldon:
     - 簡介: seldon/index.md
