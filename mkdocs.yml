@@ -546,6 +546,8 @@ nav:
               - Minio: kubeflow/external-add-ons/kserve/user_guide/storage/minio.md
               - URI: kubeflow/external-add-ons/kserve/user_guide/storage/uri.md
       - 範例:
+        - Notebooks:
+          - 構建客制容器鏡像: kubeflow/tutorials/notebooks/build-own-notebook-server.md
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
         - Pipeline:
