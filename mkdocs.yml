@@ -548,12 +548,29 @@ nav:
       - 範例:
         - Notebooks:
           - 構建客制容器鏡像: kubeflow/tutorials/notebooks/build-own-notebook-server.md
+          - JupyterLab:
+            - Notebook 結合 Git/GitHub: kubeflow/tutorials/notebooks/jupyterlab/git-ext/use-git-with-jupyter-nb.md
+            - JupyterLab Git 擴展 HowTo: kubeflow/tutorials/notebooks/jupyterlab/git-ext/how-to-jupyterlab-git.md
+            - JupyterLab Git 擴展 HowTo-2: kubeflow/tutorials/notebooks/jupyterlab/git-ext/jupyterlab-git-extension.md
+
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
         - Pipeline:
           - 從零開始的基本 Kubeflow 管道: kubeflow/tutorials/pipelines/basic-kubeflow-pipeline.md
           - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
           - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
+  - Huggingface:
+    - Datasets:
+      - Get Started:
+        - 概述: huggingface/datasets/get-started/index.md
+        - Quickstart: huggingface/datasets/get-started/quickstart.md
+        - Installation: huggingface/datasets/get-started/installation.md
+      - Tutorials:
+        - 概述: huggingface/datasets/tutorial/index.md
+        - Load a dataset from the Hub: huggingface/datasets/tutorial/load_hub.md
+        - Know your dataset: huggingface/datasets/tutorial/access.md
+        - Preprocess: huggingface/datasets/tutorial/use_dataset.md
+
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
