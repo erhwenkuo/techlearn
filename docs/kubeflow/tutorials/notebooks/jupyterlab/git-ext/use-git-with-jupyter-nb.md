@@ -2,14 +2,16 @@
 
 原文: [How to use Git / GitHub with Jupyter Notebook](https://blog.reviewnb.com/github-jupyter-notebook/)
 
+
+
 這是針對 Jupyter Notebook 用戶的綜合 Git 教程。如果您已經熟悉某個部分，請隨意跳過。最後你將能夠:
 
-- 將您的筆記本推送到 GitHub 存儲庫
-- 開始對筆記本進行版本控制
+- 將您的 notebook 推送到 GitHub 存儲庫
+- 開始對 notebook 進行版本控制
 - 查看 GitHub 上的 Jupyter Notebook 拉取請求
-- 了解如何恢復到特定筆記本版本
-- 獲取反饋並與同事討論筆記本更改
-- 輕鬆共享您的筆記本供其他人查看
+- 了解如何恢復到特定 notebook 版本
+- 獲取反饋並與同事討論 notebook 更改
+- 輕鬆共享您的 notebook 供其他人查看
 
 ## 創建 GitHub 帳戶
 
@@ -29,7 +31,7 @@
 
 ##　創建新存儲庫
 
-GitHub 存儲庫就像雲中的超級文件夾。您可以存儲文件（筆記本、數據、程式碼）、查看這些文件的歷史更改、打開問題、討論更改等等。人們通常為每個專案創建一個存儲庫。
+GitHub 存儲庫就像雲中的超級文件夾。您可以存儲文件（ notebook 、數據、程式碼）、查看這些文件的歷史更改、打開問題、討論更改等等。人們通常為每個專案創建一個存儲庫。
 
 讓我們繼續在 GitHub 上創建一個存儲庫。創建後，您將看到如下所示的頁面，複製突出顯示的存儲庫 URL。
 
@@ -50,9 +52,9 @@ Cloning into 'projectA'...
 warning: You appear to have cloned an empty repository.
 ```
 
-## 將筆記本推送到 GitHub
+## 將 notebook 推送到 GitHub
 
-我們的存儲庫現在是空的，讓我們向其中推送一些筆記本。我們將兩個筆記本複製到我們克隆的 projectA 存儲庫的目錄中，
+我們的存儲庫現在是空的，讓我們向其中推送一些 notebook 。我們將兩個 notebook 複製到我們克隆的 projectA 存儲庫的目錄中，
 
 ```bash
 cp /some/path/analysis1.ipynb /path/of/projectA/
@@ -60,17 +62,17 @@ cp /some/path/analysis1.ipynb /path/of/projectA/
 cp /some/path/scratch.ipynb /path/of/projectA/
 ```
 
-假設我們想將 `analysis1.ipynb` 推送到 GitHub。我們首先需要告訴本地 git 客戶端開始跟踪文件。
+假設我們想將 `analysis1.ipynb` 推送到 GitHub。我們首先需要告訴本地 git 客戶端開始追踪文件。
 
 ```bash
 git add analysis1.ipynb
 ```
 
-您可以使用 `git status` 檢查正在跟踪哪些文件，
+您可以使用 `git status` 檢查正在追踪哪些文件，
 
 ![](./assets/git_status.png)
 
-您可以看到 `analysis1.ipynb` 位於 “Changes to be committed:” 下，因此我們的本地 git 客戶端正在跟踪它。現在讓我們提交更改，
+您可以看到 `analysis1.ipynb` 位於 “Changes to be committed:” 下，因此我們的本地 git 客戶端正在追踪它。現在讓我們提交更改，
 
 ```bash
 # -m flag is used to provide a human friendly message describing the change
@@ -97,7 +99,7 @@ git push
 git checkout -b customer_data_insights
 ```
 
-然後我將創建/編輯一些筆記本和其他文件來進行實際分析。當我準備好提交 WIP 時，我將執行通常的 `git add`、`git commit`、`git push`。在 `git push` 中，您將看到以下錯誤，因為 GitHub 上尚不存在該分支。
+然後我將創建/編輯一些 notebook 和其他文件來進行實際分析。當我準備好提交 WIP 時，我將執行通常的 `git add`、`git commit`、`git push`。在 `git push` 中，您將看到以下錯誤，因為 GitHub 上尚不存在該分支。
 
 ![](./assets/branch_push_error.png)
 
@@ -146,11 +148,11 @@ GitHub 的 pull request 非常適合 peer review，因為它們可以讓您並�
 git checkout -b old-state f33939cd63004e3e67b111f7bcb350ffd2b0608a
 ```
 
-您還可以通過轉至您的 `專案頁面 -> commits` 來瀏覽 GitHub 上的舊提交。打開所需的 commit 並點擊 “View File” 以查看該 commit 的筆記本狀態。
+您還可以通過轉至您的 `專案頁面 -> commits` 來瀏覽 GitHub 上的舊提交。打開所需的 commit 並點擊 “View File” 以查看該 commit 的 notebook 狀態。
 
-## 唯讀的共享筆記本
+## 唯讀的共享 notebook 
 
-當您瀏覽 GitHub 存儲庫中的筆記本時，它會將它們呈現為 HTML。因此，像這樣共享筆記本的唯讀鏈接非常方便。如果它是私有存儲庫，則您與之共享鏈接的人需要擁有 GitHub 帳戶並有權訪問您的存儲庫。
+當您瀏覽 GitHub 存儲庫中的 notebook 時，它會將它們呈現為 HTML。因此，像這樣共享 notebook 的唯讀鏈接非常方便。如果它是私有存儲庫，則您與之共享鏈接的人需要擁有 GitHub 帳戶並有權訪問您的存儲庫。
 
 ## 結論
 
