@@ -1,7 +1,8 @@
-# Jupyter Notebook 結合　Git/GitHub
+# Jupyter Notebook 版控結合 Git
 
 原文: [How to use Git / GitHub with Jupyter Notebook](https://blog.reviewnb.com/github-jupyter-notebook/)
 
+![](./assets/git-workflow.jpeg)
 
 
 這是針對 Jupyter Notebook 用戶的綜合 Git 教程。如果您已經熟悉某個部分，請隨意跳過。最後你將能夠:
