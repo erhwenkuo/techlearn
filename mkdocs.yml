@@ -570,7 +570,12 @@ nav:
         - Load a dataset from the Hub: huggingface/datasets/tutorial/load_hub.md
         - Know your dataset: huggingface/datasets/tutorial/access.md
         - Preprocess: huggingface/datasets/tutorial/use_dataset.md
-
+        - Create a dataset: huggingface/datasets/tutorial/create_dataset.md
+        - Share a dataset to the Hub: huggingface/datasets/tutorial/upload_dataset.md
+      - How-To Guides:
+        - Overview: huggingface/datasets/how_to/overview.md
+        - General Usage:
+          - Load: huggingface/datasets/how_to/general_usage/loading.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
