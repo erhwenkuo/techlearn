@@ -576,6 +576,8 @@ nav:
         - Overview: huggingface/datasets/how_to/overview.md
         - General Usage:
           - Load: huggingface/datasets/how_to/general_usage/loading.md
+          - Process: huggingface/datasets/how_to/general_usage/process.md
+          - Stream: huggingface/datasets/how_to/general_usage/stream.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
