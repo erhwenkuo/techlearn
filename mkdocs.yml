@@ -564,20 +564,45 @@ nav:
       - Get Started:
         - 概述: huggingface/datasets/get-started/index.md
         - Quickstart: huggingface/datasets/get-started/quickstart.md
-        - Installation: huggingface/datasets/get-started/installation.md
+        - 安裝: huggingface/datasets/get-started/installation.md
       - Tutorials:
         - 概述: huggingface/datasets/tutorial/index.md
-        - Load a dataset from the Hub: huggingface/datasets/tutorial/load_hub.md
-        - Know your dataset: huggingface/datasets/tutorial/access.md
-        - Preprocess: huggingface/datasets/tutorial/use_dataset.md
-        - Create a dataset: huggingface/datasets/tutorial/create_dataset.md
-        - Share a dataset to the Hub: huggingface/datasets/tutorial/upload_dataset.md
+        - 從 Hub 載入 dataset: huggingface/datasets/tutorial/load_hub.md
+        - 了解 dataset: huggingface/datasets/tutorial/access.md
+        - 數據預處理: huggingface/datasets/tutorial/use_dataset.md
+        - 創建 dataset: huggingface/datasets/tutorial/create_dataset.md
+        - 將 dataset 共享到 Hub: huggingface/datasets/tutorial/upload_dataset.md
       - How-To Guides:
-        - Overview: huggingface/datasets/how_to/overview.md
+        - 概述: huggingface/datasets/how_to/overview.md
         - General Usage:
-          - Load: huggingface/datasets/how_to/general_usage/loading.md
-          - Process: huggingface/datasets/how_to/general_usage/process.md
-          - Stream: huggingface/datasets/how_to/general_usage/stream.md
+          - Dataset 載入: huggingface/datasets/how_to/general_usage/loading.md
+          - 數據處理: huggingface/datasets/how_to/general_usage/process.md
+          - 數據串流: huggingface/datasets/how_to/general_usage/stream.md
+          - 結合 Tensorflow 使用: huggingface/datasets/how_to/general_usage/use_with_tensorflow.md
+          - 結合 PyTorch 使用: huggingface/datasets/how_to/general_usage/use_with_pytorch.md
+          - 結合 JAX 使用: huggingface/datasets/how_to/general_usage/use_with_jax.md
+          - 結合 Spark 使用: huggingface/datasets/how_to/general_usage/use_with_spark.md
+          - 緩存 management: huggingface/datasets/how_to/general_usage/cache.md
+          - 雲存儲服務整合: huggingface/datasets/how_to/general_usage/filesystems.md
+        - Audio:
+          - 載入 audio data: huggingface/datasets/audio/audio_load.md
+          - 處理 audio data: huggingface/datasets/audio/audio_process.md
+          - 創建 audio dataset: huggingface/datasets/audio/audio_dataset.md
+        - Vision:
+          - 載入 image data: huggingface/datasets/vision/image_load.md
+          - 處理 image data: huggingface/datasets/vision/image_process.md
+          - 創建 image dataset: huggingface/datasets/vision/image_dataset.md
+          - Depth estimation: huggingface/datasets/vision/depth_estimation.md
+          - Image classification: huggingface/datasets/vision/image_classification.md
+          - Semantic segmentation: huggingface/datasets/vision/semantic_segmentation.md
+          - Object detection: huggingface/datasets/vision/object_detection.md
+        - Text:
+          - 載入 text data: huggingface/datasets/text/nlp_load.md
+          - 處理 text data: huggingface/datasets/text/nlp_process.md
+        - Tabular:
+          - 載入 tabular data: huggingface/datasets/tabular/tabular_load.md
+
+
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
