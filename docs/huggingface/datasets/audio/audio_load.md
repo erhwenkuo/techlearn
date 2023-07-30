@@ -46,7 +46,7 @@ folder/train/third_audio_file.mp3
 
 您的 `metadata.csv` 文件必須有一個 `file_name` 列，用於鏈接音頻文件及其元數據。範例 `metadata.csv` 文件可能如下所示：
 
-```csv "metadata.csv"
+```csv title="metadata.csv"
 file_name,transcription
 first_audio_file.mp3,znowu się duch z ciałem zrośnie w młodocianej wstaniesz wiosnie i możesz skutkiem tych leków umierać wstawać wiek wieków dalej tam były przestrogi jak siekać głowę jak nogi
 second_audio_file.mp3,już u źwierzyńca podwojów król zasiada przy nim książęta i panowie rada a gdzie wzniosły krążył ganek rycerze obok kochanek król skinął palcem zaczęto igrzysko

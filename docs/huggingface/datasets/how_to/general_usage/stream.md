@@ -223,7 +223,7 @@ print(dataset.features)
 'idx': Value(dtype='int64', id=None)}
 ```
 
-!!! warn
+!!! warning
     僅當原始要素類型和新要素類型兼容時，`cast` 才有效。例如，如果原始列僅包含 1 和 0，則可以將要素類型 `Value('int32')` 的列轉換為 `Value('bool')`。
 
 使用 `IterableDataset.cast_column()` 更改僅一列的特徵類型。將列名稱及其新特徵類型作為參數傳遞：

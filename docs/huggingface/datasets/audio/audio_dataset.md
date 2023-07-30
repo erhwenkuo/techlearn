@@ -71,7 +71,7 @@ my_dataset/
 
 元數據文件應包含 `file_name` 列，以將音頻文件鏈接到其元數據：
 
-```csv "metadata.csv"
+```csv title="metadata.csv"
 file_name,transcription
 data/first_audio_file.mp3,znowu się duch z ciałem zrośnie w młodocianej wstaniesz wiosnie i możesz skutkiem tych leków umierać wstawać wiek wieków dalej tam były przestrogi jak siekać głowę jak nogi
 data/second_audio_file.mp3,już u źwierzyńca podwojów król zasiada przy nim książęta i panowie rada a gdzie wzniosły krążył ganek rycerze obok kochanek król skinął palcem zaczęto igrzysko
@@ -118,7 +118,7 @@ data/test/first_test_audio_file.mp3
 data/test/second_test_audio_file.mp3
 ```
 
-!!! warn
+!!! warning
     請注意，如果音頻文件不位於元數據文件旁邊，則 `file_name` 列應該是音頻文件的完整相對路徑，而不僅僅是其文件名。
 
 對於沒有任何關聯元數據的音頻數據集，`AudioFolder` 會根據目錄名稱自動推斷數據集的類標籤。它可能對音頻分類任務有用。您的數據集目錄可能如下所示：
@@ -163,7 +163,7 @@ print(dataset["train"][-1])
 }
 ```
 
-!!! warn
+!!! warning
     如果所有音頻文件都包含在一個目錄中或者它們不在同一級別的目錄結構中，則不會自動添加標籤列。如果需要，請明確設置 `drop_labels=False`。
 
 !!! tip
@@ -498,7 +498,7 @@ load_dataset("<username>/my_dataset")
 
 3. 使用 `iter_archive()` 方法迭代 `audio_path` 處的存檔，就像上面的 Vivos 示例一樣。`iter_archive()` 不提供有關存檔中文件的完整路徑的任何信息，即使它已被提取。因此，您需要將 `local_extracted_archive` 路徑傳遞到 `gen_kwargs` 中的下一步，以保留有關存檔提取到的位置的信息。這是在生成示例時構造本地文件的正確路徑所必需的。
 
-    !!! warn
+    !!! warning
         需要結合使用 `download()` 和 `iter_archive()` 的原因是 TAR 存檔中的文件無法通過其路徑直接訪問。
         
         相反，您需要迭代存檔中的文件！您只能在非流模式下對 TAR 存檔使用 `download_and_extract()` 和 `extract()` ，否則會引發錯誤。
@@ -586,7 +586,7 @@ def _generate_examples(
         """Yields examples."""
         data_fields = list(self._info().features.keys())
         metadata = {}
-        
+
         with open(metadata_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
