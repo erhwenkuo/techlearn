@@ -159,7 +159,7 @@ dataset = load_dataset("json", data_files={"train": base_url + "train-v1.1.json"
 
 ### Parquet
 
-`Parquet``文件以列格式存儲，與 `CSV` 等基於行的文件不同。大型數據集可以存儲在 `Parquet` 文件中，因為它在返回查詢時更高效、更快速。
+`Parquet` 文件以列格式存儲，與 `CSV` 等基於行的文件不同。大型數據集可以存儲在 `Parquet` 文件中，因為它在返回查詢時更高效、更快速。
 
 要加載 `Parquet` 文件：
 

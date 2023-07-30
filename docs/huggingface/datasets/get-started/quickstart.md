@@ -101,7 +101,7 @@ pip install datasets[vision]
 
     ??? info "Tensorflow"
 
-        使用 `to_tf_dataset()`` 函數設置數據集格式以與 TensorFlow 兼容。您還需要從 🤗 Transformers 導入數據整理器，以將不同的序列長度組合成一批相同長度的：
+        使用 `to_tf_dataset()` 函數設置數據集格式以與 TensorFlow 兼容。您還需要從 🤗 Transformers 導入數據整理器，以將不同的序列長度組合成一批相同長度的：
 
         ```python
         import tensorflow as tf
@@ -254,7 +254,7 @@ pip install datasets[vision]
 
     ??? info "Tensorflow"
 
-        使用 `to_tf_dataset()`` 函數設置數據集格式以與 TensorFlow 兼容。您還需要從 🤗 Transformers 導入數據整理器，以將不同的序列長度組合成一批相同長度的：
+        使用 `to_tf_dataset()` 函數設置數據集格式以與 TensorFlow 兼容。您還需要從 🤗 Transformers 導入數據整理器，以將不同的序列長度組合成一批相同長度的：
 
         ```python
         import tensorflow as tf

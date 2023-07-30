@@ -69,7 +69,7 @@ shuffled_dataset = dataset.shuffle(seed=42, buffer_size=10_000)
 
 ## Reshuffle
 
-有時您可能想在每個 epoch 後重新排列數據集。這將要求您為每個時期設置不同的種子。在 epoch 之間使用 `IterableDataset.set_epoch()`` 來告訴數據集您所處的 epoch。
+有時您可能想在每個 epoch 後重新排列數據集。這將要求您為每個時期設置不同的種子。在 epoch 之間使用 `IterableDataset.set_epoch()` 來告訴數據集您所處的 epoch。
 
 你的種子實際上變成：`initial seed + current epoch`
 
@@ -157,7 +157,7 @@ print(list(multilingual_dataset_with_oversampling.take(2)))
 
 當您需要重命名數據集中的列(column)時，請使用 `IterableDataset.rename_column()`。與原始列關聯的特徵實際上被移動到新列名稱下，而不是僅僅就地替換原始列。
 
-為 `IterableDataset.rename_column()`` 提供原始列的名稱和新列的名稱：
+為 `IterableDataset.rename_column()` 提供原始列的名稱和新列的名稱：
 
 ```python
 from datasets import load_dataset
@@ -286,7 +286,7 @@ print(list(updated_dataset.take(3)))
 
 讓我們看另一個示例，只不過這次，您將使用 `IterableDataset.map()` 刪除一列。當您刪除列時，只有在將示例提供給映射函數後才會刪除該列。這允許映射函數在刪除列之前使用它們的內容。
 
-使用 `IterableDataset.map()`` 中的 `remove_columns` 參數指定要刪除的列：
+使用 `IterableDataset.map()` 中的 `remove_columns` 參數指定要刪除的列：
 
 ```python
 updated_dataset = dataset.map(add_prefix, remove_columns=["id"])

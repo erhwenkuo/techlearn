@@ -325,7 +325,7 @@ ds = split_dataset_by_node(ds, rank=int(os.environ["RANK"]), world_size=int(os.e
 
 **iterable datasets**:
 
-如果數據集的分片數量是 `world_size` 的一個 factor（即，如果 `dataset.n_shards % world_size == 0`），則分片在節點之間均勻分配，這是最優化的。否則，每個節點在 `world_size`` 中保留 1 個 example，並跳過其他 examples。
+如果數據集的分片數量是 `world_size` 的一個 factor（即，如果 `dataset.n_shards % world_size == 0`），則分片在節點之間均勻分配，這是最優化的。否則，每個節點在 `world_size` 中保留 1 個 example，並跳過其他 examples。
 
 
 如果您希望每個節點使用多個工作線程來加載數據，也可以將其與 `torch.utils.data.DataLoader` 結合使用。

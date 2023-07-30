@@ -32,7 +32,7 @@ dataset[0]
  'text': 'the rock is destined to be the 21st century\'s new " conan " and that he\'s going to make a splash even greater than arnold schwarzenegger , jean-claud van damme or steven segal .'}
 ```
 
-使用 `-`` 運算符從數據集末尾開始：
+使用 `-` 運算符從數據集末尾開始：
 
 ```python
 # Get the last row in the dataset

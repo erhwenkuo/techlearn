@@ -828,7 +828,7 @@ print(dataset.format)
 {'type': 'custom', 'format_kwargs': {'transform': <function __main__.encode(batch)>}, 'columns': ['idx', 'label', 'sentence1', 'sentence2'], 'output_all_columns': False}
 ```
 
-您還可以使用 `set_transform()` 函數來解碼功能不支持的格式。例如，音頻功能使用聲音文件（一個安裝快速且簡單的庫），但它不提供對不太常見的音頻格式的支持。您可以在此處使用 `set_transform()`` 動態應用自定義解碼轉換。您可以隨意使用任何您喜歡的庫來解碼音頻文件。
+您還可以使用 `set_transform()` 函數來解碼功能不支持的格式。例如，音頻功能使用聲音文件（一個安裝快速且簡單的庫），但它不提供對不太常見的音頻格式的支持。您可以在此處使用 `set_transform()` 動態應用自定義解碼轉換。您可以隨意使用任何您喜歡的庫來解碼音頻文件。
 
 下面的示例使用 [pydub](http://pydub.com/) 套件打開 `soundfile` 不支持的音頻格式：
 
