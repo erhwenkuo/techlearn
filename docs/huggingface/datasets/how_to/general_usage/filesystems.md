@@ -61,7 +61,7 @@
     fs = s3fs.S3FileSystem(**storage_options)
     ```
 
-#### Class: `datasets.filesystems.S3FileSystem`
+**Class: `datasets.filesystems.S3FileSystem`**
 
 Parameters:
 

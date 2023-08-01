@@ -117,8 +117,8 @@ dataset = load_dataset("csv", data_files="my_file.csv")
 ```python
 storage_options = {
         "anon": False,  # for anonymous connection
-        "key": "minioadmin",  # access_key
-        "secret": "minioadmin",  # secret_key
+        "key": "***********",  # access_key
+        "secret": "***********",  # secret_key
         "use_ssl": False,  # use https or http
         "client_kwargs": {
             "endpoint_url": "http://localhost:9000"  # minio endpoint
@@ -179,8 +179,8 @@ dataset = load_dataset("json", data_files={"train": base_url + "train-v1.1.json"
 ```python
 storage_options = {
         "anon": False,  # for anonymous connection
-        "key": "minioadmin",  # access_key
-        "secret": "minioadmin",  # secret_key
+        "key": "***********",  # access_key
+        "secret": "***********",  # secret_key
         "use_ssl": False,  # use https or http
         "client_kwargs": {
             "endpoint_url": "http://localhost:9000"  # minio endpoint
@@ -225,8 +225,8 @@ wiki = load_dataset("parquet", data_files=data_files, split="train")
 ```python
 storage_options = {
         "anon": False,  # for anonymous connection
-        "key": "minioadmin",  # access_key
-        "secret": "minioadmin",  # secret_key
+        "key": "***********",  # access_key
+        "secret": "***********",  # secret_key
         "use_ssl": False,  # use https or http
         "client_kwargs": {
             "endpoint_url": "http://localhost:9000"  # minio endpoint
@@ -272,8 +272,8 @@ wiki = load_dataset("arrow", data_files=data_files, split="train")
 ```python
 storage_options = {
         "anon": False,  # for anonymous connection
-        "key": "minioadmin",  # access_key
-        "secret": "minioadmin",  # secret_key
+        "key": "***********",  # access_key
+        "secret": "***********",  # secret_key
         "use_ssl": False,  # use https or http
         "client_kwargs": {
             "endpoint_url": "http://localhost:9000"  # minio endpoint
