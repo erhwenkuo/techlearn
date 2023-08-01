@@ -112,6 +112,25 @@ from datasets import load_dataset
 dataset = load_dataset("csv", data_files="my_file.csv")
 ```
 
+要通過 `S3(AWS/Minio)` 加載遠程 CSV 文件，請設定 `storage_options` 物件：
+
+```python
+storage_options = {
+        "anon": False,  # for anonymous connection
+        "key": "minioadmin",  # access_key
+        "secret": "minioadmin",  # secret_key
+        "use_ssl": False,  # use https or http
+        "client_kwargs": {
+            "endpoint_url": "http://localhost:9000"  # minio endpoint
+        }
+    }
+
+
+data_files="s3://my_bucket/imdb/titanic/train.csv"
+
+dataset = load_dataset("csv", data_files=data_files, storage_options=storage_options)
+```
+
 !!! tip
     有關更多詳細信息，請查看 [how to load tabular datasets from CSV files ](https://huggingface.co/docs/datasets/tabular_load#csv-files) 指南。
 
@@ -155,6 +174,28 @@ base_url = "https://rajpurkar.github.io/SQuAD-explorer/dataset/"
 dataset = load_dataset("json", data_files={"train": base_url + "train-v1.1.json", "validation": base_url + "dev-v1.1.json"}, field="data")
 ```
 
+要通過 `S3(AWS/Minio)` 加載遠程 JSON 文件，請設定 `storage_options` 物件：
+
+```python
+storage_options = {
+        "anon": False,  # for anonymous connection
+        "key": "minioadmin",  # access_key
+        "secret": "minioadmin",  # secret_key
+        "use_ssl": False,  # use https or http
+        "client_kwargs": {
+            "endpoint_url": "http://localhost:9000"  # minio endpoint
+        }
+    }
+
+
+base_url="s3://my_bucket/squad/"
+
+dataset = load_dataset("json", 
+  data_files={"train": base_url + "train-v1.1.json", "validation": base_url + "dev-v1.1.json"}, 
+  field="data", 
+  storage_options=storage_options)
+```
+
 雖然這些是最常見的 JSON 格式，但您會看到其他格式不同的數據集。 🤗 數據集可識別這些其他格式，並將相應地回退到 Python JSON 加載方法來處理它們。
 
 ### Parquet
@@ -179,6 +220,31 @@ data_files = {"train": base_url + "wikipedia-train.parquet"}
 wiki = load_dataset("parquet", data_files=data_files, split="train")
 ```
 
+要通過 `S3(AWS/Minio)` 加載遠程 JSON 文件，請設定 `storage_options` 物件：
+
+```python
+storage_options = {
+        "anon": False,  # for anonymous connection
+        "key": "minioadmin",  # access_key
+        "secret": "minioadmin",  # secret_key
+        "use_ssl": False,  # use https or http
+        "client_kwargs": {
+            "endpoint_url": "http://localhost:9000"  # minio endpoint
+        }
+    }
+
+
+base_url="s3://my_bucket/datasets/wikipedia/"
+
+data_files = {"train": base_url + "wikipedia-train.parquet"}
+
+wiki = load_dataset(
+  "parquet", 
+  data_files={"train": base_url + "wikipedia-train.parquet"},
+  storage_options=storage_options)
+```
+
+
 ### Arrow
 
 與 `CSV` 等基於行的格式和 `Parquet` 等未壓縮格式不同，`Arrow` 文件以內存中的列格式存儲。
@@ -199,6 +265,30 @@ base_url = "https://storage.googleapis.com/huggingface-nlp/cache/datasets/wikipe
 data_files = {"train": base_url + "wikipedia-train.arrow"}
 
 wiki = load_dataset("arrow", data_files=data_files, split="train")
+```
+
+要通過 `S3(AWS/Minio)` 加載遠程 JSON 文件，請設定 `storage_options` 物件：
+
+```python
+storage_options = {
+        "anon": False,  # for anonymous connection
+        "key": "minioadmin",  # access_key
+        "secret": "minioadmin",  # secret_key
+        "use_ssl": False,  # use https or http
+        "client_kwargs": {
+            "endpoint_url": "http://localhost:9000"  # minio endpoint
+        }
+    }
+
+
+base_url="s3://my_bucket/datasets/wikipedia/"
+
+data_files = {"train": base_url + "wikipedia-train.arrow"}
+
+wiki = load_dataset(
+  "arrow", 
+  data_files={"train": base_url + "wikipedia-train.parquet"},
+  storage_options=storage_options)
 ```
 
 `Arrow` 是 🤗 Datasets 在底層使用的文件格式，因此您可以直接使用 `Dataset.from_file()` 加載本地 `Arrow` 文件：
