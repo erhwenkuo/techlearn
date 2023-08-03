@@ -1,6 +1,6 @@
 # Datasets
 
-![](./assets/datasets_logo.png)
+![](./assets/datasets.png)
 
 Huggingface Datasets 是一個用於輕鬆訪問和共享音頻、計算機視覺和自然語言處理 (NLP) 任務數據集的套件。
 

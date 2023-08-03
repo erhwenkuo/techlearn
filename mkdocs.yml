@@ -561,21 +561,21 @@ nav:
           - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
   - Huggingface:
     - Datasets:
-      - Get Started:
+      - 開始使用:
         - 概述: huggingface/datasets/get-started/index.md
-        - Quickstart: huggingface/datasets/get-started/quickstart.md
+        - 快速上手: huggingface/datasets/get-started/quickstart.md
         - 安裝: huggingface/datasets/get-started/installation.md
-      - Tutorials:
+      - 教學:
         - 概述: huggingface/datasets/tutorial/index.md
-        - 從 Hub 載入 dataset: huggingface/datasets/tutorial/load_hub.md
+        - 載入 dataset: huggingface/datasets/tutorial/load_hub.md
         - 了解 dataset: huggingface/datasets/tutorial/access.md
         - 數據預處理: huggingface/datasets/tutorial/use_dataset.md
         - 創建 dataset: huggingface/datasets/tutorial/create_dataset.md
-        - 將 dataset 共享到 Hub: huggingface/datasets/tutorial/upload_dataset.md
-      - How-To Guides:
+        - 公開與共享 dataset: huggingface/datasets/tutorial/upload_dataset.md
+      - 操作指南:
         - 概述: huggingface/datasets/how_to/overview.md
-        - General Usage:
-          - Dataset 載入: huggingface/datasets/how_to/general_usage/loading.md
+        - 基本用法:
+          - 載入 Dataset : huggingface/datasets/how_to/general_usage/loading.md
           - 數據處理: huggingface/datasets/how_to/general_usage/process.md
           - 數據串流: huggingface/datasets/how_to/general_usage/stream.md
           - 結合 Tensorflow 使用: huggingface/datasets/how_to/general_usage/use_with_tensorflow.md
@@ -584,11 +584,11 @@ nav:
           - 結合 Spark 使用: huggingface/datasets/how_to/general_usage/use_with_spark.md
           - 緩存 management: huggingface/datasets/how_to/general_usage/cache.md
           - 雲存儲服務整合: huggingface/datasets/how_to/general_usage/filesystems.md
-        - Audio:
+        - Audio 數據:
           - 載入 audio data: huggingface/datasets/audio/audio_load.md
           - 處理 audio data: huggingface/datasets/audio/audio_process.md
           - 創建 audio dataset: huggingface/datasets/audio/audio_dataset.md
-        - Vision:
+        - Vision 數據:
           - 載入 image data: huggingface/datasets/vision/image_load.md
           - 處理 image data: huggingface/datasets/vision/image_process.md
           - 創建 image dataset: huggingface/datasets/vision/image_dataset.md
@@ -596,13 +596,18 @@ nav:
           - Image classification: huggingface/datasets/vision/image_classification.md
           - Semantic segmentation: huggingface/datasets/vision/semantic_segmentation.md
           - Object detection: huggingface/datasets/vision/object_detection.md
-        - Text:
+        - Text 數據:
           - 載入 text data: huggingface/datasets/text/nlp_load.md
           - 處理 text data: huggingface/datasets/text/nlp_process.md
-        - Tabular:
+        - Tabular 數據:
           - 載入 tabular data: huggingface/datasets/tabular/tabular_load.md
-
-
+      - 底層概念:
+        - Dataset 與 Arrow: huggingface/datasets/conceptual_guides/about_arrow.md
+        - Dataset 緩存與指紋: huggingface/datasets/conceptual_guides/about_cache.md
+        - Dataset 與 IterableDataset 的差異: huggingface/datasets/conceptual_guides/about_mapstyle_vs_iterable.md
+        - Dataset features: huggingface/datasets/conceptual_guides/about_dataset_features.md
+        - Dataset 構建並加載: huggingface/datasets/conceptual_guides/about_dataset_load.md
+        - 批次 mapping: huggingface/datasets/conceptual_guides/about_map_batch.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
