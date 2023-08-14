@@ -608,6 +608,20 @@ nav:
         - Dataset features: huggingface/datasets/conceptual_guides/about_dataset_features.md
         - Dataset 構建並加載: huggingface/datasets/conceptual_guides/about_dataset_load.md
         - 批次 mapping: huggingface/datasets/conceptual_guides/about_map_batch.md
+  - LangChain:
+    - 文件:
+      - 開始使用:
+        - 介紹: langchain/docs/get_started/introduction.md
+        - 安裝: langchain/docs/get_started/installation.md
+        - 快速開始: langchain/docs/get_started/quickstart.md
+      - 模組:
+        - Model I/O:
+          - 基本說明: langchain/docs/modules/model_io/index.md
+          - Prompts: 
+            - 基本說明: langchain/docs/modules/model_io/prompts/index.md
+            - Prompt templates: 
+              - 基本說明: langchain/docs/modules/model_io/prompts/prompt_templates/index.md
+              - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
