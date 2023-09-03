@@ -43,8 +43,15 @@ theme:
   icon:
     logo: logo
 
+extra_javascript:
+  - javascripts/katex.js 
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js  
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js
+
 extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
   - stylesheets/extra.css
+
 
 # Plugins
 plugins:
@@ -559,7 +566,7 @@ nav:
           - 從零開始的基本 Kubeflow 管道: kubeflow/tutorials/pipelines/basic-kubeflow-pipeline.md
           - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
           - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
-  - Huggingface:
+  - Huggingface:    
     - Datasets:
       - 開始使用:
         - 概述: huggingface/datasets/get-started/index.md
@@ -608,6 +615,18 @@ nav:
         - Dataset features: huggingface/datasets/conceptual_guides/about_dataset_features.md
         - Dataset 構建並加載: huggingface/datasets/conceptual_guides/about_dataset_load.md
         - 批次 mapping: huggingface/datasets/conceptual_guides/about_map_batch.md
+    - Finetuning:
+      - PEFT:
+        - LoRA:
+          - LoRA 實現大模型 LLM 微調: huggingface/finetune/peft/lora/llm-finetune-with-lora.md
+        - Adapter:
+          - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
+    - Tutorials:
+      - 模型微調:
+        - Falcon-7B:
+          - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
+          - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
+          - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
   - LangChain:
     - 文件:
       - 開始使用:
