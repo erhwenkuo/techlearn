@@ -25,7 +25,7 @@ theme:
     # - toc.integrate
   palette:
     - scheme: default
-      primary: amber
+      primary: blue
       accent: red
       toggle:
         icon: material/toggle-switch
