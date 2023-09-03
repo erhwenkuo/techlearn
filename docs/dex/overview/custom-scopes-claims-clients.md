@@ -13,7 +13,7 @@
 | `profile` | ID 令牌聲明應包括最終用戶的用戶名。 |
 | `groups` | ID 令牌聲明應包括最終用戶所屬群組的列表。 |
 | `federated:id` | ID 令牌聲明應包括來自 ID 提供者的信息。令牌將包含連接器 ID 和在提供商處分配的用戶 ID。|
-| `offline_access` | 令牌響應應包含 refresh 令牌。不能與某些連接器結合使用，值得注意的是 [SAML 連接器](/docs/connectors/saml/) 會忽略此資訊。 |
+| `offline_access` | 令牌響應應包含 refresh 令牌。不能與某些連接器結合使用，值得注意的是 SAML 連接器會忽略此資訊。 |
 | `audience:server:client_id:( client-id )` | 動態範圍指示應代表另一個客戶端頒發 ID 令牌。請參閱下面的 “跨客戶端信任和授權方” 部分。|
 
 ## Custom claims

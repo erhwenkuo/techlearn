@@ -55,7 +55,7 @@ kubelet_running_pods{job="apiserver"}
 
 選擇 `Add a new panel`。
 
-![](./assets/grafana-add-new-panel)
+![](./assets/grafana-add-new-panel.png)
 
 使用“Pod Count”作為圖表標題，選擇 Prometheus 作為數據源並輸入我們之前測試過的 Prometheus 指標，然後按“運行查詢”按鈕來填充圖表。
 

@@ -1,4 +1,4 @@
-# The Kubernetes API call inside the cluster
+# 在集群內部調用 Kubernetes API 
 
 原文: https://medium.com/@pczarkowski/the-kubernetes-api-call-is-coming-from-inside-the-cluster-f1a115bd2066
 

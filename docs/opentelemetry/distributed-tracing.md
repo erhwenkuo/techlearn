@@ -8,14 +8,26 @@
 
 在分佈式環境中，跟踪工具還可以幫助您了解微服務之間的關係和交互。分佈式跟踪允許您查看特定微服務的執行情況以及該服務如何影響其他微服務。
 
-![](./assets/distributed-tracing.png)
+## Tracing 如何運作？
+
+在現代應用程序中，尤其是基於微服務或無服務器架構的應用程序中，不同的服務經常相互交互來滿足單個用戶請求。這使得識別性能瓶頸、診斷問題和分析整體系統行為變得具有挑戰性。
+
+分佈式追踪旨在通過創建追踪來解決這些挑戰，跟踪表示單個用戶請求通過各種服務和組件的旅程。每個跟踪由一系列互連的跨度組成，其中每個跨度代表特定服務或組件內的單個操作或活動。
+
+當請求進入服務時，追踪上下文(trace context)會隨請求一起傳播。這通常涉及將追踪標頭注入請求中，從而允許下游服務參與同一追踪。
+
+當請求流經系統時，每個服務都會生成自己的跨度，並使用有關其操作持續時間、元數據和任何相關上下文的信息更新追踪上下文。
+
+![](./assets/tracing-concept.png)
+
+分佈式追踪工具使用生成的追踪數據來提供對系統行為的可見性，幫助識別性能問題，協助調試，並幫助確保分佈式應用程序的可靠性和可擴展性。
 
 ## Spans
 
 **Span** 表示跟踪中的一個 opeartion (unit of work)。Span 可以是遠程過程調用 (RPC)、數據庫查詢或進程內函數調用。一個 span 可能包含有：
 
-- 父 span。
 - span 名稱 (operation 名稱)。
+- 父 span。
 - 一種 span 類型。
 - 開始和結束時間。
 - 報告 operation 是成功還是失敗的狀態。
@@ -34,17 +46,19 @@
 
 以下名稱很好，因為它們簡短、獨特並且有助於將相似的跨度組合在一起：
 
-|Span 名稱	|評論|
-|GET /projects/:id	|Good. A route name with param names.|
-|select_project	|Good. A function name without arguments.|
-|SELECT * FROM projects WHERE id = ?	|Good. A database query with placeholders.|
+|Span name |Comment|
+|----------|-------|
+|`GET /projects/:id`|Good. A route name with param names.|
+|`select_project`|Good. A function name without arguments.|
+|`SELECT * FROM projects WHERE id = ?`|Good. A database query with placeholders.|
 
 以下名稱是不好的，因為它們包含變量和參數：
 
-|Span 名稱	|評論|
-|GET /projects/42	|Bad. Contains a variable param 42.|
-|select_project(42)	|Bad. Contains a variable 42.|
-|SELECT * FROM projects WHERE id = 42	|Bad. Contains a variable arg 42.|
+|Span name |Comment|
+|----------|-------|
+|`GET /projects/42`|Bad. Contains a variable param 42.|
+|`select_project(42)`|Bad. Contains a variable 42.|
+|`SELECT * FROM projects WHERE id = 42`|Bad. Contains a variable arg 42.|
 
 ### Span kind
 
@@ -90,20 +104,20 @@ Trace/span context 是 request-scoped 的數據，例如：
 
 OpenTemetry 在進程內的函數之間傳播上下文（進程內傳播），甚至從一個服務傳播到另一個服務（分佈式傳播）。
 
-**進程內 context 傳播**可以是隱式的或顯式的，具體取決於您使用的編程語言。隱式傳播是通過將活動上下文自動存儲在 thread-local variables（Java、Python、Ruby、NodeJS）。顯式傳播需要顯式地將活動上下文作為參數從一個函數傳遞到另一個函數 (Go)。
+**進程內 context 傳播** 可以是隱式的或顯式的，具體取決於您使用的編程語言。隱式傳播是通過將活動上下文自動存儲在 thread-local variables（Java、Python、Ruby、NodeJS）。顯式傳播需要顯式地將活動上下文作為參數從一個函數傳遞到另一個函數 (Go)。
 
-對於**分佈式 context 傳播**，OpenTelemetry 支持多種定義如何序列化和傳遞上下文數據的協議：
+對於 **分佈式 context 傳播**，OpenTelemetry 支持多種定義如何序列化和傳遞上下文數據的協議：
 
-- [W3C trace context](https://www.w3.org/TR/trace-context/) in traceparent header, for example, `traceparent=00-84b54e9330faae5350f0dd8673c98146-279fa73bc935cc05-01`。
-- [B3 Zipkin](https://github.com/openzipkin/b3-propagation) in headers that start with `x-b3-`, for example, `X-B3-TraceId`。
+- [W3C trace context](https://www.w3.org/TR/trace-context/) 在 traceparent header, 例如, `traceparent=00-84b54e9330faae5350f0dd8673c98146-279fa73bc935cc05-01`。
+- [B3 Zipkin](https://github.com/openzipkin/b3-propagation) 在 headers 並用 `x-b3-` 的前綴, 例如, `X-B3-TraceId`。
 
 [W3C trace context](https://www.w3.org/TR/trace-context/)  是預設啟用的 context propagator。
 
 ### Baggage
 
-[Baggage](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/baggage/api.md) 的工作方式類似於 span context，並允許您將用戶定義的 key:value (attributes) 從一項服務傳播到另一項服務。在 gRPC 世界中，類似的概念稱為 gRPC metadata。
+[Baggage](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/baggage/api.md) 的工作方式類似於 `span context`，並允許您將用戶定義的 `key:value (attributes)` 從一項服務傳播到另一項服務。在 gRPC 世界中，類似的概念稱為 gRPC metadata。
 
-例如，您可以使用 baggage 將有關創建跟踪的服務的信息傳播到所有其他服務。
+例如，您可以使用 `baggage` 將有關創建跟踪的服務的信息傳播到所有其他服務。
 
 ## Instrumentations
 
@@ -120,6 +134,6 @@ Instrumentations library 是執行檢測本身的庫，而不是檢測的目標�
 - `Database queries`
 - `Errors` 與 `logs`
 
-## 下一步是什麼?
+## 結論
 
-接下來，了解適用於您的編程語言的 OpenTelemetry 跟踪 API：
+分佈式跟踪對於理解複雜應用程序的端到端行為、識別性能問題、優化系統資源以及為架構改進或優化方面的更好決策提供見解非常有價值。

@@ -196,6 +196,7 @@ nav:
         - Minikube:
           - 如何在 Ubuntu 20.04 上安裝 Minikube: kubernetes/01-getting-started/learning-env/minikube/how-to-install-minikube-on-ubuntu.md
         - Nvidia:
+          - Kubernetes 與 GPUs: kubernetes/01-getting-started/learning-env/nvidia/kubernetes/index.md
           - Nvidia Container Toolkit:
             - 簡介: kubernetes/01-getting-started/learning-env/nvidia/nvidia-container-toolkit/index.md
       - 最佳實踐:
@@ -223,17 +224,21 @@ nav:
       - 集群管理:
         - 日誌架構: kubernetes/02-concepts/11-cluster-adm/logging.md
         - 日誌完整指南: kubernetes/02-concepts/11-cluster-adm/kubernetes-logging.md
+        - 日誌記錄實用指南: kubernetes/02-concepts/11-cluster-adm/a-practical-guide-to-k8s-logging.md
     - Tasks:
       - 管理 Kubernetes 對象:
         - 使用 Kustomize 對 Kubernetes 對象進行聲明式管理: kubernetes/03-tasks/manage-kubernetes-objects/kustomization.md
       - 訪問集群中的應用程序:
         - 部署和訪問 Kubernetes 儀表板: kubernetes/03-tasks/access-application-cluster/web-ui-dashboard.md
       - 監控、日誌和除錯:
+        - 簡介: kubernetes/03-tasks/debug/index.md
         - 應用程序故障排查:
           - 簡介: kubernetes/03-tasks/debug/debug-application/index.md
         - 集群故障排查:
           - 簡介: kubernetes/03-tasks/debug/debug-cluster/index.md
+          - 簡介: kubernetes/03-tasks/debug/debug-cluster/resource-metrics-pipeline.md
       - TLS:
+        - 手動生成證書: kubernetes/03-tasks/administer-cluster/certificates.md
         - 管理集群中的 TLS 認證: kubernetes/03-tasks/tls/managing-tls-in-a-cluster.md
         - 手動輪換 CA 證書: kubernetes/03-tasks/tls/certificate-rotation.md
         - 其它參考:
@@ -267,6 +272,7 @@ nav:
         - Kubernetes RBAC 介詔: kubernetes/05-reference/access-authn-authz/rbac-intro.md
         - 使用 RBAC 設置服務帳戶權限: kubernetes/05-reference/access-authn-authz/k8s-authorization-of-sa-with-rbac.md
         - ServiceAccounts、JWT-tokens、身份驗證和 RBAC 授權: kubernetes/05-reference/access-authn-authz/k8s-sa-jwt-rbac.md
+        - 在集群內部調用 Kubernetes API: kubernetes/05-reference/access-authn-authz/k82-api-call-inside-the-cluster.md
     - Observability:
       - Day2 運營:
         - Day2 的定義: kubernetes/observability/day2-ops/day2-definition.md
@@ -299,8 +305,6 @@ nav:
         - 開發語言:
           - Java:
             - SpringBoot: kubernetes/observability/tracing/java/spring-boot-opentelemetry.md
-          - Dotnet:
-            - 可觀測性(Observability): kubernetes/observability/tracing/dotnet/modern-monitoring-using-openTelemetry-with-Observability.md
     - Tools:
       - 簡介: kubernetes/package/index.md
       - Packaging 管理:
@@ -382,7 +386,6 @@ nav:
       - 簡介: opentelemetry/k8s-operator/index.md
     - 範例:
       - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
-      - OpenTelemetry Demo: opentelemetry/demo/helm-install.md
   - Grafana:
     - Tempo:
       - 示例:
@@ -473,6 +476,7 @@ nav:
             - Step: kubeflow/components/pipelines/v1/concepts/step.md
             - Output Artifact: kubeflow/components/pipelines/v1/concepts/output-artifact.md
             - ML Metadata: kubeflow/components/pipelines/v1/concepts/metadata.md
+            - 管道運行比對: kubeflow/components/pipelines/v1/sdk-v2/run-comparison.md
           - 範例和教程:
             - DSL-Control結構: kubeflow/components/pipelines/v1/tutorials/dsl-control-structures.md
             - Pipelines 輕量級組件: kubeflow/components/pipelines/v1/tutorials/lightweight-components.md
@@ -521,8 +525,6 @@ nav:
             - AuthService 網頁模板: kubeflow/components/multi-tenancy/authn/templates.md
             - 使用Istio+Dex進行身份驗證: kubeflow/components/multi-tenancy/authn/kubeflow-authentication-with-istio-dex.md
             - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
-            - Keycloak:
-              - 環境安裝配置: kubeflow/components/multi-tenancy/authn/keycloak/kubeflow-install.md
       - 外部整合插件:
         - KServe:
           - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
@@ -545,13 +547,18 @@ nav:
                 - 模型推論 Runtime 簡介: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/overview.md
                 - Tensorflow: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/tensorflow.md
                 - PyTorch: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/torchserve.md
+                - Scikit-learn: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/sklearn.md
             - Transformer:
               - 撰寫客制 Transformer: kubeflow/external-add-ons/kserve/user_guide/transformer/torchserve_image_transformer.md
+            - 模型監測:
+              - 使用 Alibi 異常值/漂移檢測器: kubeflow/external-add-ons/kserve/user_guide/model_monitoring/alibi_detect.md
             - Model 存儲:
               - Azure: kubeflow/external-add-ons/kserve/user_guide/storage/azure.md
               - S3: kubeflow/external-add-ons/kserve/user_guide/storage/s3.md
               - Minio: kubeflow/external-add-ons/kserve/user_guide/storage/minio.md
               - URI: kubeflow/external-add-ons/kserve/user_guide/storage/uri.md
+        - Feature Store:
+          - Feast 簡介: kubeflow/external-add-ons/feature-store/introduction.md
       - 範例:
         - Notebooks:
           - 構建客制容器鏡像: kubeflow/tutorials/notebooks/build-own-notebook-server.md
@@ -563,7 +570,6 @@ nav:
         - MLOps:
           - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
         - Pipeline:
-          - 從零開始的基本 Kubeflow 管道: kubeflow/tutorials/pipelines/basic-kubeflow-pipeline.md
           - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
           - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
   - Huggingface:    
@@ -622,13 +628,15 @@ nav:
         - Adapter:
           - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
     - Tutorials:
+      - Transfomer模型:
+        - PyTorch Transformer 詳細指南: huggingface/tutorials/transformer/a-detailed-guide-to-pytorchs-nn-transformer-module.md
       - 模型微調:
         - Falcon-7B:
           - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
           - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
           - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
   - LangChain:
-    - 文件:
+    - Docs:
       - 開始使用:
         - 介紹: langchain/docs/get_started/introduction.md
         - 安裝: langchain/docs/get_started/installation.md
@@ -641,6 +649,8 @@ nav:
             - Prompt templates: 
               - 基本說明: langchain/docs/modules/model_io/prompts/prompt_templates/index.md
               - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
+    - Use cases:
+      - SQL: langchain/use_cases/sql/index.md
   - Dex:
     - 概述:
       - 入門: dex/overview/getting-started.md
