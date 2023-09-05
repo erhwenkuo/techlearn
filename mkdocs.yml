@@ -25,7 +25,7 @@ theme:
     # - toc.integrate
   palette:
     - scheme: default
-      primary: blue
+      primary: red
       accent: red
       toggle:
         icon: material/toggle-switch
@@ -55,6 +55,7 @@ extra_css:
 
 # Plugins
 plugins:
+  - blog
   - glightbox:
       touchNavigation: true
       loop: false
@@ -133,60 +134,6 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
-  - Coding:
-    - 12 Factors:
-      - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
-    - Observability:
-      - 指標 Metrics:
-        - 可觀測性(metrics)實戰: coding/observability/metrics/metrics-app-integration.md
-      - 日誌 Logs:
-        - Structured Logging: coding/observability/logs/structured-logging.md
-        - 可觀測性(logging)實戰: coding/observability/logs/logging-app-integration.md
-    - C#: 
-      - 後端 API:
-        - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
-        - 儀器化 Net Core 應用程序: coding/dotnet/backend/metric/web-api-metric.md
-        - 結構化日誌 Net Core 應用程序: coding/dotnet/backend/logging/web-api-logging.md
-    - Java:
-      - 後端 API:
-        - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
-        - 儀器化 Springboot 應用程序: coding/java/backend/metric/web-api-metric.md
-        - 結構化日誌 Sprintboot 應用程序: coding/java/backend/logging/web-api-logging.md
-  - SRE:
-    - 概念:
-      - 基於 SLO 告警: sre/concepts/slo-alerts/slo-alert.md
-    - 工具:
-      - Sloth:
-        - 概念:
-          - Sloth 是什麼？: sre/tools/sloth/what-is-sloth.md
-        - 安裝: 
-          - Helm 安裝與功能驗證: sre/tools/sloth/setup/helm-install.md
-      - Pyrra:
-        - 概念:
-          - Pyrra 是什麼？: sre/tools/pyrra/what-is-pyrra.md
-        - 安裝: 
-          - Helm 安裝與功能驗證: sre/tools/pyrra/setup/helm-install.md
-        - SLO 範例:
-          - Prometheus: sre/tools/pyrra/setup/pyrra-prometheus-slo.md
-  - MLOps:
-    - Getting started:
-      - 學習環境:
-        - Kubeadm:
-          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/kubeadm/k8s-kubeadm-containerd-gpu.md
-        - Rancher RKE2/K3S:
-          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/rancher/k8s-rke2-containerd-gpu.md
-          - 分析 Nvidia GPU Operator: mlops/01-getting-started/learning-env/rancher/rke2-gpu-manual-install.md
-      - GPU 共享:
-          - Nvidia GPU 共享的機制: mlops/02-gpu-sharing/nvidia-gpu-sharing-concepts.md
-          - 提高 GPU 利用率: 
-            - Time-slicing: mlops/02-gpu-sharing/improving-gpu-utilization-in-kubernetes.md
-            - MIG: 
-              - MIG 概念: mlops/02-gpu-sharing/mig/mig_concept.md
-              - MIG 切割入門: mlops/02-gpu-sharing/mig/mig-setup.md
-              - Kubernetes 對 MIG 支持: mlops/02-gpu-sharing/mig/mig-k8s.md
-              - GPU 持久化模式: mlops/02-gpu-sharing/mig/mig-persistence-mode.md
-              - GPU 的 MIG-PARTED 工具: mlops/02-gpu-sharing/mig/mig-parted.md
-              - GPU Operator 與 MIG 配置: mlops/02-gpu-sharing/mig/gpu-operator-mig.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
@@ -314,264 +261,393 @@ nav:
       - Config 管理:
           - Kustomize:
             - Kustomize 入門教學: kubernetes/package/helm-intro.md
-  - Prometheus:
-    - 基礎:
-      - Prometheus 簡介: prometheus/prometheus/overview.md
-      - Prometheus 安裝配置: prometheus/prometheus/install.md
-    - Node Exporter:
-      - Exporter 簡介: prometheus/node-exporter/overview.md
-      - 安裝配置: prometheus/node-exporter/install.md
-      - 常用監控指標: prometheus/node-exporter/metrics.md
-    - PromQL:
-      - 基礎:
-        - PromQL 簡介: prometheus/promql/intro.md
-        - 數據模型: prometheus/promql/data-model.md
-        - 指標類型: prometheus/promql/metric-type.md
-        - 演示服務: prometheus/promql/demo-service.md
-      - 查詢:
-        - 查詢基礎: prometheus/promql/theory.md
-        - 選擇時間序列: prometheus/promql/select-series.md
-        - 變化率: prometheus/promql/rates.md
-        - 聚合: prometheus/promql/aggregate.md
-        - 運算: prometheus/promql/operate.md
-        - 閾值: prometheus/promql/threshold.md
-        - 集合操作: prometheus/promql/set.md
-        - 排序: prometheus/promql/sort.md
-        - 直方圖: prometheus/promql/histograms.md
-        - 數據對比: prometheus/promql/compare.md
-        - 檢測: prometheus/promql/check.md
-      - 補充:
-          - Range query 的 step 參數說明: prometheus/promql/range-query-step.md
-          - 搞懂 Prometheus 的直方圖: prometheus/promql/metric-histogram.md
-          - 簡單理解 Summary 和 Histogram 指標: prometheus/promql/metric-histogram-summary.md
-    - Alertmanager:
-      - Alertmanager 安裝: prometheus/alertmanager/deploy.md
-      - 報警規則: prometheus/alertmanager/rules.md
-      - 報警接收器: prometheus/alertmanager/receiver.md
-      - 報警過濾: prometheus/alertmanager/filter.md
-      - 補充:
-          - Promtheus 到底啥時候報警?: prometheus/alertmanager/prometheus-alert-why.md
-    - Grafana:
-      - Grafana 簡介: prometheus/grafana/overview.md
-      - 視覺化面板:
-        - 面板介詔: prometheus/grafana/panel.md
-        - 圖形面板: prometheus/grafana/graph.md
-        - 圖形定制: prometheus/grafana/graph-custom.md
-        - 表格面板: prometheus/grafana/table.md
-        - 儀錶盤面板: prometheus/grafana/gauge.md
-        - 統計面板: prometheus/grafana/stat.md
-        - 文本面板: prometheus/grafana/text.md      
-    - Prometheus Operator:
-      - Prometheus Operator 簡介: prometheus/operator/install.md
-      - 自定義監控報警: prometheus/operator/custom.md
-      - Dashboard 的 GitOps 方式: prometheus/operator/consistent-dashboard-gitops-way.md
-      - 使用 ConfigMap 管理 Grafana 儀表板: prometheus/operator/dashboard-using-configmap.md
-    - Operation Runbook:
-      - Operation Runbook 簡介: prometheus/runbook/operations-runbook.md
-    - PostgresExporter:
-      - 使用 Prometheus 監控 PostgreSQL: prometheus/postgres-exporter/postgres-exporter-integration.md
-  - OpenTelemetry:
-    - Instrumentation:
-      - 簡介: opentelemetry/instrumentation/index.md
-      - 分佈式追踪概念: opentelemetry/distributed-tracing.md
+  - CloudNative:
+    - Coding:
+      - 12 Factors:
+        - 12 要素應用實戰: coding/12factors/architecture-12-factor-app.md
+      - Observability:
+        - 指標 Metrics:
+          - 可觀測性(metrics)實戰: coding/observability/metrics/metrics-app-integration.md
+        - 日誌 Logs:
+          - Structured Logging: coding/observability/logs/structured-logging.md
+          - 可觀測性(logging)實戰: coding/observability/logs/logging-app-integration.md
+      - C#: 
+        - 後端 API:
+          - 使用 NET Core 創建 Web API: coding/dotnet/backend/base/web-api-base.md
+          - 儀器化 Net Core 應用程序: coding/dotnet/backend/metric/web-api-metric.md
+          - 結構化日誌 Net Core 應用程序: coding/dotnet/backend/logging/web-api-logging.md
       - Java:
-        - 簡介: opentelemetry/instrumentation/java/index.md
-        - Automatic:
-          - 簡介: opentelemetry/instrumentation/java/automatic/index.md
-      - Python:
-        - Tracing API: opentelemetry/instrumentation/python/tracing.md
-    - Collector:
-      - 簡介: opentelemetry/collector/index.md
-    - K8s Operator:
-      - 簡介: opentelemetry/k8s-operator/index.md
-    - 範例:
-      - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
-  - Grafana:
-    - Tempo:
-      - 示例:
-        - Hot ROD 應用: grafana/tempo/hotrod.md
-    - Tempo(v2):
-      - 示例:
-        - Hot ROD 應用: grafana/tempo/hotrod2.md
-  - ArgoCD:
-    - 概念:
-      - Argo CD 是什麼？: argocd/concepts/what-is-argocd.md
-    - 入門:
-      - Getting Started: argocd/setup/getting_started.md
-      - 手把手教程:
-        - ArgoCD 教程簡介: argocd/tutorial/index.md
-        - ArgoCD 安裝設定: argocd/tutorial/01-setup.md
-        - ArgoCD 入門: argocd/tutorial/02-getting_started.md
-        - Kustomize: argocd/tutorial/03-kustomize.md
-        - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
-        - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
-    - 維運:
-      - 指標 Metrics: 
-        - 說明: argocd/operation-manual/metrics/index.md
-        - 可觀測性(metrics)實戰: argocd/operation-manual/metrics/metrics-argocd-integration.md
-    - ArgoCD 插件:
-      - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
-    - ApplicationSet Controller:
-      - 簡介: argocd/applicationset/intro.md
-      - 用例: argocd/applicationset/use-cases.md
-      - ApplicationSet 控制器與 Argo CD 整合: argocd/applicationset/argo-cd-integration.md
-      - Generator 生成器:
-        - 生成器簡介: argocd/applicationset/generators/index.md
-        - List Generator: argocd/applicationset/generators/generators-list.md
-        - Cluster Generator: argocd/applicationset/generators/generators-cluster.md
-        - Git Generator: argocd/applicationset/generators/generators-git.md
-      - 範本 fields: argocd/applicationset/template.md
-  - Istio:
-    - 概念:
-      - Istio 是什麼？: istio/concepts/what-is-istio.md
-      - 流量管理: istio/concepts/traffic-management.md
-      - 可觀測性: istio/concepts/observability.md
-      - 安全: istio/concepts/security.md
-    - 簡介: istio/index.md
-    - 安裝: 
-      - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
-      - Istio+OTel+Tempo 大全配: istio/setup/install/helm/helm-install2.md
-      - Istio+OTel+Tempo 大全配 (RKE2): istio/setup/install/helm/rke2-istio.md
-      - Istio+OTel+Tempo 大全配 (CCoE): istio/setup/install/helm/rke2-istio2.md
-      - 更多指南:
-        - 安裝配置文件: istio/setup/additional-setup/config-profiles.md
-    - 示例:
-      - Bookinfo 應用: istio/examples/bookinfo.md
-    - 參考:
-      - 應用程序部署策略: istio/reference/deployment-strategies.md
-      - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
-  - Kubeflow:
-    - 簡介:
-      - 概述: kubeflow/env/index.md
-      - 架構: kubeflow/env/architecture.md
-      - 安裝: kubeflow/env/kubeflow-install.md
-      - 視頻教學: kubeflow/env/kubeflow-youtube.md
-    - 組件:
-      - Central Dashboard:
-        - 簡介: kubeflow/components/central-dash/overview.md
-        - 自定義 menu 項: kubeflow/components/central-dash/customizing-menu.md
-      - Kubeflow Notebooks:
-        - 概述: kubeflow/components/notebooks/overview.md
-        - 快速入門: kubeflow/components/notebooks/quickstart-guide.md
-        - 容器鏡像: kubeflow/components/notebooks/container-images.md
-        - 範例: 
-          - Tesorflow(Mnist): kubeflow/components/notebooks/examples/jupyter-tensorflow-examples.md
-        - 提交 Kubernetes 資源: kubeflow/components/notebooks/submit-kubernetes.md
-        - 除錯: kubeflow/components/notebooks/troubleshooting.md
-      - Kubeflow Pipelines:
-        - v1:
-          - 簡介: kubeflow/components/pipelines/v1/introduction.md
-          - 概述:
-            - Quickstart: kubeflow/components/pipelines/v1/overview/interfaces.md
-            - 管道 interface: kubeflow/components/pipelines/v1/overview/quickstart.md
-            - Multi-user 隔離: kubeflow/components/pipelines/v1/overview/multi-user.md
-            - Pipeline Root: kubeflow/components/pipelines/v1/overview/pipeline-root.md
+        - 後端 API:
+          - 使用 Springboot 創建 Web API: coding/java/backend/base/web-api-base.md
+          - 儀器化 Springboot 應用程序: coding/java/backend/metric/web-api-metric.md
+          - 結構化日誌 Sprintboot 應用程序: coding/java/backend/logging/web-api-logging.md
+    - SRE:
+      - 概念:
+        - 基於 SLO 告警: sre/concepts/slo-alerts/slo-alert.md
+      - 工具:
+        - Sloth:
           - 概念:
-            - Pipeline: kubeflow/components/pipelines/v1/concepts/pipeline.md
-            - Component: kubeflow/components/pipelines/v1/concepts/component.md
-            - Graph: kubeflow/components/pipelines/v1/concepts/graph.md
-            - Experiment: kubeflow/components/pipelines/v1/concepts/experiment.md
-            - Run 與 Recurring Run: kubeflow/components/pipelines/v1/concepts/run.md
-            - Run Trigger: kubeflow/components/pipelines/v1/concepts/run-trigger.md
-            - Step: kubeflow/components/pipelines/v1/concepts/step.md
-            - Output Artifact: kubeflow/components/pipelines/v1/concepts/output-artifact.md
-            - ML Metadata: kubeflow/components/pipelines/v1/concepts/metadata.md
-            - 管道運行比對: kubeflow/components/pipelines/v1/sdk-v2/run-comparison.md
-          - 範例和教程:
-            - DSL-Control結構: kubeflow/components/pipelines/v1/tutorials/dsl-control-structures.md
-            - Pipelines 輕量級組件: kubeflow/components/pipelines/v1/tutorials/lightweight-components.md
-        - v2:
-          - 簡介: kubeflow/components/pipelines/v2/introduction.md
-          - Hello World 範例管道: kubeflow/components/pipelines/v2/hello-world.md
-          - 從 KFP SDK v1 遷移: kubeflow/components/pipelines/v2/migration.md
-          - 安裝:
-            - Quickstart: kubeflow/components/pipelines/v2/installation/quickstart.md
-          - 組件:
-            - 簡介: kubeflow/components/pipelines/v2/component/index.md
-            - 輕量級 Python 組件: kubeflow/components/pipelines/v2/component/lightweight-python-components.md
-            - 容器化 Python 組件: kubeflow/components/pipelines/v2/component/containerized-python-components.md
-            - 容器組件: kubeflow/components/pipelines/v2/component/container-components.md
-            - Importer 組件: kubeflow/components/pipelines/v2/component/importer-component.md
-            - 附加功能: kubeflow/components/pipelines/v2/component/additional-functionality.md
-          - 管道: 
-            - Pipeline 基礎: kubeflow/components/pipelines/v2/pipelines/pipeline-basics.md
-            - 控制 Flow: kubeflow/components/pipelines/v2/pipelines/control-flow.md
-          - 資料型別:
-            - 簡介: kubeflow/components/pipelines/v2/data-types/index.md
-            - Parameters: kubeflow/components/pipelines/v2/data-types/parameters.md
-            - Artifacts: kubeflow/components/pipelines/v2/data-types/artifacts.md
-            - 補充:
-              - 機器學習的效能衡量指標: kubeflow/components/pipelines/v2/data-types/artifacts/ml_metrics_intro.md
-          - 編譯 Pipeline: kubeflow/components/pipelines/v2/compile-a-pipeline.md
-          - 載入與分享組件: kubeflow/components/pipelines/v2/load-and-share-components.md
-          - 運行管道: kubeflow/components/pipelines/v2/run-a-pipeline.md
-          - 管道運行比對: kubeflow/components/pipelines/v2/run-comparison.md
-          - 命令行界面: kubeflow/components/pipelines/v2/cli.md
-      - Katib:
-        - 簡介: kubeflow/components/katib/overview.md
-        - 開始使用 Katib: kubeflow/components/katib/hyperparameter.md
-        - 運行實驗: kubeflow/components/katib/experiment.md
-        - 回復實驗: kubeflow/components/katib/resume-experiment.md
-        - Trial Templates 概述: kubeflow/components/katib/trial-template.md
-        - 使用 Early Stopping: kubeflow/components/katib/early-stopping.md
-        - Katib Configuration 簡介: kubeflow/components/katib/katib-config.md
-        - Katib 組件的環境變量: kubeflow/components/katib/env-variables.md
-      - Multi-Tenancy:
-        - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
-        - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
-        - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
-        - 身份驗證設計:
-            - AuthService (OIDC代理): kubeflow/components/multi-tenancy/authn/oidc-authservice.md
-            - AuthService 網頁模板: kubeflow/components/multi-tenancy/authn/templates.md
-            - 使用Istio+Dex進行身份驗證: kubeflow/components/multi-tenancy/authn/kubeflow-authentication-with-istio-dex.md
-            - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
-      - 外部整合插件:
-        - KServe:
-          - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
-          - 快速入門:
-            - KServe 入門: kubeflow/external-add-ons/kserve/get_started/get_started.md
-            - InferenceService 初試: kubeflow/external-add-ons/kserve/get_started/first_isvc.md
-            - 啟用 Swagger UI: kubeflow/external-add-ons/kserve/get_started/swagger_ui.md
-          - Model UI: kubeflow/external-add-ons/kserve/webapp.md
-          - 用戶指南:
-            - 概念:
-              - Control Plane:
-                - 簡介: kubeflow/external-add-ons/kserve/user_guide/control_plane/control_plane.md
-              - Data Plane:
-                - 簡介: kubeflow/external-add-ons/kserve/user_guide/data_plane/data_plane.md
-                - Data Plane (V1): kubeflow/external-add-ons/kserve/user_guide/data_plane/v1_protocol.md
-                - Data Plane (V2): kubeflow/external-add-ons/kserve/user_guide/data_plane/v2_protocol.md
-                - 模型推論 Runtimes: kubeflow/external-add-ons/kserve/user_guide/data_plane/servingruntimes.md
-            - 單一模型推論 Runtime:
-              - 模型框架/格式:
-                - 模型推論 Runtime 簡介: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/overview.md
-                - Tensorflow: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/tensorflow.md
-                - PyTorch: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/torchserve.md
-                - Scikit-learn: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/sklearn.md
-            - Transformer:
-              - 撰寫客制 Transformer: kubeflow/external-add-ons/kserve/user_guide/transformer/torchserve_image_transformer.md
-            - 模型監測:
-              - 使用 Alibi 異常值/漂移檢測器: kubeflow/external-add-ons/kserve/user_guide/model_monitoring/alibi_detect.md
-            - Model 存儲:
-              - Azure: kubeflow/external-add-ons/kserve/user_guide/storage/azure.md
-              - S3: kubeflow/external-add-ons/kserve/user_guide/storage/s3.md
-              - Minio: kubeflow/external-add-ons/kserve/user_guide/storage/minio.md
-              - URI: kubeflow/external-add-ons/kserve/user_guide/storage/uri.md
-        - Feature Store:
-          - Feast 簡介: kubeflow/external-add-ons/feature-store/introduction.md
+            - Sloth 是什麼？: sre/tools/sloth/what-is-sloth.md
+          - 安裝: 
+            - Helm 安裝與功能驗證: sre/tools/sloth/setup/helm-install.md
+        - Pyrra:
+          - 概念:
+            - Pyrra 是什麼？: sre/tools/pyrra/what-is-pyrra.md
+          - 安裝: 
+            - Helm 安裝與功能驗證: sre/tools/pyrra/setup/helm-install.md
+          - SLO 範例:
+            - Prometheus: sre/tools/pyrra/setup/pyrra-prometheus-slo.md
+    - Prometheus:
+      - 基礎:
+        - Prometheus 簡介: prometheus/prometheus/overview.md
+        - Prometheus 安裝配置: prometheus/prometheus/install.md
+      - Node Exporter:
+        - Exporter 簡介: prometheus/node-exporter/overview.md
+        - 安裝配置: prometheus/node-exporter/install.md
+        - 常用監控指標: prometheus/node-exporter/metrics.md
+      - PromQL:
+        - 基礎:
+          - PromQL 簡介: prometheus/promql/intro.md
+          - 數據模型: prometheus/promql/data-model.md
+          - 指標類型: prometheus/promql/metric-type.md
+          - 演示服務: prometheus/promql/demo-service.md
+        - 查詢:
+          - 查詢基礎: prometheus/promql/theory.md
+          - 選擇時間序列: prometheus/promql/select-series.md
+          - 變化率: prometheus/promql/rates.md
+          - 聚合: prometheus/promql/aggregate.md
+          - 運算: prometheus/promql/operate.md
+          - 閾值: prometheus/promql/threshold.md
+          - 集合操作: prometheus/promql/set.md
+          - 排序: prometheus/promql/sort.md
+          - 直方圖: prometheus/promql/histograms.md
+          - 數據對比: prometheus/promql/compare.md
+          - 檢測: prometheus/promql/check.md
+        - 補充:
+            - Range query 的 step 參數說明: prometheus/promql/range-query-step.md
+            - 搞懂 Prometheus 的直方圖: prometheus/promql/metric-histogram.md
+            - 簡單理解 Summary 和 Histogram 指標: prometheus/promql/metric-histogram-summary.md
+      - Alertmanager:
+        - Alertmanager 安裝: prometheus/alertmanager/deploy.md
+        - 報警規則: prometheus/alertmanager/rules.md
+        - 報警接收器: prometheus/alertmanager/receiver.md
+        - 報警過濾: prometheus/alertmanager/filter.md
+        - 補充:
+            - Promtheus 到底啥時候報警?: prometheus/alertmanager/prometheus-alert-why.md
+      - Grafana:
+        - Grafana 簡介: prometheus/grafana/overview.md
+        - 視覺化面板:
+          - 面板介詔: prometheus/grafana/panel.md
+          - 圖形面板: prometheus/grafana/graph.md
+          - 圖形定制: prometheus/grafana/graph-custom.md
+          - 表格面板: prometheus/grafana/table.md
+          - 儀錶盤面板: prometheus/grafana/gauge.md
+          - 統計面板: prometheus/grafana/stat.md
+          - 文本面板: prometheus/grafana/text.md      
+      - Prometheus Operator:
+        - Prometheus Operator 簡介: prometheus/operator/install.md
+        - 自定義監控報警: prometheus/operator/custom.md
+        - Dashboard 的 GitOps 方式: prometheus/operator/consistent-dashboard-gitops-way.md
+        - 使用 ConfigMap 管理 Grafana 儀表板: prometheus/operator/dashboard-using-configmap.md
+      - Operation Runbook:
+        - Operation Runbook 簡介: prometheus/runbook/operations-runbook.md
+      - PostgresExporter:
+        - 使用 Prometheus 監控 PostgreSQL: prometheus/postgres-exporter/postgres-exporter-integration.md
+    - OpenTelemetry:
+      - Instrumentation:
+        - 簡介: opentelemetry/instrumentation/index.md
+        - 分佈式追踪概念: opentelemetry/distributed-tracing.md
+        - Java:
+          - 簡介: opentelemetry/instrumentation/java/index.md
+          - Automatic:
+            - 簡介: opentelemetry/instrumentation/java/automatic/index.md
+        - Python:
+          - Tracing API: opentelemetry/instrumentation/python/tracing.md
+      - Collector:
+        - 簡介: opentelemetry/collector/index.md
+      - K8s Operator:
+        - 簡介: opentelemetry/k8s-operator/index.md
       - 範例:
-        - Notebooks:
-          - 構建客制容器鏡像: kubeflow/tutorials/notebooks/build-own-notebook-server.md
-          - JupyterLab:
-            - Notebook 結合 Git/GitHub: kubeflow/tutorials/notebooks/jupyterlab/git-ext/use-git-with-jupyter-nb.md
-            - JupyterLab Git 擴展 HowTo: kubeflow/tutorials/notebooks/jupyterlab/git-ext/how-to-jupyterlab-git.md
-            - JupyterLab Git 擴展 HowTo-2: kubeflow/tutorials/notebooks/jupyterlab/git-ext/jupyterlab-git-extension.md
-
-        - MLOps:
-          - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
-        - Pipeline:
-          - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
-          - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
+        - 如何使用 OTEL agent 捕獲 Spring Boot 指標: opentelemetry/sample/java/springboot-otel-agent.md
+    - Grafana:
+      - Tempo:
+        - 示例:
+          - Hot ROD 應用: grafana/tempo/hotrod.md
+      - Tempo(v2):
+        - 示例:
+          - Hot ROD 應用: grafana/tempo/hotrod2.md
+    - ArgoCD:
+      - 概念:
+        - Argo CD 是什麼？: argocd/concepts/what-is-argocd.md
+      - 入門:
+        - Getting Started: argocd/setup/getting_started.md
+        - 手把手教程:
+          - ArgoCD 教程簡介: argocd/tutorial/index.md
+          - ArgoCD 安裝設定: argocd/tutorial/01-setup.md
+          - ArgoCD 入門: argocd/tutorial/02-getting_started.md
+          - Kustomize: argocd/tutorial/03-kustomize.md
+          - SyncWaves 與 Hooks: argocd/tutorial/04-syncwaves-hooks.md
+          - ApplicationSet 控制器: argocd/tutorial/argo-cd-applicationset-controller.md
+      - 維運:
+        - 指標 Metrics: 
+          - 說明: argocd/operation-manual/metrics/index.md
+          - 可觀測性(metrics)實戰: argocd/operation-manual/metrics/metrics-argocd-integration.md
+      - ArgoCD 插件:
+        - 使用 Argo CD Vault 插件進行 Secret 管理: argocd/argocd-vault-plugin/secret-management-argocd-vault.md
+      - ApplicationSet Controller:
+        - 簡介: argocd/applicationset/intro.md
+        - 用例: argocd/applicationset/use-cases.md
+        - ApplicationSet 控制器與 Argo CD 整合: argocd/applicationset/argo-cd-integration.md
+        - Generator 生成器:
+          - 生成器簡介: argocd/applicationset/generators/index.md
+          - List Generator: argocd/applicationset/generators/generators-list.md
+          - Cluster Generator: argocd/applicationset/generators/generators-cluster.md
+          - Git Generator: argocd/applicationset/generators/generators-git.md
+        - 範本 fields: argocd/applicationset/template.md
+    - Istio:
+      - 概念:
+        - Istio 是什麼？: istio/concepts/what-is-istio.md
+        - 流量管理: istio/concepts/traffic-management.md
+        - 可觀測性: istio/concepts/observability.md
+        - 安全: istio/concepts/security.md
+      - 簡介: istio/index.md
+      - 安裝: 
+        - 使用 Helm 安裝: istio/setup/install/helm/helm-install.md
+        - Istio+OTel+Tempo 大全配: istio/setup/install/helm/helm-install2.md
+        - Istio+OTel+Tempo 大全配 (RKE2): istio/setup/install/helm/rke2-istio.md
+        - Istio+OTel+Tempo 大全配 (CCoE): istio/setup/install/helm/rke2-istio2.md
+        - 更多指南:
+          - 安裝配置文件: istio/setup/additional-setup/config-profiles.md
+      - 示例:
+        - Bookinfo 應用: istio/examples/bookinfo.md
+      - 參考:
+        - 應用程序部署策略: istio/reference/deployment-strategies.md
+        - Istio Ingress 與 K8S Ingress: istio/reference/istio-ingress-vs-k8s-ingress.md
+    - Dex:
+      - 概述:
+        - 入門: dex/overview/getting-started.md
+        - ID 令牌: dex/overview/id-tokens.md
+        - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md
+        - OpenID Connect 概述: dex/overview/openid-connect.md
+        - v2 中的新功能: dex/overview/v2.md
+        - Scopes,Claims與Client功能: dex/overview/custom-scopes-claims-clients.md
+        - 存儲選項: dex/overview/storage.md
+      - Connectors:
+        - 概述: dex/connectors/index.md
+        - OpenID Connect: dex/connectors/oidc.md
+        - OAuth 2.0: dex/connectors/oauth.md
+        - 範例:
+          - OpenID Connect: dex/connectors/tutorials/oidc.md
+    - Minio:
+        - Administration:
+          - Minio Console:
+            - 簡介: minio/administration/minio-console/index.md
+            - 安全和訪問: minio/administration/minio-console/security-and-access.md
+          - 身份和訪問管理:
+            - 訪問管理: minio/administration/identity-access-management/policy-based-access-control.md
+        - 教學範例:
+          - Minio 簡介: minio/tutorials/minio-intro.md
+          - Minio Bucket Policy 教程: minio/tutorials/minio-bucket-policy.md
+          - Minio policy 使用: minio/tutorials/minio-policy-usage.md
+    - Vault:
+      - Docs:
+        - Auth Methods:
+          - Overview: vault/docs/auth/overview.md
+          - Kubernetes: vault/docs/auth/kubernetes.md
+          - Username & Password: vault/docs/auth/userpass.md
+        - Platform:
+          - Kubernetes:
+            - Overview: vault/docs/platform/index.md
+            - Helm:
+              - Overview: vault/docs/platform/helm/index.md
+      - Tutorials:        
+        - Kubernetes:
+          - 通過 Vault Agent 容器將 Secret 注入 Kubernetes Pod: vault/kubernetes/kubernetes-sidecar.md
+          - 通過容器存儲接口 (CSI) 掛載 Vault Secret: vault/kubernetes/kubernetes-secret-store-driver.md
+          - Vault Agent 與 Kubernetes: vault/kubernetes/agent-kubernetes.md
+          - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
+    - Ansible:
+      - 快速入門:
+        - Vagrant 快速入門: ansible/vagrant-intro.md
+        - Ansible 快速入門: ansible/ansible-intro.md
+        - Ansible 使用基於 SSH 密碼登入: ansible/use_sshpass_to_login_for_ansible.md
+        - Ansible 使用指南: ansible/ansible-cheatsheet.md
+      - Ansible Playbook 撰寫:
+        - 如何創建與運行: ansible/tutorial_playbook/creating-and-running-your-first-ansible-playbook.md
+        - 如何定義任務: ansible/tutorial_playbook/how-to-define-tasks-in-ansible-playbooks.md
+        - 如何使用變量: ansible/tutorial_playbook/how-to-use-variables-in-ansible-playbooks.md
+        - 如何訪問系統信息: ansible/tutorial_playbook/how-to-access-system-information-facts-in-ansible-playbooks.md
+        - 如何使用條件: ansible/tutorial_playbook/how-to-use-conditionals-in-ansible-playbooks.md
+        - 如何使用循環: ansible/tutorial_playbook/how-to-use-loops-in-ansible-playbooks.md
+        - 了解權限提升: ansible/tutorial_playbook/understanding-privilege-escalation-in-ansible-playbooks.md
+        - 如何安裝和管理系統包: ansible/tutorial_playbook/how-to-install-and-manage-system-packages-in-ansible-playbooks.md
+        - 如何創建和使用模板: ansible/tutorial_playbook/how-to-create-and-use-templates-in-ansible-playbooks.md
+        - 如何定義和使用處理程序: ansible/tutorial_playbook/how-to-define-and-use-handlers-in-ansible-playbooks.md
+        - 如何使用Nginx部署靜態HTML網站: ansible/tutorial_playbook/how-to-deploy-a-static-html-website-with-ansible-on-ubuntu-20-04-nginx.md
+      - Ansible AWX 教學:
+        - 如何在 Ubuntu 20.04 上安裝 Ansible AWX: ansible/tutorial_awx/how-to-install-ansible-awx.md
+        - Ansible AWX 基本使用和配置: ansible/tutorial_awx/ansible-awx-guide-basic-usage-and-configuration.md
+      - 教學:
+        - 如何在 Ubuntu 20.04 上安裝 Docker: ansible/tutorial/ubuntu-insall-docker.md
+        - 如何使用 Ansible 在 Ubuntu 20.04 上安裝和設置 Docker: ansible/tutorial/ansible-install-docker.md
+        - 如何在 Ubuntu 22.04 上安裝和配置 Ansible: ansible/tutorial/how-to-install-and-configure-ansible-on-ubuntu-22-04.md
+  - MLOps:
+    - Getting started:
+      - 學習環境:
+        - Kubeadm:
+          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/kubeadm/k8s-kubeadm-containerd-gpu.md
+        - Rancher RKE2/K3S:
+          - 支援 Nvidia GPU: mlops/01-getting-started/learning-env/rancher/k8s-rke2-containerd-gpu.md
+          - 分析 Nvidia GPU Operator: mlops/01-getting-started/learning-env/rancher/rke2-gpu-manual-install.md
+      - GPU 共享:
+          - Nvidia GPU 共享的機制: mlops/02-gpu-sharing/nvidia-gpu-sharing-concepts.md
+          - 提高 GPU 利用率: 
+            - Time-slicing: mlops/02-gpu-sharing/improving-gpu-utilization-in-kubernetes.md
+            - MIG: 
+              - MIG 概念: mlops/02-gpu-sharing/mig/mig_concept.md
+              - MIG 切割入門: mlops/02-gpu-sharing/mig/mig-setup.md
+              - Kubernetes 對 MIG 支持: mlops/02-gpu-sharing/mig/mig-k8s.md
+              - GPU 持久化模式: mlops/02-gpu-sharing/mig/mig-persistence-mode.md
+              - GPU 的 MIG-PARTED 工具: mlops/02-gpu-sharing/mig/mig-parted.md
+              - GPU Operator 與 MIG 配置: mlops/02-gpu-sharing/mig/gpu-operator-mig.md
+    - Kubeflow:
+      - 簡介:
+        - 概述: kubeflow/env/index.md
+        - 架構: kubeflow/env/architecture.md
+        - 安裝: kubeflow/env/kubeflow-install.md
+        - 視頻教學: kubeflow/env/kubeflow-youtube.md
+      - 組件:
+        - Central Dashboard:
+          - 簡介: kubeflow/components/central-dash/overview.md
+          - 自定義 menu 項: kubeflow/components/central-dash/customizing-menu.md
+        - Kubeflow Notebooks:
+          - 概述: kubeflow/components/notebooks/overview.md
+          - 快速入門: kubeflow/components/notebooks/quickstart-guide.md
+          - 容器鏡像: kubeflow/components/notebooks/container-images.md
+          - 範例: 
+            - Tesorflow(Mnist): kubeflow/components/notebooks/examples/jupyter-tensorflow-examples.md
+          - 提交 Kubernetes 資源: kubeflow/components/notebooks/submit-kubernetes.md
+          - 除錯: kubeflow/components/notebooks/troubleshooting.md
+        - Kubeflow Pipelines:
+          - v1:
+            - 簡介: kubeflow/components/pipelines/v1/introduction.md
+            - 概述:
+              - Quickstart: kubeflow/components/pipelines/v1/overview/interfaces.md
+              - 管道 interface: kubeflow/components/pipelines/v1/overview/quickstart.md
+              - Multi-user 隔離: kubeflow/components/pipelines/v1/overview/multi-user.md
+              - Pipeline Root: kubeflow/components/pipelines/v1/overview/pipeline-root.md
+            - 概念:
+              - Pipeline: kubeflow/components/pipelines/v1/concepts/pipeline.md
+              - Component: kubeflow/components/pipelines/v1/concepts/component.md
+              - Graph: kubeflow/components/pipelines/v1/concepts/graph.md
+              - Experiment: kubeflow/components/pipelines/v1/concepts/experiment.md
+              - Run 與 Recurring Run: kubeflow/components/pipelines/v1/concepts/run.md
+              - Run Trigger: kubeflow/components/pipelines/v1/concepts/run-trigger.md
+              - Step: kubeflow/components/pipelines/v1/concepts/step.md
+              - Output Artifact: kubeflow/components/pipelines/v1/concepts/output-artifact.md
+              - ML Metadata: kubeflow/components/pipelines/v1/concepts/metadata.md
+              - 管道運行比對: kubeflow/components/pipelines/v1/sdk-v2/run-comparison.md
+            - 範例和教程:
+              - DSL-Control結構: kubeflow/components/pipelines/v1/tutorials/dsl-control-structures.md
+              - Pipelines 輕量級組件: kubeflow/components/pipelines/v1/tutorials/lightweight-components.md
+          - v2:
+            - 簡介: kubeflow/components/pipelines/v2/introduction.md
+            - Hello World 範例管道: kubeflow/components/pipelines/v2/hello-world.md
+            - 從 KFP SDK v1 遷移: kubeflow/components/pipelines/v2/migration.md
+            - 安裝:
+              - Quickstart: kubeflow/components/pipelines/v2/installation/quickstart.md
+            - 組件:
+              - 簡介: kubeflow/components/pipelines/v2/component/index.md
+              - 輕量級 Python 組件: kubeflow/components/pipelines/v2/component/lightweight-python-components.md
+              - 容器化 Python 組件: kubeflow/components/pipelines/v2/component/containerized-python-components.md
+              - 容器組件: kubeflow/components/pipelines/v2/component/container-components.md
+              - Importer 組件: kubeflow/components/pipelines/v2/component/importer-component.md
+              - 附加功能: kubeflow/components/pipelines/v2/component/additional-functionality.md
+            - 管道: 
+              - Pipeline 基礎: kubeflow/components/pipelines/v2/pipelines/pipeline-basics.md
+              - 控制 Flow: kubeflow/components/pipelines/v2/pipelines/control-flow.md
+            - 資料型別:
+              - 簡介: kubeflow/components/pipelines/v2/data-types/index.md
+              - Parameters: kubeflow/components/pipelines/v2/data-types/parameters.md
+              - Artifacts: kubeflow/components/pipelines/v2/data-types/artifacts.md
+              - 補充:
+                - 機器學習的效能衡量指標: kubeflow/components/pipelines/v2/data-types/artifacts/ml_metrics_intro.md
+            - 編譯 Pipeline: kubeflow/components/pipelines/v2/compile-a-pipeline.md
+            - 載入與分享組件: kubeflow/components/pipelines/v2/load-and-share-components.md
+            - 運行管道: kubeflow/components/pipelines/v2/run-a-pipeline.md
+            - 管道運行比對: kubeflow/components/pipelines/v2/run-comparison.md
+            - 命令行界面: kubeflow/components/pipelines/v2/cli.md
+        - Katib:
+          - 簡介: kubeflow/components/katib/overview.md
+          - 開始使用 Katib: kubeflow/components/katib/hyperparameter.md
+          - 運行實驗: kubeflow/components/katib/experiment.md
+          - 回復實驗: kubeflow/components/katib/resume-experiment.md
+          - Trial Templates 概述: kubeflow/components/katib/trial-template.md
+          - 使用 Early Stopping: kubeflow/components/katib/early-stopping.md
+          - Katib Configuration 簡介: kubeflow/components/katib/katib-config.md
+          - Katib 組件的環境變量: kubeflow/components/katib/env-variables.md
+        - Multi-Tenancy:
+          - 多用戶隔離介詔: kubeflow/components/multi-tenancy/overview.md
+          - 多用戶隔離入門: kubeflow/components/multi-tenancy/getting-started.md
+          - Profile(CRD): kubeflow/components/multi-tenancy/profile-controller.md
+          - 身份驗證設計:
+              - AuthService (OIDC代理): kubeflow/components/multi-tenancy/authn/oidc-authservice.md
+              - AuthService 網頁模板: kubeflow/components/multi-tenancy/authn/templates.md
+              - 使用Istio+Dex進行身份驗證: kubeflow/components/multi-tenancy/authn/kubeflow-authentication-with-istio-dex.md
+              - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
+        - 外部整合插件:
+          - KServe:
+            - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
+            - 快速入門:
+              - KServe 入門: kubeflow/external-add-ons/kserve/get_started/get_started.md
+              - InferenceService 初試: kubeflow/external-add-ons/kserve/get_started/first_isvc.md
+              - 啟用 Swagger UI: kubeflow/external-add-ons/kserve/get_started/swagger_ui.md
+            - Model UI: kubeflow/external-add-ons/kserve/webapp.md
+            - 用戶指南:
+              - 概念:
+                - Control Plane:
+                  - 簡介: kubeflow/external-add-ons/kserve/user_guide/control_plane/control_plane.md
+                - Data Plane:
+                  - 簡介: kubeflow/external-add-ons/kserve/user_guide/data_plane/data_plane.md
+                  - Data Plane (V1): kubeflow/external-add-ons/kserve/user_guide/data_plane/v1_protocol.md
+                  - Data Plane (V2): kubeflow/external-add-ons/kserve/user_guide/data_plane/v2_protocol.md
+                  - 模型推論 Runtimes: kubeflow/external-add-ons/kserve/user_guide/data_plane/servingruntimes.md
+              - 單一模型推論 Runtime:
+                - 模型框架/格式:
+                  - 模型推論 Runtime 簡介: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/overview.md
+                  - Tensorflow: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/tensorflow.md
+                  - PyTorch: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/torchserve.md
+                  - Scikit-learn: kubeflow/external-add-ons/kserve/user_guide/serving_runtime/sklearn.md
+              - Transformer:
+                - 撰寫客制 Transformer: kubeflow/external-add-ons/kserve/user_guide/transformer/torchserve_image_transformer.md
+              - 模型監測:
+                - 使用 Alibi 異常值/漂移檢測器: kubeflow/external-add-ons/kserve/user_guide/model_monitoring/alibi_detect.md
+              - Model 存儲:
+                - Azure: kubeflow/external-add-ons/kserve/user_guide/storage/azure.md
+                - S3: kubeflow/external-add-ons/kserve/user_guide/storage/s3.md
+                - Minio: kubeflow/external-add-ons/kserve/user_guide/storage/minio.md
+                - URI: kubeflow/external-add-ons/kserve/user_guide/storage/uri.md
+          - Feature Store:
+            - Feast 簡介: kubeflow/external-add-ons/feature-store/introduction.md
+        - 範例:
+          - Notebooks:
+            - 構建客制容器鏡像: kubeflow/tutorials/notebooks/build-own-notebook-server.md
+            - JupyterLab:
+              - Notebook 結合 Git/GitHub: kubeflow/tutorials/notebooks/jupyterlab/git-ext/use-git-with-jupyter-nb.md
+              - JupyterLab Git 擴展 HowTo: kubeflow/tutorials/notebooks/jupyterlab/git-ext/how-to-jupyterlab-git.md
+              - JupyterLab Git 擴展 HowTo-2: kubeflow/tutorials/notebooks/jupyterlab/git-ext/jupyterlab-git-extension.md
+          - MLOps:
+            - 使用 Kubeflow 識別數字圖像: kubeflow/tutorials/mlops/recognize-digits.md
+          - Pipeline:
+            - 使用 Kubeflow 構建機器學習管道: kubeflow/tutorials/pipelines/building-machine-learning-pipelines.md
+            - 如何從頭開始構建第一個管道: kubeflow/tutorials/pipelines/build-kubeflow-pipeline-from-scratch.md
+    - Seldon:
+      - 簡介: seldon/index.md
+      - 概念:
+        - Seldon 核心組件概述: seldon/concepts/overview.md
+      - 範例:
+        - 學習環境: seldon/env/jupyter-hub.md
+        - 快速入門指南: seldon/examples/quickstart.md
   - Huggingface:    
     - Datasets:
       - 開始使用:
@@ -651,79 +727,5 @@ nav:
               - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
     - Use cases:
       - SQL: langchain/use_cases/sql/index.md
-  - Dex:
-    - 概述:
-      - 入門: dex/overview/getting-started.md
-      - ID 令牌: dex/overview/id-tokens.md
-      - 編寫使用 Dex 的應用程序: dex/overview/using-dex.md
-      - OpenID Connect 概述: dex/overview/openid-connect.md
-      - v2 中的新功能: dex/overview/v2.md
-      - Scopes,Claims與Client功能: dex/overview/custom-scopes-claims-clients.md
-      - 存儲選項: dex/overview/storage.md
-    - Connectors:
-      - 概述: dex/connectors/index.md
-      - OpenID Connect: dex/connectors/oidc.md
-      - OAuth 2.0: dex/connectors/oauth.md
-      - 範例:
-        - OpenID Connect: dex/connectors/tutorials/oidc.md
-  - Minio:
-      - Administration:
-        - Minio Console:
-          - 簡介: minio/administration/minio-console/index.md
-          - 安全和訪問: minio/administration/minio-console/security-and-access.md
-        - 身份和訪問管理:
-          - 訪問管理: minio/administration/identity-access-management/policy-based-access-control.md
-      - 教學範例:
-        - Minio 簡介: minio/tutorials/minio-intro.md
-        - Minio Bucket Policy 教程: minio/tutorials/minio-bucket-policy.md
-        - Minio policy 使用: minio/tutorials/minio-policy-usage.md
-
-  - Seldon:
-    - 簡介: seldon/index.md
-    - 概念:
-      - Seldon 核心組件概述: seldon/concepts/overview.md
-    - 範例:
-      - 學習環境: seldon/env/jupyter-hub.md
-      - 快速入門指南: seldon/examples/quickstart.md
-  - Vault:
-    - Docs:
-      - Auth Methods:
-        - Overview: vault/docs/auth/overview.md
-        - Kubernetes: vault/docs/auth/kubernetes.md
-        - Username & Password: vault/docs/auth/userpass.md
-      - Platform:
-        - Kubernetes:
-          - Overview: vault/docs/platform/index.md
-          - Helm:
-            - Overview: vault/docs/platform/helm/index.md
-    - Tutorials:        
-      - Kubernetes:
-        - 通過 Vault Agent 容器將 Secret 注入 Kubernetes Pod: vault/kubernetes/kubernetes-sidecar.md
-        - 通過容器存儲接口 (CSI) 掛載 Vault Secret: vault/kubernetes/kubernetes-secret-store-driver.md
-        - Vault Agent 與 Kubernetes: vault/kubernetes/agent-kubernetes.md
-        - Kubernetes 與外部 Vault 整合: vault/kubernetes/kubernetes-external-vault.md
-  - Ansible:
-    - 快速入門:
-      - Vagrant 快速入門: ansible/vagrant-intro.md
-      - Ansible 快速入門: ansible/ansible-intro.md
-      - Ansible 使用基於 SSH 密碼登入: ansible/use_sshpass_to_login_for_ansible.md
-      - Ansible 使用指南: ansible/ansible-cheatsheet.md
-    - Ansible Playbook 撰寫:
-      - 如何創建與運行: ansible/tutorial_playbook/creating-and-running-your-first-ansible-playbook.md
-      - 如何定義任務: ansible/tutorial_playbook/how-to-define-tasks-in-ansible-playbooks.md
-      - 如何使用變量: ansible/tutorial_playbook/how-to-use-variables-in-ansible-playbooks.md
-      - 如何訪問系統信息: ansible/tutorial_playbook/how-to-access-system-information-facts-in-ansible-playbooks.md
-      - 如何使用條件: ansible/tutorial_playbook/how-to-use-conditionals-in-ansible-playbooks.md
-      - 如何使用循環: ansible/tutorial_playbook/how-to-use-loops-in-ansible-playbooks.md
-      - 了解權限提升: ansible/tutorial_playbook/understanding-privilege-escalation-in-ansible-playbooks.md
-      - 如何安裝和管理系統包: ansible/tutorial_playbook/how-to-install-and-manage-system-packages-in-ansible-playbooks.md
-      - 如何創建和使用模板: ansible/tutorial_playbook/how-to-create-and-use-templates-in-ansible-playbooks.md
-      - 如何定義和使用處理程序: ansible/tutorial_playbook/how-to-define-and-use-handlers-in-ansible-playbooks.md
-      - 如何使用Nginx部署靜態HTML網站: ansible/tutorial_playbook/how-to-deploy-a-static-html-website-with-ansible-on-ubuntu-20-04-nginx.md
-    - Ansible AWX 教學:
-      - 如何在 Ubuntu 20.04 上安裝 Ansible AWX: ansible/tutorial_awx/how-to-install-ansible-awx.md
-      - Ansible AWX 基本使用和配置: ansible/tutorial_awx/ansible-awx-guide-basic-usage-and-configuration.md
-    - 教學:
-      - 如何在 Ubuntu 20.04 上安裝 Docker: ansible/tutorial/ubuntu-insall-docker.md
-      - 如何使用 Ansible 在 Ubuntu 20.04 上安裝和設置 Docker: ansible/tutorial/ansible-install-docker.md
-      - 如何在 Ubuntu 22.04 上安裝和配置 Ansible: ansible/tutorial/how-to-install-and-configure-ansible-on-ubuntu-22-04.md
+  - Blog:
+    - blog/index.md
