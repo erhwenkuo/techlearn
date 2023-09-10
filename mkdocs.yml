@@ -704,6 +704,9 @@ nav:
         - Adapter:
           - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
     - Tutorials:
+      - Tokenizer:
+        - SentencePiece:
+          - SentencePiece 原理與實踐: huggingface/tutorials/tokenizer/sentencepiece-concept.md
       - Transfomer模型:
         - PyTorch Transformer 詳細指南: huggingface/tutorials/transformer/a-detailed-guide-to-pytorchs-nn-transformer-module.md
       - 模型微調:
@@ -727,5 +730,19 @@ nav:
               - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
     - Use cases:
       - SQL: langchain/use_cases/sql/index.md
+  - Prompt:
+    - 提示工程指南: prompt/index.md
+    - 提示工程簡介:
+      - 簡介: prompt/introduction/index.md
+      - 模型參數設定: prompt/introduction/settings.md
+      - 基本概念: prompt/introduction/basics.md
+      - 提示詞要素: prompt/introduction/elements.md
+      - 設計提示的通用技巧: prompt/introduction/tips.md
+      - 提示範例: prompt/introduction/examples.md
+    - 提示技術:
+      - 簡介: prompt/techniques/index.md
+      - Zero-shot Prompting: prompt/techniques/zeroshot.md
+      - Few-shot Prompting: prompt/techniques/fewshot.md
+
   - Blog:
     - blog/index.md

@@ -19,6 +19,8 @@ categories:
 
 本次整合支持 Nvidia GPU 和基於 RoCm-powered 的 AMD GPU。
 
+<!-- more -->
+
 ## GPTQ 論文總結
 
 通常，量化方法可以分為以下兩類：
