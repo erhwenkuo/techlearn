@@ -8,7 +8,7 @@
 
 **Prompt**:
 
-```console
+```console讓我們嘗試以下算術推理示例：
 The odd numbers in this group add up to an even number: 4, 8, 9, 15, 12, 2, 1.
 A: Adding all the odd numbers (9, 15, 1) gives 25. The answer is False.
 The odd numbers in this group add up to an even number: 17,  10, 19, 4, 8, 12, 24.

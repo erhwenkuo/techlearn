@@ -731,18 +731,30 @@ nav:
     - Use cases:
       - SQL: langchain/use_cases/sql/index.md
   - Prompt:
-    - 提示工程指南: prompt/index.md
-    - 提示工程簡介:
-      - 簡介: prompt/introduction/index.md
-      - 模型參數設定: prompt/introduction/settings.md
-      - 基本概念: prompt/introduction/basics.md
-      - 提示詞要素: prompt/introduction/elements.md
-      - 設計提示的通用技巧: prompt/introduction/tips.md
-      - 提示範例: prompt/introduction/examples.md
-    - 提示技術:
-      - 簡介: prompt/techniques/index.md
-      - Zero-shot Prompting: prompt/techniques/zeroshot.md
-      - Few-shot Prompting: prompt/techniques/fewshot.md
+    - Prompt Engineering:
+      - 提示工程指南: prompt/prompt-engineering/index.md
+      - 提示工程簡介:
+        - 簡介: prompt/prompt-engineering/introduction/index.md
+        - 模型參數設定: prompt/prompt-engineering/introduction/settings.md
+        - 基本概念: prompt/prompt-engineering/introduction/basics.md
+        - 提示詞要素: prompt/prompt-engineering/introduction/elements.md
+        - 設計提示的通用技巧: prompt/prompt-engineering/introduction/tips.md
+        - 提示範例: prompt/prompt-engineering/introduction/examples.md
+      - 提示技術:
+        - 簡介: prompt/prompt-engineering/techniques/index.md
+        - 零樣本提示: prompt/prompt-engineering/techniques/zeroshot.md
+        - 少樣本提示: prompt/prompt-engineering/techniques/fewshot.md
+        - 鍊式思考(CoT): prompt/prompt-engineering/techniques/cot.md
+        - 自我一致性: prompt/prompt-engineering/techniques/consistency.md
+        - 生成知識提示: prompt/prompt-engineering/techniques/knowledge.md
+        - 思維樹(ToT): prompt/prompt-engineering/techniques/tot.md
+        - 檢索增強生成(RAG): prompt/prompt-engineering/techniques/rag.md
+        - 自動推理並使用工具(ART): prompt/prompt-engineering/techniques/art.md
+        - 自動提示工程(APE): prompt/prompt-engineering/techniques/ape.md
+        - 方向性刺激提示: prompt/prompt-engineering/techniques/dsp.md
+        - ReAct 框架: prompt/prompt-engineering/techniques/react.md
+        - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
+
 
   - Blog:
     - blog/index.md
