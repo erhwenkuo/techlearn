@@ -754,7 +754,7 @@ nav:
         - 方向性刺激提示: prompt/prompt-engineering/techniques/dsp.md
         - ReAct 框架: prompt/prompt-engineering/techniques/react.md
         - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
-
+        - Active-Prompt: prompt/prompt-engineering/techniques/activeprompt.md
 
   - Blog:
     - blog/index.md
