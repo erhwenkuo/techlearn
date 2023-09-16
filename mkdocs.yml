@@ -714,6 +714,18 @@ nav:
           - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
           - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
           - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
+  - Cohere:
+    - LEARN:
+      - 關鍵概念:
+        - Embeddings: cohere/learn/embeddings.md
+        - Prompt Engineering: cohere/learn/prompt-engineering.md
+        - Tokens: cohere/learn/tokens.md
+      - 生成:
+        - Likelihood: cohere/generation/likelihood.md
+        - Number of Generations: cohere/generation/number-of-generations.md
+        - Temperature: cohere/generation/temperature.md
+        - Top-k & Top-p: cohere/generation/top-k-top-p.md
+        - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
   - LangChain:
     - Docs:
       - 開始使用:
