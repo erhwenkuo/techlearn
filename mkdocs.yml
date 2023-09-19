@@ -648,6 +648,23 @@ nav:
       - 範例:
         - 學習環境: seldon/env/jupyter-hub.md
         - 快速入門指南: seldon/examples/quickstart.md
+  - LLMs:
+    - Serving:
+      - OpenLLM:
+        - 簡介: llm/serving/openllm/introduction.md
+        - 基本使用: llm/serving/openllm/get_started.md
+        - 模型支持: llm/serving/openllm/models_supported.md
+        - 語嵌入: llm/serving/openllm/embedding.md
+        - 整合 LangChain: llm/serving/openllm/langchain.md
+      - TextGen: 
+        - 簡介: llm/serving/text-generation-webui/introduction.md
+        - 基本使用: llm/serving/text-generation-webui/get_started.md
+        - 擴展插件: llm/serving/text-generation-webui/extensions.md
+        - Chat 人物設定: llm/serving/text-generation-webui/chat-mode.md
+        - 降低 GPU 顯存需求: llm/serving/text-generation-webui/low-vram-guide.md
+        - GTPQ 量化模型: llm/serving/text-generation-webui/gptq-models-4-bit-mode.md
+        - 啟用 ExLlama: llm/serving/text-generation-webui/exllama.md
+        - 使用 llama.cpp: llm/serving/text-generation-webui/llama-cpp.md
   - Huggingface:    
     - Datasets:
       - 開始使用:
@@ -727,7 +744,7 @@ nav:
         - Top-k & Top-p: cohere/generation/top-k-top-p.md
         - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
   - LangChain:
-    - Docs:
+    - 參考文件:
       - 開始使用:
         - 介紹: langchain/docs/get_started/introduction.md
         - 安裝: langchain/docs/get_started/installation.md
@@ -740,8 +757,12 @@ nav:
             - Prompt templates: 
               - 基本說明: langchain/docs/modules/model_io/prompts/prompt_templates/index.md
               - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
-    - Use cases:
+    - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
+    - 模組整合:
+      - Components:
+        - LLMs:
+          - OpenLLM: langchain/integrations/components/llms/openllm.md
   - Prompt:
     - Prompt Engineering:
       - 提示工程指南: prompt/prompt-engineering/index.md
