@@ -757,6 +757,27 @@ nav:
             - Prompt templates: 
               - 基本說明: langchain/docs/modules/model_io/prompts/prompt_templates/index.md
               - 連接到 Feature Store: langchain/docs/modules/model_io/prompts/prompt_templates/connecting_to_a_feature_store.md
+        - Retrieval:
+          - 基本說明: langchain/docs/modules/retrieval/index.md
+          - 文件載入器:
+            - 基本說明: langchain/docs/modules/retrieval/document_loaders/index.md
+            - CSV: langchain/docs/modules/retrieval/document_loaders/csv.md
+            - File Directory: langchain/docs/modules/retrieval/document_loaders/file_directory.md
+            - HTML: langchain/docs/modules/retrieval/document_loaders/html.md
+            - JSON: langchain/docs/modules/retrieval/document_loaders/json.md
+            - Markdown: langchain/docs/modules/retrieval/document_loaders/markdown.md
+            - PDF: langchain/docs/modules/retrieval/document_loaders/pdf.md
+          - 文件轉換器:
+            - 基本說明: langchain/docs/modules/retrieval/document_transformers/index.md
+            - Text splitters:
+              - Split by character: langchain/docs/modules/retrieval/document_transformers/text_splitters/character_text_splitter.md
+              - Split code: langchain/docs/modules/retrieval/document_transformers/text_splitters/code_splitter.md
+              - MarkdownHeaderTextSplitter: langchain/docs/modules/retrieval/document_transformers/text_splitters/markdown_header_metadata.md
+              - Recursively split by character: langchain/docs/modules/retrieval/document_transformers/text_splitters/recursive_text_splitter.md
+              - Split by tokens: langchain/docs/modules/retrieval/document_transformers/text_splitters/split_by_token.md
+            - Post retrieval:
+              - Lost in the middle: langchain/docs/modules/retrieval/document_transformers/post_retrieval/long_context_reorder.md
+          - 索引: langchain/docs/modules/retrieval/indexing.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
     - 模組整合:
