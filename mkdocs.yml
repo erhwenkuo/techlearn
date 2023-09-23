@@ -777,7 +777,23 @@ nav:
               - Split by tokens: langchain/docs/modules/retrieval/document_transformers/text_splitters/split_by_token.md
             - Post retrieval:
               - Lost in the middle: langchain/docs/modules/retrieval/document_transformers/post_retrieval/long_context_reorder.md
-          - 索引: langchain/docs/modules/retrieval/indexing.md
+          - 文本 embedding 模型:
+            - 基本說明: langchain/docs/modules/retrieval/text_embedding/index.md
+            - 快取: langchain/docs/modules/retrieval/text_embedding/caching_embeddings.md
+          - Vector 存諸:
+            - 基本說明: langchain/docs/modules/retrieval/vectorstores/index.md
+          - Retrievers:
+            - 基本說明: langchain/docs/modules/retrieval/retrievers/index.md
+            - MultiQueryRetriever: langchain/docs/modules/retrieval/retrievers/multi_query_retriever.md
+            - Contextual compression: langchain/docs/modules/retrieval/retrievers/contextual_compression.md
+            - Ensemble Retriever: langchain/docs/modules/retrieval/retrievers/ensemble.md
+            - MultiVector Retriever: langchain/docs/modules/retrieval/retrievers/multi_vector.md
+            - Parent Document Retriever: langchain/docs/modules/retrieval/retrievers/parent_document_retriever.md
+            - Self-querying: langchain/docs/modules/retrieval/retrievers/self_query.md
+            - Time-weighted vector store retriever: langchain/docs/modules/retrieval/retrievers/time_weighted_vectorstore.md
+            - Vector store-backed retriever: langchain/docs/modules/retrieval/retrievers/vectorstore.md
+            - WebResearchRetriever: langchain/docs/modules/retrieval/retrievers/web_research.md
+          - 索引(增刪修): langchain/docs/modules/retrieval/indexing.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
     - 模組整合:
