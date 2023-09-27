@@ -826,6 +826,8 @@ nav:
         - ReAct 框架: prompt/prompt-engineering/techniques/react.md
         - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
         - Active-Prompt: prompt/prompt-engineering/techniques/activeprompt.md
-
+  - Doris:
+    - 快速開始:
+      - 快速開始: doris/get-starting/quick-start.md
   - Blog:
     - blog/index.md
