@@ -796,6 +796,7 @@ nav:
           - 索引(增刪修): langchain/docs/modules/retrieval/indexing.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
+      - Extraction: langchain/use_cases/extraction/index.md
     - 模組整合:
       - Components:
         - LLMs:
