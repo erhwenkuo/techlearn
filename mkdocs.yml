@@ -827,7 +827,14 @@ nav:
         - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
         - Active-Prompt: prompt/prompt-engineering/techniques/activeprompt.md
   - Doris:
-    - 快速開始:
-      - 快速開始: doris/get-starting/quick-start.md
+    - 應用開發:
+      - 快速開始:
+        - 快速開始: doris/get-starting/quick-start.md
+        - Doris 介绍: doris/get-starting/what-is-apache-doris.md
+      - 安裝部署:
+        - 標準部署: doris/install/standard-deployment.md
+      - 數據表設計:
+        - 數據模型: doris/data-table/data-model.md
+        - 數據分割: doris/data-table/data-partition.md
   - Blog:
     - blog/index.md
