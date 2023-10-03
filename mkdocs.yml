@@ -836,5 +836,9 @@ nav:
       - 數據表設計:
         - 數據模型: doris/data-table/data-model.md
         - 數據分割: doris/data-table/data-partition.md
+      - 性能測試:
+        - Star Schema Benchmark: doris/benchmark/ssb.md
+        - TPC-H Benchmark: doris/benchmark/tpch.md
+        - TPC-DS Benchmark: doris/benchmark/tpcds.md
   - Blog:
     - blog/index.md

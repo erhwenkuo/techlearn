@@ -37,9 +37,69 @@ vi /etc/security/limits.conf
 
 Doris 的元資料要求時間精度要小於 5000ms，所以所有群集所有機器要進行時脈同步，避免因為時脈問題引發的元資料不一致而導致服務出現異常。
 
-##### 關閉交換分割區（swap）
+##### 關閉交換分割區（Swap）
 
-Linux 交換分割區會為 Doris 帶來嚴重的效能問題，需要在安裝前停用交換分割區
+Linux 交換分割區會為 Doris 帶來嚴重的效能問題，需要在安裝前停用交換分割區。
+
+**檢查是否啟用了 Swap**
+
+```shell
+sudo swapon --show
+```
+
+如果啟用了交換，您應該會看到交換文件的路徑及其大小。例如:
+
+```shell
+NAME      TYPE SIZE USED PRIO
+/swapfile file   2G   2G   -2
+```
+
+您也可以透過執行 `free` 命令進行檢查:
+
+```shell
+free -h
+```
+
+你有可能看到如下的結果:
+
+```shell
+              total        used        free      shared  buff/cache   available
+Mem:           31Gi       5.7Gi        23Gi       119Mi       2.3Gi        24Gi
+Swap:         2.0Gi       2.0Gi       2.0Mi
+```
+
+**關閉 Swap**
+
+執行以下命令來禁用交換：
+
+```shell
+sudo swapoff -a
+```
+
+現在刪除交換 swap 檔案：
+
+```shell
+sudo rm /swapfile
+```
+
+接下來我們需要做的是修改 `fstab` 文件，以便系統重新啟動後不會重新建立交換文件。
+
+從 `/etc/fstab` 中刪除以下行:
+
+```shell
+/swapfile       none    swap    sw      0       0
+```
+
+**檢查 Swap 是否已停用**
+
+執行以下命令來檢查交換是否已停用。
+
+```shell
+sudo swapon --show
+```
+
+如果禁用，則不應有輸出。
+
 
 ##### Linux檔案系統
 
