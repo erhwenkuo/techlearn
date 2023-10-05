@@ -727,6 +727,8 @@ nav:
       - Transfomer模型:
         - PyTorch Transformer 詳細指南: huggingface/tutorials/transformer/a-detailed-guide-to-pytorchs-nn-transformer-module.md
       - 模型微調:
+        - Llama2-7B:
+          - 使用單一 GPU 微調 LLaMA2: huggingface/tutorials/llama2/fine-tuning-llama-2-models-using-a-single-gpu.md
         - Falcon-7B:
           - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
           - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
