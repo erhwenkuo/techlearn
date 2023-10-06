@@ -25,8 +25,8 @@ theme:
     # - toc.integrate
   palette:
     - scheme: default
-      primary: red
-      accent: red
+      primary: blue
+      accent: blue
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
@@ -722,6 +722,8 @@ nav:
           - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
     - Tutorials:
       - Tokenizer:
+        - 概念:
+            - LLM 微調步驟-Tokenizing: huggingface/tutorials/tokenizer/fine-tuning-step-tokenizing.md
         - SentencePiece:
           - SentencePiece 原理與實踐: huggingface/tutorials/tokenizer/sentencepiece-concept.md
       - Transfomer模型:
