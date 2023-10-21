@@ -1,4 +1,4 @@
-# 使用 Helm 來安裝配置 Sloth
+# 使用 Helm 來安裝配置 Pyrra
 
 ![](./assets/pyrra-icon.png)
 
@@ -19,7 +19,7 @@
 
 安裝 Helm3 的二進製文件。
 
-```bash
+```bash title="執行下列命令  >_"
 sudo apt install git -y
 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
@@ -42,7 +42,7 @@ sudo ./get_helm.sh
 |Subnet Mask|255.255.255.0|
 |Gateay|172.20.0.1|
 
-```bash
+```bash   title="執行下列命令  >_"
 docker network create \
   --driver=bridge \
   --subnet=172.20.0.0/24 \
@@ -52,7 +52,7 @@ docker network create \
 
 檢查 Docker 虛擬網絡 `lab-network` 的設定。
 
-```bash
+```bash title="執行下列命令  >_"
 docker network inspect lab-network
 ```
 
@@ -119,7 +119,7 @@ k3d cluster create  --api-port 6443 \
 
 使用 Helm 的手法來進行 Ｍetallb 安裝:
 
-```bash
+```bash title="執行下列命令  >_"
 #　setup helm repo
 helm repo add metallb https://metallb.github.io/metallb
 
@@ -134,11 +134,11 @@ helm upgrade --install --create-namespace --namespace metallb-system \
 
 我們將使用 MetalLB 的 Layer 2 模式是最簡單的配置：在大多數的情況下，你不需要任何特定於協議的配置，只需要 IP 地址範圍。
 
-Layer 2 模式模式不需要將 IP 綁定到工作程序節點的網絡接口。它通過直接響應本地網絡上的 ARP 請求來工作，將機器的 MAC 地址提供給客戶端。
+Layer 2 模式模式不需要將 IP 綁定到應用程式節點的網絡接口。它通過直接響應本地網絡上的 ARP 請求來工作，將機器的 MAC 地址提供給客戶端。
 
 確認 metallb 相關的 pods 己經正確啟動:
 
-```bash
+```bash  title="執行下列命令  >_"
 kubectl get pods -n metallb-system
 ```
 
@@ -152,7 +152,7 @@ metallb-speaker-dwbnv                 1/1     Running   0              3m59s
 
 讓我們使用 CRD 來設定 Metallb:
 
-```bash hl_lines="9"
+```bash  title="執行下列命令  >_" hl_lines="9"
 cat <<EOF | kubectl apply -n metallb-system -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -190,7 +190,7 @@ l2advertisement.metallb.io/l2advertise created
 
 使用以下命令添加 Nginx Ingress Controller 的 chart 存儲庫：
 
-```bash
+```bash title="執行下列命令  >_"
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 helm repo update
@@ -212,7 +212,7 @@ controller:
 
 將 Nginx Ingress Controller 安裝到 kube-system 命名空間中：
 
-```bash
+```bash title="執行下列命令  >_"
 helm upgrade --install \
      --create-namespace --namespace kube-system \
      ingress-nginx ingress-nginx/ingress-nginx \
@@ -221,7 +221,7 @@ helm upgrade --install \
 
 檢查:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get svc -n kube-system
 ```
 
@@ -239,7 +239,7 @@ ingress-nginx-controller             LoadBalancer   10.43.160.250   172.20.0.13 
 
 創建一個 Nginx 的 Deployment 與 Service:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl create deployment nginx --image=nginx
 
 kubectl create service clusterip nginx --tcp=80:80
@@ -247,7 +247,7 @@ kubectl create service clusterip nginx --tcp=80:80
 
 創建 Ingress 來曝露這個測試的 Nginx 網站:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl apply -f -<<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -270,7 +270,7 @@ EOF
 
 檢查看這個 ingress 是否有取得 IP ADDRESS:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get ing/ingress-nginx-svc
 ```
 
@@ -303,7 +303,7 @@ ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 
 添加 Prometheus-Community helm 存儲庫並更新本地緩存：
 
-```bash
+```bash title="執行下列命令  >_"
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 helm repo update 
@@ -367,7 +367,7 @@ prometheus:
 
 使用 Helm 在命名空間監控中部署 `kube-stack-prometheus` chart:
 
-```bash
+```bash title="執行下列命令  >_"
 helm upgrade --install \
   --create-namespace --namespace monitoring \
   kube-stack-prometheus prometheus-community/kube-prometheus-stack \
@@ -376,7 +376,7 @@ helm upgrade --install \
 
 檢查看這個所創建的 ingress 是否有取得 IP ADDRESS:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get ing -n monitoring
 ```
 
@@ -409,7 +409,7 @@ kube-stack-prometheus-kube-prometheus   nginx   prometheus.example.it   172.20.0
 
 使用以下命令添加 Pyrra 的 chart 存儲庫：
 
-```bash
+```bash title="執行下列命令  >_"
 helm repo add rlex https://rlex.github.io/helm-charts
 
 helm repo update
@@ -456,12 +456,14 @@ helm repo update
 
 ```yaml title="pyrra-values.yaml" hl_lines="2-3"
 ingress:
-    enabled: true
-    hosts:
-      - host: "pyrra.example.it"
-        paths:
-        - path: "/"
-          pathType: "ImplementationSpecific"
+  enabled: true
+  hosts:
+    - host: "pyrra.example.it"
+      paths:
+      - path: "/"
+        pathType: "ImplementationSpecific"
+image:
+  tag: "release-0.7"
 
 prometheusExternalUrl: "http://prometheus.example.it"
 
@@ -470,17 +472,17 @@ prometheusUrl: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
 
 將 Pyrra 安裝到 sre-system 命名空間中：
 
-```bash
+```bash title="執行下列命令  >_"
 helm upgrade --install \
      --create-namespace --namespace sre-system \
      pyrra rlex/pyrra \
      --values pyrra-values.yaml \
-     --version 0.6.0
+     --version 0.10.0
 ```
 
 檢查:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get all -n sre-system
 ```
 
@@ -531,13 +533,13 @@ replicaset.apps/pyrra-dcb5566c   1         1         1       6m17s
 範例程式並公開了一個 api 可使用 `curl` 工具來設定錯誤率, 這個設定產出 Http Error Code (500) 的指標數據。
 
 !!! info
-    簡例程序可在 `https://github.com/grafanafans/play-with-sloth` 查看詳細內容。
+    範例程程的源碼可在 [`https://github.com/grafanafans/play-with-sloth`](https://github.com/grafanafans/play-with-sloth) 查看詳細內容。
 
-    開發者的Github: https://github.com/songjiayang
+    開發者的 Github: [https://github.com/songjiayang](https://github.com/songjiayang)
 
 讓我們先佈署範例應用進到 Kubernetes 的 `default` 命名空間中:
 
-```bash
+```bash  title="執行下列命令  >_"
 kubectl apply -f -<<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -581,7 +583,7 @@ EOF
 
 創建 Ingress 來曝露這個測試的 Sample App:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl apply -f -<<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -604,7 +606,7 @@ EOF
 
 檢查 ingress:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl get ing -n default
 ```
 
@@ -652,7 +654,7 @@ http_request_duration_seconds_count{code="200"} 937
 
 接下來使用 `ServiceMonitor` 物件來宣告讓 Prometheus 來刮取指標:
 
-```bash
+```bash title="執行下列命令  >_"
 kubectl apply -f -<<EOF
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -679,7 +681,7 @@ EOF
 
 設定範例應用錯誤率 0.005 (0.5%), 也就是每一千次的呼叫約莫有 5 次的錯誤:
 
-```bash
+```bash title="執行下列命令  >_"
 curl http://sre-sample-app.example.it/errrate?value=0.005
 ```
 
@@ -727,7 +729,7 @@ Pyrra 提供了在 Kubernetes 宣告 SLO 的 CRD, 範例見: [Pyrra Demo Site](h
 
 接下來我們使用 Pyrra 的 CRD 來定義監控 `sre-sample-app` 的 **Availability** 的 `SLO: 99.9%`:
 
-```bash hl_lines="15 17"
+```bash title="執行下列命令  >_" hl_lines="15 17"
 kubectl apply -f -<<EOF
 apiVersion: pyrra.dev/v1alpha1
 kind: ServiceLevelObjective
@@ -735,9 +737,9 @@ metadata:
   name: sre-sample-app-availability
   namespace: default
   labels:
-    pyrra.dev/owner: "dxlab"
+    pyrra.dev/owner: dxlab
 spec:
-  target: '99.9'
+  target: "99.9"
   window: 30d
   indicator:
     ratio:
@@ -745,6 +747,34 @@ spec:
         metric: http_request_duration_seconds_count{job="sre-sample-app",code=~"(5..|429)"}
       total:
         metric: http_request_duration_seconds_count{job="sre-sample-app"}
+EOF
+```
+
+```bash title="執行下列命令  >_" hl_lines="15 17"
+kubectl apply -f -<<EOF
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  creationTimestamp: null
+  labels:
+    prometheus: metalmatze
+    pyrra.dev/team: prometheus
+    role: alert-rules
+  name: prometheus-api-errors
+spec:
+  alerting: {}
+  description: Prometheus' HTTP API endpoints should answer queries 99% successfully
+    over 2w.
+  indicator:
+    ratio:
+      errors:
+        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*",code=~"5.."}
+      grouping:
+      - handler
+      total:
+        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*"}
+  target: "99"
+  window: 2w
 EOF
 ```
 
