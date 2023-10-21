@@ -1,6 +1,10 @@
 # 使用 Helm 來安裝配置 Pyrra
 
-![](./assets/pyrra-icon.png)
+<figure markdown>
+  ![範例架構](./assets/01-full-architecture.png){ width="800" }
+  <figcaption>範例架構</figcaption>
+</figure>
+
 
 請跟隨本教程一起，使用 Helm 安裝、配置、並深入評估 Pyrra 這個 SLO as code 的工具。本教程會安裝下列的元件:
 
@@ -12,6 +16,7 @@
 - Prometheus
 - Grafana
 - Pyrra
+
 
 ## 步驟 01 - 環境安裝
 
@@ -110,6 +115,12 @@ k3d cluster create  --api-port 6443 \
 - `--k3s-arg "--disable=servicelb@server:0"` 不安裝 K3D 預設的 traefik (IngressController), 我們將使用　nginx ingress controller
 - `--k3s-arg "--disable=traefik@server:0"` 不安裝 K3D 預設的 servicelb (klipper-lb), 我們將使用 metallb
 - `--network lab-network` 使用預先創建的 docker 虛擬網段
+
+<figure markdown>
+  ![Kubernetes 安裝](./assets/02-k8s-ready.png){ width="550" }
+  <figcaption>Kubernetes 安裝</figcaption>
+</figure>
+
 
 ### 安裝/設定 MetalLB
 
@@ -294,6 +305,11 @@ ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 ![](./assets/ingress-test-nginx.png)
 
 
+<figure markdown>
+  ![Ingress 與 LoadBalancer 元件](./assets/03-ingress-loadbalancer.png){ width="550" }
+  <figcaption>Ingress 與 LoadBalancer 元件</figcaption>
+</figure>
+
 ### kube-prometheus-stack
 
 本教程使用 `kube-prometheus-stack` 來構建可觀測性的相關元件, 詳細說明請參additionalDataSources
@@ -402,6 +418,12 @@ kube-stack-prometheus-kube-prometheus   nginx   prometheus.example.it   172.20.0
 ![](./assets/prometheus-empty-alert.png)
 
 此時 Prometheus 裡頭應該看不到任何的 alert rules。
+
+<figure markdown>
+  ![Prometheus 相關元件](./assets/04-prometheus-stack.png){ width="550" }
+  <figcaption>Prometheus 相關元件</figcaption>
+</figure>
+
 
 ### 安裝 Pyrra
 
@@ -513,6 +535,12 @@ replicaset.apps/pyrra-dcb5566c   1         1         1       6m17s
 使用 Browser 檢查 Pyrra Web UI (`http://pyrra.example.it`): 
 
 ![](./assets/pyrra-web-ui.png)
+
+
+<figure markdown>
+  ![Pyrra 元件](./assets/05-pyrra-installed.png){ width="550" }
+  <figcaption>Pyrra 元件</figcaption>
+</figure>
 
 ## 步驟 02 - Pyrra 功能驗證
 
