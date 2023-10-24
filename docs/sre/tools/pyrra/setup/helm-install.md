@@ -22,6 +22,33 @@
 
 ### 先決條件
 
+**作業系統**
+
+本教程使用 Ubuntu 20.04 (Workstation) 安裝在下列的硬體上:
+
+- Intel Core i7 (8 Cores)
+- Memory 32 Gb
+
+**安裝 Docker**
+
+根據 [Docker 官網: Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) 的指引來安裝 Docker 相關的程式與套件。
+
+安裝完了之後要再進行 [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/) 來確保特定使用者帳號加入到 `docker` 的群組并確保相關的權限設定。
+
+```bash title="執行下列命令  >_"
+sudo usermod -aG docker $USER
+```
+
+**安裝 K3D**
+
+使用下列的命令來下載并安裝 [K3D](https://k3d.io/):
+
+```bash title="執行下列命令  >_"
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+```
+
+**安裝 Helm3 CLI**
+
 安裝 Helm3 的二進製文件。
 
 ```bash title="執行下列命令  >_"
@@ -33,7 +60,6 @@ chmod 700 get_helm.sh
 
 sudo ./get_helm.sh
 ```
-
 
 ### 創建本機 Docker Network
 
@@ -558,10 +584,10 @@ replicaset.apps/pyrra-dcb5566c   1         1         1       6m17s
 整體結構如下:
 
 1. 佈署範例應用程式
-2. 設定錯誤率
-3. 設定 ServiceLevelObjective (CRD)
-4. 檢視 Pyrra 產生的 record rules
-5. 檢視 Grafana Dashboard
+2. 設定 ServiceLevelObjective (CRD)
+3. 檢視 Pyrra 產生的 record rules
+4. 檢視 Grafana Dashboard
+5. 設定錯誤率 (模擬錯誤發生)
 
 ![](./assets/pyrra-practice.png)
 
@@ -714,57 +740,11 @@ EOF
 
 ![](./assets/prometheus-service-monitor2.png)
 
-### 2. 設定錯誤率
-
-範例程式並公開了一個 api 可使用 `curl` 工具來設定錯誤率, 這個設定會產出 Http Error Code (500) 的指標數據。
-
-設定範例應用錯誤率 0.005 (0.5%), 也就是每一千次的呼叫約莫有 5 次的錯誤:
-
-```bash title="執行下列命令  >_"
-curl http://sre-sample-app.example.it/errrate?value=0.005
-```
-
-首先使用 Browser 檢查 `http://sre-sample-app.example.it/metrics` 所的曝露的指標:
-
-![](./assets/sre-sample-app-metrics2.png)
-
-從擷圖中可看出來在設定完錯誤率之後指標的標籤標示也開始出現 `{code="500"}` 的數據:
-
-```hl_lines="16-29"
-# TYPE http_request_duration_seconds histogram
-http_request_duration_seconds_bucket{code="200",le="0.005"} 277
-http_request_duration_seconds_bucket{code="200",le="0.01"} 579
-http_request_duration_seconds_bucket{code="200",le="0.025"} 1455
-http_request_duration_seconds_bucket{code="200",le="0.05"} 2866
-http_request_duration_seconds_bucket{code="200",le="0.1"} 5917
-http_request_duration_seconds_bucket{code="200",le="0.25"} 14789
-http_request_duration_seconds_bucket{code="200",le="0.5"} 29303
-http_request_duration_seconds_bucket{code="200",le="1"} 58529
-http_request_duration_seconds_bucket{code="200",le="2.5"} 58529
-http_request_duration_seconds_bucket{code="200",le="5"} 58529
-http_request_duration_seconds_bucket{code="200",le="10"} 58529
-http_request_duration_seconds_bucket{code="200",le="+Inf"} 58529
-http_request_duration_seconds_sum{code="200"} 29254.174739043672
-http_request_duration_seconds_count{code="200"} 58529
-http_request_duration_seconds_bucket{code="500",le="0.005"} 23
-http_request_duration_seconds_bucket{code="500",le="0.01"} 23
-http_request_duration_seconds_bucket{code="500",le="0.025"} 23
-http_request_duration_seconds_bucket{code="500",le="0.05"} 23
-http_request_duration_seconds_bucket{code="500",le="0.1"} 23
-http_request_duration_seconds_bucket{code="500",le="0.25"} 23
-http_request_duration_seconds_bucket{code="500",le="0.5"} 23
-http_request_duration_seconds_bucket{code="500",le="1"} 23
-http_request_duration_seconds_bucket{code="500",le="2.5"} 23
-http_request_duration_seconds_bucket{code="500",le="5"} 23
-http_request_duration_seconds_bucket{code="500",le="10"} 23
-http_request_duration_seconds_bucket{code="500",le="+Inf"} 23
-http_request_duration_seconds_sum{code="500"} 0.054308108627554606
-http_request_duration_seconds_count{code="500"} 23
-```
-
-### 3. 設定 SLO
+### 2. 設定 SLO
 
 Pyrra 提供了在 Kubernetes 宣告 SLO 的 CRD, 範例見: [Pyrra Demo Site](https://demo.pyrra.dev/)。
+
+![](./assets/sli-calculation.jpeg)
 
 接下來我們使用 Pyrra 的 CRD 來定義監控 `sre-sample-app` 的 **Availability** 的 `SLO: 99.9%`:
 
@@ -789,32 +769,7 @@ spec:
 EOF
 ```
 
-```bash title="執行下列命令  >_" hl_lines="15 17"
-kubectl apply -f -<<EOF
-apiVersion: pyrra.dev/v1alpha1
-kind: ServiceLevelObjective
-metadata:
-  name: prometheus-api-errors
-  labels:
-    prometheus: metalmatze
-    pyrra.dev/team: prometheus
-    role: alert-rules
-spec:
-  target: "99"
-  description: Prometheus' HTTP API endpoints should answer queries 99% successfully over 2w.
-  window: 2w
-  indicator:
-    ratio:
-      errors:
-        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*",code=~"5.."}
-      grouping:
-      - handler
-      total:
-        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*"}      
-EOF
-```
-
-### 4. 檢視 Pyrra 產生的 record rules
+### 3. 檢視 Pyrra 產生的 record rules
 
 Pyrra 會根據 SLO 設定的宣告來產生相關的 Prometheus record rules 物件。
 
@@ -956,16 +911,13 @@ severity: critical
 slo: sre-sample-app-availability
 ```
 
-### 5. 檢視 Pyrra UI Dashboard
+### 4. 檢視 Pyrra UI Dashboard
 
-當設置錯誤率為 0.5% (SLO 0.1% 的 5 倍)，通過 Pyrra API 觀測到的 SLO 信息如下。
-
-![](./assets/pyrra-web-ui2.png)
+![](./assets/pyrra-web-ui-normal.png)
 
 點擊 `sre-sample-app-availability` 會進入到這個 SLO 更詳細的資訊。
 
-![](./assets/pyrra-web-ui3.png)
-
+![](./assets/pyrra-web-ui-normal-details.png)
 
 每個 SLO 將顯示：
 
@@ -978,9 +930,71 @@ slo: sre-sample-app-availability
 - 錯誤預算月份燃盡圖
 - 燃燒率幅度
 
-使用文字編輯器創建一個設定檔 `ingress-nginx-values2.yaml` 來設定 `ingress-nginx` 要從 metallb 取得特定的預設 IP (`172.20.0.13`):
+### 5. 設定錯誤率
 
-```yaml title="ingress-nginx-values2.yaml"
+範例程式並公開了一個 api 可使用 `curl` 工具來設定錯誤率, 這個設定會產出 `Http Error Code (500)` 的指標數據。
+
+設定範例應用錯誤率 `0.005 (0.5%)`, 也就是每一千次的呼叫約莫有 5 次的錯誤:
+
+```bash title="執行下列命令  >_"
+curl http://sre-sample-app.example.it/errrate?value=0.005
+```
+
+首先使用 Browser 檢查 `http://sre-sample-app.example.it/metrics` 所的曝露的指標:
+
+![](./assets/sre-sample-app-metrics2.png)
+
+從截圖中可看出來在設定完錯誤率之後指標的標籤標示也開始出現 `{code="500"}` 的數據:
+
+```hl_lines="16-29"
+# TYPE http_request_duration_seconds histogram
+http_request_duration_seconds_bucket{code="200",le="0.005"} 277
+http_request_duration_seconds_bucket{code="200",le="0.01"} 579
+http_request_duration_seconds_bucket{code="200",le="0.025"} 1455
+http_request_duration_seconds_bucket{code="200",le="0.05"} 2866
+http_request_duration_seconds_bucket{code="200",le="0.1"} 5917
+http_request_duration_seconds_bucket{code="200",le="0.25"} 14789
+http_request_duration_seconds_bucket{code="200",le="0.5"} 29303
+http_request_duration_seconds_bucket{code="200",le="1"} 58529
+http_request_duration_seconds_bucket{code="200",le="2.5"} 58529
+http_request_duration_seconds_bucket{code="200",le="5"} 58529
+http_request_duration_seconds_bucket{code="200",le="10"} 58529
+http_request_duration_seconds_bucket{code="200",le="+Inf"} 58529
+http_request_duration_seconds_sum{code="200"} 29254.174739043672
+http_request_duration_seconds_count{code="200"} 58529
+http_request_duration_seconds_bucket{code="500",le="0.005"} 23
+http_request_duration_seconds_bucket{code="500",le="0.01"} 23
+http_request_duration_seconds_bucket{code="500",le="0.025"} 23
+http_request_duration_seconds_bucket{code="500",le="0.05"} 23
+http_request_duration_seconds_bucket{code="500",le="0.1"} 23
+http_request_duration_seconds_bucket{code="500",le="0.25"} 23
+http_request_duration_seconds_bucket{code="500",le="0.5"} 23
+http_request_duration_seconds_bucket{code="500",le="1"} 23
+http_request_duration_seconds_bucket{code="500",le="2.5"} 23
+http_request_duration_seconds_bucket{code="500",le="5"} 23
+http_request_duration_seconds_bucket{code="500",le="10"} 23
+http_request_duration_seconds_bucket{code="500",le="+Inf"} 23
+http_request_duration_seconds_sum{code="500"} 0.054308108627554606
+http_request_duration_seconds_count{code="500"} 23
+```
+
+當設置錯誤率為 0.5% (SLO 0.1% 的 5 倍)，通過 Pyrra API 觀測到的 SLO 信息如下。
+
+![](./assets/pyrra-web-ui2.png)
+
+點擊 `sre-sample-app-availability` 會進入到這個 SLO 更詳細的資訊。
+
+![](./assets/pyrra-web-ui3.png)
+
+## 步驟 03 - Pyrra 功能驗證(II)
+
+前一部份用來展示開發團隊對自己佈署的應用程式的 SLO 監控, 接下來讓我們來監控平台的元件。
+
+### 1. 曝露元件指標
+
+使用文字編輯器創建一個設定檔 `ingress-nginx-values2.yaml` 來設定 `ingress-nginx` 能夠曝露指標并創建 `ServiceMonitor` 物件:
+
+```yaml title="ingress-nginx-values.yaml" hl_lines="10-16"
 controller:
   # add annotations to get ip from metallb
   service:
@@ -999,7 +1013,7 @@ controller:
       enabled: true
 ```
 
-將 Nginx Ingress Controller 安裝到 kube-system 命名空間中：
+更新 Nginx Ingress Controller 的安裝配置：
 
 ```bash title="執行下列命令  >_"
 helm upgrade --install \
@@ -1008,7 +1022,11 @@ helm upgrade --install \
      --values ingress-nginx-values2.yaml
 ```
 
-```yaml
+### 2. 設定 SLO
+
+接下來我們使用 Pyrra 的 CRD 來定義監控 `nginx ingress controller` 的 **Availability** 與 **Latency** 的 SLO:
+
+```bash title="執行下列命令  >_" hl_lines="14 30"
 kubectl apply -f -<<EOF
 apiVersion: pyrra.dev/v1alpha1
 kind: ServiceLevelObjective
@@ -1040,8 +1058,11 @@ spec:
   indicator:
     latency:
       success:
-        metric: nginx_ingress_controller_request_duration_seconds_bucket{status=~"5..",le="1"}
+        metric: nginx_ingress_controller_request_duration_seconds_bucket{le="1"}
       total:
         metric: nginx_ingress_controller_request_duration_seconds_count
 EOF
 ```
+
+![](./assets/pyrra-web-ui-platform-component.png)
+
