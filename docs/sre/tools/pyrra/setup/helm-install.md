@@ -379,6 +379,9 @@ prometheus:
     # enable the cluster wide search for PrometheusRule CRD
     ruleSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
+
+    scrapeInterval: "10s"
+    evaluationInterval: "10s"
 ```
 
 使用 Helm 在命名空間監控中部署 `kube-stack-prometheus` chart:
@@ -485,11 +488,19 @@ ingress:
       - path: "/"
         pathType: "ImplementationSpecific"
 image:
-  tag: "release-0.7"
+  tag: "v0.7.1"
 
 prometheusExternalUrl: "http://prometheus.example.it"
 
 prometheusUrl: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
+
+serviceMonitor:
+  # -- enables servicemonitor for server monitoring
+  enabled: true
+
+genericRules:
+  # -- enables generate Pyrra generic recording rules. Pyrra generates metrics with the same name for each SLO.
+  enabled: false
 ```
 
 將 Pyrra 安裝到 sre-system 命名空間中：
@@ -783,16 +794,15 @@ kubectl apply -f -<<EOF
 apiVersion: pyrra.dev/v1alpha1
 kind: ServiceLevelObjective
 metadata:
-  creationTimestamp: null
+  name: prometheus-api-errors
   labels:
     prometheus: metalmatze
     pyrra.dev/team: prometheus
     role: alert-rules
-  name: prometheus-api-errors
 spec:
-  alerting: {}
-  description: Prometheus' HTTP API endpoints should answer queries 99% successfully
-    over 2w.
+  target: "99"
+  description: Prometheus' HTTP API endpoints should answer queries 99% successfully over 2w.
+  window: 2w
   indicator:
     ratio:
       errors:
@@ -800,9 +810,7 @@ spec:
       grouping:
       - handler
       total:
-        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*"}
-  target: "99"
-  window: 2w
+        metric: prometheus_http_requests_total{job="prometheus",handler=~"/api.*"}      
 EOF
 ```
 
@@ -969,3 +977,71 @@ slo: sre-sample-app-availability
 - 在啟用警報的情況下，顯示當前警報的狀態
 - 錯誤預算月份燃盡圖
 - 燃燒率幅度
+
+使用文字編輯器創建一個設定檔 `ingress-nginx-values2.yaml` 來設定 `ingress-nginx` 要從 metallb 取得特定的預設 IP (`172.20.0.13`):
+
+```yaml title="ingress-nginx-values2.yaml"
+controller:
+  # add annotations to get ip from metallb
+  service:
+    annotations:
+      metallb.universe.tf/address-pool: ip-pool
+    loadBalancerIP: "172.20.0.13"
+  # set ingressclass as default
+  ingressClassResource:
+    default: true
+  # enable prometheus metrics
+  metrics:
+    enabled: true
+    serviceMonitor:
+      additionalLabels:
+        release: prometheus
+      enabled: true
+```
+
+將 Nginx Ingress Controller 安裝到 kube-system 命名空間中：
+
+```bash title="執行下列命令  >_"
+helm upgrade --install \
+     --create-namespace --namespace kube-system \
+     ingress-nginx ingress-nginx/ingress-nginx \
+     --values ingress-nginx-values2.yaml
+```
+
+```yaml
+kubectl apply -f -<<EOF
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  name: nginx-api-errors
+  namespace: monitoring
+  labels:
+    prometheus: k8s
+    role: alert-rules
+spec:
+  target: '99.9'
+  window: 4w
+  indicator:
+    ratio:
+      errors:
+        metric: nginx_ingress_controller_requests{status=~"5.."}
+      total:
+        metric: nginx_ingress_controller_requests
+---
+# Latency
+apiVersion: pyrra.dev/v1alpha1
+kind: ServiceLevelObjective
+metadata:
+  name: nginx-api-latency
+  namespace: monitoring
+spec:
+  target: '90' # 90% of requests should be faster than 1s
+  window: 4w
+  indicator:
+    latency:
+      success:
+        metric: nginx_ingress_controller_request_duration_seconds_bucket{status=~"5..",le="1"}
+      total:
+        metric: nginx_ingress_controller_request_duration_seconds_count
+EOF
+```
