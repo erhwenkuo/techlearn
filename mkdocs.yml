@@ -747,6 +747,9 @@ nav:
         - Temperature: cohere/generation/temperature.md
         - Top-k & Top-p: cohere/generation/top-k-top-p.md
         - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
+  - Copilot:
+    - Continue:
+      - 簡介: copilot/continue/intro.md
   - LangChain:
     - 參考文件:
       - 開始使用:
@@ -805,6 +808,9 @@ nav:
       - Components:
         - LLMs:
           - OpenLLM: langchain/integrations/components/llms/openllm.md
+    - Tutorial:
+      - Agent:
+        - Agent 簡介: langchain/tutorials/agent/agent_intro.md
   - Prompt:
     - Prompt Engineering:
       - 提示工程指南: prompt/prompt-engineering/index.md
