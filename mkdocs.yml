@@ -813,9 +813,43 @@ nav:
         - Agent 簡介: langchain/tutorials/agent/agent_intro.md
   - OpenAI:
     - Guides:
-      - Prompt engineering:
+      - 提示工程:
         - 提示工程指南: openai/guides/prompt-engineering/index.md
         - 六個提示工程策略: openai/guides/prompt-engineering/six-strategies-for-getting-better-results.md
+        - 範例:
+          - 提示範例: openai/guides/prompt-engineering/examples/index.md
+          - Grammar correction: openai/guides/prompt-engineering/examples/default-grammar.md
+          - Parse unstructured data: openai/guides/prompt-engineering/examples/default-parse-data.md
+          - Calculate time complexity: openai/guides/prompt-engineering/examples/default-time-complexity.md
+          - Keywords: openai/guides/prompt-engineering/examples/default-keywords.md
+          - Python bug fixer: openai/guides/prompt-engineering/examples/default-fix-python-bugs.md
+          - Tweet classifier: openai/guides/prompt-engineering/examples/default-tweet-classifier.md
+          - Mood to color: openai/guides/prompt-engineering/examples/default-mood-color.md
+          - Marv the sarcastic chat bot: openai/guides/prompt-engineering/examples/default-marv-sarcastic-chat.md
+          - Interview questions: openai/guides/prompt-engineering/examples/default-interview-questions.md
+          - Improve code efficiency: openai/guides/prompt-engineering/examples/default-code-improvement.md
+          - Emoji chatbot: openai/guides/prompt-engineering/examples/default-emoji-chatbot.md
+          - Socratic tutor: openai/guides/prompt-engineering/examples/default-socratic-tutor.md
+          - Meeting notes summarizer: openai/guides/prompt-engineering/examples/default-meeting-notes-summarizer.md
+          - Pro and con discusser: openai/guides/prompt-engineering/examples/default-pro-con-discusser.md
+          - Summarize for a 2nd grader: openai/guides/prompt-engineering/examples/default-summarize.md
+          - Emoji Translation: openai/guides/prompt-engineering/examples/default-emoji-translation.md
+          - Explain code: openai/guides/prompt-engineering/examples/default-explain-code.md
+          - Product name generator: openai/guides/prompt-engineering/examples/default-product-name-gen.md
+          - Spreadsheet creator: openai/guides/prompt-engineering/examples/default-spreadsheet-gen.md
+          - Airport code extractor: openai/guides/prompt-engineering/examples/default-airport-codes.md
+          - VR fitness idea generator: openai/guides/prompt-engineering/examples/default-vr-fitness.md
+          - Turn by turn directions: openai/guides/prompt-engineering/examples/default-turn-by-turn-directions.md
+          - Function from specification: openai/guides/prompt-engineering/examples/default-function-from-spec.md
+          - Single page website creator: openai/guides/prompt-engineering/examples/default-single-page-website.md
+          - Memo writer: openai/guides/prompt-engineering/examples/default-memo-writer.md
+          - Translation: openai/guides/prompt-engineering/examples/default-translation.md
+          - Natural language to SQL: openai/guides/prompt-engineering/examples/default-sql-translate.md
+          - Review classifier: openai/guides/prompt-engineering/examples/default-review-classifier.md
+          - Lesson plan writer: openai/guides/prompt-engineering/examples/default-lesson-plan-writer.md
+
+      - 安全最佳實踐: openai/guides/safety-best-practices.md
+    
   - Prompt:
     - Prompt Engineering:
       - 提示工程指南: prompt/prompt-engineering/index.md
