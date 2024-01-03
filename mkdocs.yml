@@ -812,6 +812,15 @@ nav:
       - Agent:
         - Agent 簡介: langchain/tutorials/agent/agent_intro.md
   - OpenAI:
+    - Get Started:
+      - 簡介: openai/get_started/introduction.md
+      - 快速入門: openai/get_started/quickstart.md
+    - Capabilities:
+      - Text generation: openai/capabilities/text-generation.md
+      - Function calling: openai/capabilities/function-calling.md
+      - Embeddings: openai/capabilities/embeddings.md
+      - Text-to-speech: openai/capabilities/text-to-speech.md
+      - Speech-to-text: openai/capabilities/speech-to-text.md
     - Guides:
       - 提示工程:
         - 提示工程指南: openai/guides/prompt-engineering/index.md
