@@ -665,6 +665,10 @@ nav:
         - GTPQ 量化模型: llm/serving/text-generation-webui/gptq-models-4-bit-mode.md
         - 啟用 ExLlama: llm/serving/text-generation-webui/exllama.md
         - 使用 llama.cpp: llm/serving/text-generation-webui/llama-cpp.md
+    - RAG:
+      - pgvector:
+        - pgvector 簡介: llm/rag/pgvector/pgvector-readme.md
+        - PostgreSQL (pgvector) 擴展實作: llm/rag/pgvector/setting-up-postgres-with-pgvector.md
   - Huggingface:    
     - Datasets:
       - 開始使用:
