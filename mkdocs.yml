@@ -667,9 +667,12 @@ nav:
         - 使用 llama.cpp: llm/serving/text-generation-webui/llama-cpp.md
     - RAG:
       - RAG 資料同步: llm/rag/syncing-data-sources-to-vector-stores.md
-      - pgvector:
-        - pgvector 簡介: llm/rag/pgvector/pgvector-readme.md
-        - PostgreSQL (pgvector) 擴展實作: llm/rag/pgvector/setting-up-postgres-with-pgvector.md
+      - Vector Store:
+        - pgvector:
+          - pgvector 簡介: llm/rag/vector_store/pgvector/pgvector-readme.md
+          - PostgreSQL (pgvector) 擴展實作: llm/rag/vector_store/pgvector/setting-up-postgres-with-pgvector.md
+      - Text Splitters:
+        - 簡介: llm/rag/text_splitters/intro.md
   - Huggingface:    
     - Datasets:
       - 開始使用:
