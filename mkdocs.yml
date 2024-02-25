@@ -809,6 +809,9 @@ nav:
             - Vector store-backed retriever: langchain/docs/modules/retrieval/retrievers/vectorstore.md
             - WebResearchRetriever: langchain/docs/modules/retrieval/retrievers/web_research.md
           - 索引(增刪修): langchain/docs/modules/retrieval/indexing.md
+        - Agents:
+          - 基本說明: langchain/docs/modules/agents/index.md
+          - 快速入門: langchain/docs/modules/agents/quick_start.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
       - Extraction: langchain/use_cases/extraction/index.md
