@@ -812,6 +812,12 @@ nav:
         - Agents:
           - 基本說明: langchain/docs/modules/agents/index.md
           - 快速入門: langchain/docs/modules/agents/quick_start.md
+          - 概念:  langchain/docs/modules/agents/concepts.md
+          - 代理類型:
+            - 基本說明: langchain/docs/modules/agents/agent_types/index.md
+            - OpenAI functions: langchain/docs/modules/agents/agent_types/openai_functions_agent.md
+            - OpenAI tools: langchain/docs/modules/agents/agent_types/openai_tools.md
+            - ReAct: langchain/docs/modules/agents/agent_types/react.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
       - Extraction: langchain/use_cases/extraction/index.md
