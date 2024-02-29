@@ -828,6 +828,8 @@ nav:
     - Tutorial:
       - Agent:
         - Agent 簡介: langchain/tutorials/agent/agent_intro.md
+      - RAG:
+        - RAG 進階模組規劃: langchain/tutorials/rag/rag_adv.md
   - OpenAI:
     - Get Started:
       - 簡介: openai/get_started/introduction.md
