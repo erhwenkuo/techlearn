@@ -1,16 +1,21 @@
 # Function calling
 
-了解如何將大型語言模型連接到外部工具。
+了解如何將大型語言模型與外部工具進行整合與連接。
 
 ## 介紹
 
-在 API 呼叫中，您可以描述函數，並讓模型智慧地選擇輸出包含呼叫一個或多個函數的參數的 JSON 物件。Chat Completions API 不會呼叫該函數；相反，模型會產生 JSON，您可以使用它來呼叫程式碼中的函數。
+為了能夠呼叫讓 LLM 決定如何正確呼叫外部的 API ，您可以在 Chat Completion 的的呼叫中去{==描述想要 LLM 決定去呼外的外部函數的功能描述(比如 get_weather() 函數是用來取得最更新的天氣資訊...)，並讓 LLM 模型智慧地選擇輸出包含呼叫一個或多個函數的參數的 JSON 物件==}。Chat Completions API 不會呼叫該函數；相反，LLM 模型會產生呼叫該外部函數的 Input JSON　物件，您可以使用這個 JSON 物件來它來呼叫這個外部函數。
 
-最新模型（`gpt-3.5-turbo-1106` 和 `gpt-4-1106-preview`）經過訓練，可以檢測何時應調用函數（取決於輸入）並使用遵循函數簽名的 JSON 進行響應比以前的型號更接近。這種能力也帶來了潛在的風險。我們強烈建議在代表用戶採取行動（發送電子郵件、在線上發佈內容、購買等）之前建立用戶確認流程。
+<figure markdown="span">
+  ![](./assets/function_calling.jpg)
+  <figcaption>Function calling 範例流程</figcaption>
+</figure>
+
+最新模型（`gpt-3.5-turbo-0125` 和 `gpt-4-turbo-preview`）經過訓練，可以根據使用者的 Input 訊息來決定何時應調用外部函數（取決於輸入）並使用遵循函數簽名的 JSON 來生成呼叫外部外部函數的 JSON object。這種能力也帶來了潛在的風險。我們強烈建議在代表用戶採取行動（發送電子郵件、在線上發佈內容、購買等）之前建立用戶確認流程。
 
 ## 常見用例
 
-函數呼叫可讓您更可靠地從模型中取得結構化資料。例如，您可以：
+OpenAI 的 Function calling 可讓您更可靠地讓 LLM 模型生成結構化資料。這樣的能力可讓 LLM 模型可以：
 
 - 建立透過呼叫外部 API 來回答問題的助手（例如 ChatGPT 插件）
     - 例如定義諸如 `send_email(to: string, body: string)` 或 `get_current_weather(location: string, unit: 'celsius' | 'fahrenheit')` 之類的函數
@@ -19,27 +24,33 @@
 - 從文字中提取結構化數據
     - 例如定義一個名為 `extract_data(name: string,birthday: string)` 或 `sql_query(query: string)` 的函數
 
-函數呼叫的基本步驟順序如下：
+Function calling　的基本步驟順序如下：
 
-1. 使用使用者查詢和函數參數中定義的一組函數來呼叫模型。
-2. 模型可以選擇呼叫一個或多個函數；如果是這樣，內容將是一個符合您的自訂架構的字串化 JSON 物件（注意：模型可能會產生參數）。
-3. 在程式碼中將字串解析為 JSON，並使用提供的參數（如果存在）呼叫函數。
-4. 透過將函數回應作為新訊息附加來再次呼叫模型，並讓模型將結果匯總傳回給使用者。
+1. 在呼叫 OpenAI 的 ChatCompletion 的呼叫中使用 functions parameter　定義的一組函數讓 LLM 來決定呼叫。
+2. LLM 模型可以選擇呼叫一個或多個函數；如果是這樣，(1)的結果將是一個符合您定義的函數 INPUT schema 的 JSON 物件。
+3. 你需要在 APP 的程式邏輯中將(2)字串解析為 JSON，並使用提供的參數（如果存在）呼叫LLM 決定要呼叫的外部函數/API。
+4. 透過將外部函數/API 的回應作為新訊息附加來再次呼叫 LLM 模型，並讓模型將結果匯總傳回給使用者。
 
 ## 支援模型
 
 並非所有模型版本都使用函數呼叫資料進行訓練。以下模型支援函數呼叫：
 
 - gpt-4
+- gpt-4-turbo-preview
+- gpt-4-0125-preview
 - gpt-4-1106-preview
 - gpt-4-0613
 - gpt-3.5-turbo
+- gpt-3.5-turbo-0125
 - gpt-3.5-turbo-1106
 - gpt-3.5-turbo-0613
 
 此外，以下模型支援併行函數呼叫：
 
+- gpt-4-turbo-preview
+- gpt-4-0125-preview
 - gpt-4-1106-preview
+- gpt-3.5-turbo-0125
 - gpt-3.5-turbo-1106
 
 ## 併行函數調用
