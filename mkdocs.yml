@@ -837,7 +837,11 @@ nav:
       - 快速入門: openai/get_started/quickstart.md
     - Capabilities:
       - Text generation: openai/capabilities/text-generation.md
-      - Function calling: openai/capabilities/function-calling.md
+      - Function calling:
+        - 簡介: openai/capabilities/function-calling/index.md
+        - 範例:
+          - Function calling 功能: openai/capabilities/function-calling/openai-function-calling-feature.md
+
       - Embeddings: openai/capabilities/embeddings.md
       - Text-to-speech: openai/capabilities/text-to-speech.md
       - Speech-to-text: openai/capabilities/speech-to-text.md
