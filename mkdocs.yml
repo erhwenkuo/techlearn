@@ -818,6 +818,11 @@ nav:
             - OpenAI functions: langchain/docs/modules/agents/agent_types/openai_functions_agent.md
             - OpenAI tools: langchain/docs/modules/agents/agent_types/openai_tools.md
             - ReAct: langchain/docs/modules/agents/agent_types/react.md
+          - Tools:
+            - 基本說明: langchain/docs/modules/agents/tools/index.md
+            - Toolkits: langchain/docs/modules/agents/tools/toolkits.md
+            - 定義 Custom Tools: langchain/docs/modules/agents/tools/custom_tools.md
+            - Tools 轉換成 OpenAI Functions: langchain/docs/modules/agents/tools/tools_as_openai_functions.md
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
       - Extraction: langchain/use_cases/extraction/index.md
@@ -841,7 +846,6 @@ nav:
         - 簡介: openai/capabilities/function-calling/index.md
         - 範例:
           - Function calling 功能: openai/capabilities/function-calling/openai-function-calling-feature.md
-
       - Embeddings: openai/capabilities/embeddings.md
       - Text-to-speech: openai/capabilities/text-to-speech.md
       - Speech-to-text: openai/capabilities/speech-to-text.md
