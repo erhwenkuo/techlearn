@@ -43,7 +43,7 @@ chain = prompt | model | output_parser
 
 在此鏈中，使用者輸入傳遞到 prompt，然後 prompt 輸出傳遞到 model，然後 model 輸出傳遞到 output_parser。讓我們分別看一下每個組件，以真正了解發生了什麼。
 
-## 1. Prompt
+### 1. Prompt
 
 `prompt` 是一個 `BasePromptTemplate`，這意味著它接受模板變數的 dict 並產生 `PromptValue`。 `PromptValue` 是完整提示的包裝器，可以傳遞給 `LLM`（將字串作為輸入）或 `ChatModel`（將一系列訊息作為輸入）。它可以使用任一語言模型類型，因為它定義了用於產生 `BaseMessage` 和產生字串的邏輯。
 
@@ -84,7 +84,7 @@ print(prompt_value.to_string())
 Human: tell me a short joke about ice cream
 ```
 
-## 2. Model
+### 2. Model
 
 然後將 `PromptValue` 傳遞給 `model`。在本例中，我們的模型是 `ChatModel`，這意味著它將輸出 `BaseMessage`。
 
@@ -116,7 +116,7 @@ llm.invoke(prompt_value)
 '\n\nRobot: Why did the ice cream truck break down? Because it had a meltdown!'
 ```
 
-## 3. Output parser
+### 3. Output parser
 
 最後，我們將 `model` 輸出傳遞給 `output_parser`，它是一個 `BaseOutputParser`，這意味著它接受 `string` 或 `BaseMessage` 作為輸入。 `StrOutputParser` 特別簡單地將任何輸入轉換為字串。
 
@@ -132,7 +132,7 @@ print(result)
 Why did the ice cream go to therapy? \n\nBecause it had too many toppings and couldn't find its cone-fidence!
 ```
 
-## 4. Entire Pipeline
+### 4. Entire Pipeline
 
 請依照以下步驟操作：
 
