@@ -766,6 +766,7 @@ nav:
         - 快速開始: langchain/docs/get_started/quickstart.md
       - Langchain 表達語言:
         - 基本說明: langchain/docs/expression_language/index.md
+        - 快速入門: langchain/docs/expression_language/index.md
       - 模組:
         - Model I/O:
           - 基本說明: langchain/docs/modules/model_io/index.md
