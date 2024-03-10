@@ -2,6 +2,7 @@
 
 為了更好地理解 agent framework，讓我們建立一個具有兩種工具的代理：一種用於線上查找，另一種用於查找我們載入到索引中的特定資料。
 
+![](./assets/lanchain_agents_architecture.png)
 
 ## 定義工具
 

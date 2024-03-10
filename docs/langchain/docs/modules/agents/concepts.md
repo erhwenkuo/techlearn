@@ -2,6 +2,8 @@
 
 Agent 的核心思想是使用語言模型來選擇要採取的一系列操作/動件。在 chain 中，一系列操作被硬編碼（在程式碼中）。在 agent 中，語言模型被用作推理引擎來決定要採取哪些操作以及按什麼順序。
 
+![](./assets/lanchain_agents_architecture.png)
+
 這裡有幾個關鍵組件:
 
 ## Schema

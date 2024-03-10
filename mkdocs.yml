@@ -835,7 +835,8 @@ nav:
           - OpenLLM: langchain/integrations/components/llms/openllm.md
     - Tutorial:
       - Agent:
-        - Agent 簡介: langchain/tutorials/agent/agent_intro.md
+        - 什麼是 AI agent: langchain/tutorials/agent/what-is-an-ai-agent.md
+        - Langchain Agent 簡介: langchain/tutorials/agent/agent_intro.md
       - RAG:
         - 模組化 RAG 和 RAG 流程(1): langchain/tutorials/rag/rag_adv_part1.md
         - 模組化 RAG 和 RAG 流程(2): langchain/tutorials/rag/rag_adv_part2.md

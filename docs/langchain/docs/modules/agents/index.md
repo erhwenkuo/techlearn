@@ -1,6 +1,8 @@
 # Agents
 
-**代理 (agent) **的核心思想是使用語言模型來選擇要採取的一系列操作(actions)。在手動構建的 chain 中，一系列操作被使用程式碼來 hardcoded。{==在代理(agent)中，語言模型被用作推理引擎來決定要採取哪些操作以及按什麼順序==}。
+**代理 (agent)** 的核心思想是使用語言模型來選擇要採取的一系列操作(actions)。在手動構建的 chain 中，一系列操作被使用程式碼來 hardcoded。{==在代理(agent)中，語言模型被用作推理引擎來決定要採取哪些操作以及按什麼順序==}。
+
+![](./assets/agent_highlevel.webp)
 
 ## Quickstart
 
