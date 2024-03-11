@@ -840,6 +840,8 @@ nav:
       - RAG:
         - 模組化 RAG 和 RAG 流程(1): langchain/tutorials/rag/rag_adv_part1.md
         - 模組化 RAG 和 RAG 流程(2): langchain/tutorials/rag/rag_adv_part2.md
+      - LLM Observability:
+        - LLM 可觀察性研究: langchain/tutorials/observability/llm-observability-deep-dive.md
   - OpenAI:
     - Get Started:
       - 簡介: openai/get_started/introduction.md
