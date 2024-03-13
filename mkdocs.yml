@@ -829,6 +829,8 @@ nav:
     - 使用案例:
       - SQL: langchain/use_cases/sql/index.md
       - Extraction: langchain/use_cases/extraction/index.md
+      - Tool use:
+        - 基本說明: langchain/use_cases/tool_use/index.md
     - 模組整合:
       - Components:
         - LLMs:

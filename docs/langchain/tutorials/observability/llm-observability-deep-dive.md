@@ -10,6 +10,10 @@ LLM 可觀察性是收集和分析有關 LLM 表現和行為的數據的實踐�
 
 ![](./assets/llm-observability.webp)
 
+讓我們用 Langchain 框架的生態系架構來了解 LLM Observability 的定位:
+
+![](./assets/langchain-observability.png)
+
 ## Data Should be Observed
 
 我們需要觀察的 LLM 可觀測性資料主要有五種類型：
@@ -78,7 +82,7 @@ LLM 可觀察性是收集和分析有關 LLM 表現和行為的數據的實踐�
 
 ### Logging
 
-日誌記錄允許管理員記錄和檢查 LLM 請求和回應。透過日誌跟踪，開發人員可以更好地了解 LLM 的工作原理。這些資訊可用於改進法學碩士的設計和培訓，並為法學碩士開發新的應用程式。
+日誌記錄允許管理員記錄和檢查 LLM 請求和回應。透過日誌跟踪，開發人員可以更好地了解 LLM 的工作原理。這些資訊可用於改進 LLM 的設計和培訓，並為 LLM 開發新的應用程式。
 
 ![](./assets/llm-observability-logging.webp)
 
@@ -98,7 +102,7 @@ LLM 可觀察性是收集和分析有關 LLM 表現和行為的數據的實踐�
 
 ### Multi-Tenancy
 
-多租戶可以為 LLM 監控提供許多好處，包括成本效益、可擴展性、安全性和隱私、更好地利用資源，以及比較和對比不同 LLM 的性能、跟踪其使用情況以及識別和排除故障的能力LLM特定問題。
+多租戶可以為 LLM 監控提供許多好處，包括成本效益、可擴展性、安全性和隱私、更好地利用資源，以及比較和對比不同 LLM 的性能、跟踪其使用情況以及識別和排除故障的能力 LLM 特定問題。
 
 ![](./assets/llm-observability-multi_tenancy.webp)
 
