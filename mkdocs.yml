@@ -837,6 +837,7 @@ nav:
           - OpenLLM: langchain/integrations/components/llms/openllm.md
     - Tutorial:
       - Agent:
+        - LLM agents 下一個軟體平台轉變: langchain/tutorials/agent/llm-agents-the-next-platform-shift.md
         - 什麼是 AI agent: langchain/tutorials/agent/what-is-an-ai-agent.md
         - Langchain Agent 簡介: langchain/tutorials/agent/agent_intro.md
       - RAG:
@@ -844,6 +845,8 @@ nav:
         - 模組化 RAG 和 RAG 流程(2): langchain/tutorials/rag/rag_adv_part2.md
       - LLM Observability:
         - LLM 可觀察性研究: langchain/tutorials/observability/llm-observability-deep-dive.md
+    - LangGraph:
+      - 簡介: langchain/docs/langgraph/langgraph.md
   - OpenAI:
     - Get Started:
       - 簡介: openai/get_started/introduction.md
