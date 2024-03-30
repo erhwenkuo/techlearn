@@ -845,6 +845,10 @@ nav:
         - 模組化 RAG 和 RAG 流程(2): langchain/tutorials/rag/rag_adv_part2.md
       - LLM Observability:
         - LLM 可觀察性研究: langchain/tutorials/observability/llm-observability-deep-dive.md
+      - LangServe:
+        - 使用 LangServe 建立 REST API: langchain/tutorials/langserve/build-rest-apis.md
+    - LangServe:
+      - 簡介: langchain/docs/langserve/index.md
     - LangGraph:
       - 簡介: langchain/docs/langgraph/langgraph.md
   - OpenAI:
