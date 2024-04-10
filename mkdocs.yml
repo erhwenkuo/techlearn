@@ -837,8 +837,10 @@ nav:
           - OpenLLM: langchain/integrations/components/llms/openllm.md
     - Tutorial:
       - Langchain 教學:
-        - 入門教學篇: langchain/tutorials/apollo/tutorial-get-started.md
-        - 一定要認識的 LCEL: langchain/tutorials/apollo/expression-language.md
+        - 1.入門教學篇: langchain/tutorials/apollo/tutorial-get-started.md
+        - 2.認識的LCEL: langchain/tutorials/apollo/expression-language.md
+        - 3.動態修改Chain的設定: langchain/tutorials/apollo/configure-chain-at-runtime.md
+        - 4.用LangServe架API: langchain/tutorials/apollo/langchain-langserve.md
       - Agent:
         - LLM agents 下一個軟體平台轉變: langchain/tutorials/agent/llm-agents-the-next-platform-shift.md
         - 什麼是 AI agent: langchain/tutorials/agent/what-is-an-ai-agent.md
