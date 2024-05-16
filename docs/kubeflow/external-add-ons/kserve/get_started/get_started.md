@@ -278,20 +278,20 @@ ingress-nginx-svc   <none>   nginx.example.it   172.20.0.13   80      21s
 您可以使用 Kind 上的 KServe 快速安裝腳本開始本地部署 KServe：
 
 ```bash
-curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.10/hack/quick_install.sh" | bash
+curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.12/hack/quick_install.sh" | bash
 ```
 
 預設的佈署模式是 `serverless`, 而且這個安裝腳本會安裝下列關鍵組件:
 
-- Istio (v1.15.0)
-- Knative (v1.7.0)
-- KServe (v0.10.1)
+- Istio (v1.19.4)
+- Knative (v1.10.1)
+- KServe (v0.12.1)
 - CertManager (v1.3.0)
 
 ??? info "quick_install.sh"
 
     ```bash
-    set -e
+    set -eo pipefail
     ############################################################
     # Help                                                     #
     ############################################################
@@ -314,7 +314,7 @@ curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.10/hack/quick
             Help
             exit;;
           r) # skip knative install
-      deploymentMode=kubernetes;;
+            deploymentMode=kubernetes;;
           s) # install knative
             deploymentMode=serverless;;
         \?) # Invalid option
@@ -323,21 +323,35 @@ curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.10/hack/quick
       esac
     done
 
-    export ISTIO_VERSION=1.15.0
-    export KNATIVE_VERSION=knative-v1.7.0
-    export KSERVE_VERSION=v0.10.1
+    export ISTIO_VERSION=1.19.4
+    export ISTIO_DIR=istio-${ISTIO_VERSION}
+    export KNATIVE_SERVING_VERSION=knative-v1.10.1
+    export KNATIVE_ISTIO_VERSION=knative-v1.10.0
+    export KSERVE_VERSION=v0.12.1
     export CERT_MANAGER_VERSION=v1.3.0
     export SCRIPT_DIR="$( dirname -- "${BASH_SOURCE[0]}" )"
 
-    KUBE_VERSION=$(kubectl version --short=true | grep "Server Version" | awk -F '.' '{print $2}')
-    if [ ${KUBE_VERSION} -lt 22 ];
+    cleanup(){
+      rm -rf deploy-config-patch.yaml
+    }
+    trap cleanup EXIT
+
+    get_kube_version(){
+        kubectl version --short=true 2>/dev/null || kubectl version | awk -F '.' '/Server Version/ {print $2}'
+    }
+
+    if [ $(get_kube_version) -lt 24 ];
     then
-      echo "😱 install requires at least Kubernetes 1.22";
+      echo "😱 install requires at least Kubernetes 1.24";
       exit 1;
     fi
 
-    curl -L https://istio.io/downloadIstio | sh -
-    cd istio-${ISTIO_VERSION}
+    if [ -d ${ISTIO_DIR} ]; then
+      echo "Already downloaded ${ISTIO_DIR}"
+    else
+      curl -L https://istio.io/downloadIstio | sh -
+    fi
+    cd ${ISTIO_DIR}
 
     # Create istio-system namespace
     cat <<EOF | kubectl apply -f -
@@ -386,12 +400,15 @@ curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.10/hack/quick
     bin/istioctl manifest apply -f istio-minimal-operator.yaml -y;
 
     echo "😀 Successfully installed Istio"
+    rm -rf ${ISTIO_DIR}
 
     # Install Knative
     if [ $deploymentMode = serverless ]; then
-      kubectl apply --filename https://github.com/knative/serving/releases/download/${KNATIVE_VERSION}/serving-crds.yaml
-      kubectl apply --filename https://github.com/knative/serving/releases/download/${KNATIVE_VERSION}/serving-core.yaml
-      kubectl apply --filename https://github.com/knative/net-istio/releases/download/${KNATIVE_VERSION}/release.yaml
+      kubectl apply --filename https://github.com/knative/serving/releases/download/${KNATIVE_SERVING_VERSION}/serving-crds.yaml
+      kubectl apply --filename https://github.com/knative/serving/releases/download/${KNATIVE_SERVING_VERSION}/serving-core.yaml
+      kubectl apply --filename https://github.com/knative/net-istio/releases/download/${KNATIVE_ISTIO_VERSION}/release.yaml
+      # Patch the external domain as the default domain svc.cluster.local is not exposed on ingress
+      kubectl patch cm config-domain --patch '{"data":{"example.com":""}}' -n knative-serving
       echo "😀 Successfully installed Knative"
     fi
 
@@ -410,11 +427,25 @@ curl -s "https://raw.githubusercontent.com/kserve/kserve/release-0.10/hack/quick
     # Retry inorder to handle that it may take a minute or so for the TLS assets required for the webhook to function to be provisioned
     kubectl apply -f https://github.com/kserve/kserve/releases/download/${KSERVE_VERSION}/${KSERVE_CONFIG}
 
-    # Install KServe built-in servingruntimes
+    # Install KServe built-in servingruntimes and storagecontainers
     kubectl wait --for=condition=ready pod -l control-plane=kserve-controller-manager -n kserve --timeout=300s
-    kubectl apply -f https://github.com/kserve/kserve/releases/download/${KSERVE_VERSION}/kserve-runtimes.yaml
-    echo "😀 Successfully installed KServe"
 
-    # Clean up
-    rm -rf istio-${ISTIO_VERSION}
+    if [ ${MAJOR_VERSION} -eq 0 ] && [ ${MINOR_VERSION} -le 11 ]; then
+        kubectl apply -f https://github.com/kserve/kserve/releases/download/${KSERVE_VERSION}/kserve-runtimes.yaml
+    else
+        kubectl apply -f https://github.com/kserve/kserve/releases/download/${KSERVE_VERSION}/kserve-cluster-resources.yaml
+    fi
+
+    # Patch default deployment mode for raw deployment
+    if [ $deploymentMode = kubernetes ]; then
+    cat <<EOF > deploy-config-patch.yaml
+    data:
+      deploy: |
+        {
+          "defaultDeploymentMode": "RawDeployment"
+        }
+    EOF
+    kubectl patch cm inferenceservice-config -n kserve --type=merge --patch-file=deploy-config-patch.yaml
+    fi
+    echo "😀 Successfully installed KServe"
     ```

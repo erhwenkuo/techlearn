@@ -10,6 +10,8 @@ LangChain 自然也有提供將語言模型轉回 API 服務的能力，該功�
 
 本文將教學如何使用 [LangServe](https://python.langchain.com/docs/langserve/) 將語言模型轉為 API 服務！
 
+如果不清楚給如何開始設置相關環境, 請先練習 [使用 LangServe 為 LangChain 應用程式建立 REST API](../langserve/build-rest-apis.md)。
+
 ## 本文環境
 
 - Linux (Ubuntu)

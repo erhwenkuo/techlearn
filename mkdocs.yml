@@ -597,7 +597,7 @@ nav:
               - 使用Keycloak進行身份驗證: kubeflow/components/multi-tenancy/authn/keycloak-kubeflow.md
         - 外部整合插件:
           - KServe:
-            - KServer 簡介: kubeflow/external-add-ons/kserve/kserve.md
+            - KServe 簡介: kubeflow/external-add-ons/kserve/kserve.md
             - 快速入門:
               - KServe 入門: kubeflow/external-add-ons/kserve/get_started/get_started.md
               - InferenceService 初試: kubeflow/external-add-ons/kserve/get_started/first_isvc.md
@@ -648,6 +648,14 @@ nav:
       - 範例:
         - 學習環境: seldon/env/jupyter-hub.md
         - 快速入門指南: seldon/examples/quickstart.md
+  - Kserve:
+    - User Guide:
+      - 概念:
+        - 控制平面:
+          - Model Serving控制平面: kserve/modelserving/control_plane/control_plane.md
+      - 模型ServingRuntime:
+        - XGBoost: kserve/modelserving/serving_runtime/lightgbm.md
+        - LightGBM: kserve/modelserving/serving_runtime/lightgbm.md
   - LLMs:
     - Serving:
       - OpenLLM:
@@ -837,10 +845,10 @@ nav:
           - OpenLLM: langchain/integrations/components/llms/openllm.md
     - Tutorial:
       - Langchain 教學:
-        - 1.入門教學篇: langchain/tutorials/apollo/tutorial-get-started.md
-        - 2.認識的LCEL: langchain/tutorials/apollo/expression-language.md
-        - 3.動態修改Chain的設定: langchain/tutorials/apollo/configure-chain-at-runtime.md
-        - 4.用LangServe架API: langchain/tutorials/apollo/langchain-langserve.md
+        - 1. 入門教學篇: langchain/tutorials/apollo/tutorial-get-started.md
+        - 2. 認識的LCEL: langchain/tutorials/apollo/expression-language.md
+        - 3. 動態修改Chain的設定: langchain/tutorials/apollo/configure-chain-at-runtime.md
+        - 4. 用LangServe架API: langchain/tutorials/apollo/langchain-langserve.md
       - Agent:
         - LLM agents 下一個軟體平台轉變: langchain/tutorials/agent/llm-agents-the-next-platform-shift.md
         - 什麼是 AI agent: langchain/tutorials/agent/what-is-an-ai-agent.md
