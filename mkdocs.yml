@@ -657,13 +657,16 @@ nav:
         - XGBoost: kserve/modelserving/serving_runtime/lightgbm.md
         - LightGBM: kserve/modelserving/serving_runtime/lightgbm.md
   - MLflow:
-    - Deployment:
+    - 模型部署:
       - Index: mlflow/deployment/index.md
+      - How it works:
+        - 本地推論伺服器部署: mlflow/deployment/how-it-works/deploy-model-locally.md
     - MLflow Models:
       - Index: mlflow/models/index.md
       - 模型存儲格式: mlflow/models/storage-format.md
       - 管理模型中的相依性: mlflow/models/dependencies.md
       - 模型簽章與輸入範例: mlflow/models/signatures.md
+      - 模型 API: mlflow/models/model-api.md
       - 內建模型 Flavors:
         - Python Function: mlflow/models/model_flavors/python-function-python-function.md
         - Keras(keras): mlflow/models/model_flavors/keras-keras.md
@@ -671,6 +674,7 @@ nav:
         - Scikit-learn(sklearn): mlflow/models/model_flavors/scikit-learn-sklearn.md
         - TensorFlow(tensorflow): mlflow/models/model_flavors/tensorflow-tensorflow.md
         - XGBoost(xgboost): mlflow/models/model_flavors/xgboost-xgboost.md
+        - LightGBM(lightgbm): mlflow/models/model_flavors/lightgbm-lightgbm.md
   - LLMs:
     - Serving:
       - OpenLLM:
