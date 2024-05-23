@@ -657,10 +657,15 @@ nav:
         - XGBoost: kserve/modelserving/serving_runtime/lightgbm.md
         - LightGBM: kserve/modelserving/serving_runtime/lightgbm.md
   - MLflow:
-    - 模型部署:
+    - Deployment:
       - Index: mlflow/deployment/index.md
       - How it works:
         - 本地推論伺服器部署: mlflow/deployment/how-it-works/deploy-model-locally.md
+    - MLflow Tracking:
+      - Index: mlflow/tracking/index.md
+      - 快速入門: mlflow/tracking/quickstart.md
+      - 概念: mlflow/tracking/concepts.md
+      - 設定 MLflow Tracking 環境: mlflow/tracking/tracking-server.md
     - MLflow Models:
       - Index: mlflow/models/index.md
       - 模型存儲格式: mlflow/models/storage-format.md
