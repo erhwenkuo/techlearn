@@ -37,4 +37,4 @@ mlflow.autolog()
 
 ## Tracking Datasets
 
-MLflow 提供了追蹤與模型訓練事件相關的資料集的能力。可以透過使用 `[mlflow.log_input()](https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.log_input)` API 來儲存與資料集關聯的這些元資料。要了解更多信息，請訪問 MLflow 資料文檔以查看此 API 中可用的功能。
+MLflow 提供了追蹤與模型訓練事件相關的資料集的能力。可以透過使用 [mlflow.log_input()](https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.log_input) API 來儲存與資料集關聯的這些元資料。要了解更多信息，請訪問 MLflow 資料文檔以查看此 API 中可用的功能。
