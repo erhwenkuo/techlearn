@@ -683,6 +683,9 @@ nav:
         - TensorFlow(tensorflow): mlflow/models/model_flavors/tensorflow-tensorflow.md
         - XGBoost(xgboost): mlflow/models/model_flavors/xgboost-xgboost.md
         - LightGBM(lightgbm): mlflow/models/model_flavors/lightgbm-lightgbm.md
+    - MLflow Model Registry:
+      - 概念: mlflow/model-registry/concepts.md
+      - 模型註冊 Workflow: mlflow/model-registry/model-registry-workflows.md
   - LLMs:
     - Serving:
       - OpenLLM:
