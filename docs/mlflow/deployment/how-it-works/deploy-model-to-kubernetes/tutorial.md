@@ -340,7 +340,7 @@ mlflow-wine-classifier   http://mlflow-wine-classifier.mlflow-kserve-test.local 
 !!! note
     部署狀態可能需要幾分鐘才能準備就緒。有關詳細的部署狀態和日誌，請執行 `kubectl get inferenceservice mlflow-wine-classifier -oyaml`。
 
-## 測試部署
+### 測試部署
 
 部署準備就緒後，您可以向伺服器發送測試請求。
 
