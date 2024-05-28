@@ -663,7 +663,7 @@ nav:
         - 本地推論服務部署: mlflow/deployment/how-it-works/deploy-model-locally.md
         - 在K8S部署推論服務:
           - Index: mlflow/deployment/how-it-works/deploy-model-to-kubernetes/index.md
-          
+          - Tutorial: mlflow/deployment/how-it-works/deploy-model-to-kubernetes/tutorial.md
     - MLflow Tracking:
       - Index: mlflow/tracking/index.md
       - 快速入門: mlflow/tracking/quickstart.md
