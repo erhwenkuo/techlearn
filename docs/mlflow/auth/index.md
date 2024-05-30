@@ -321,8 +321,8 @@ authorization_function = mlflow.server.auth:authenticate_request_basic_auth
 
 | Variable | Description |
 |----------|-------------|
-|`default_permission`|所有資源的預設權限, 從 MLflow 源始設定檔可得知預設權限的設定是 **READ**, 對於多團隊共同使用同一個 Tracking Service 的情境, 建議設定為 **NO_PERMISSIONS**。|
-|`database_uri`|儲存權限和使用者資料的資料庫位置, 參考:[SqlAlchemy - Database URLs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls)|
+|`default_permission`|所有資源的預設權限, 從 MLflow 源始設定檔可得知預設權限的設定是 **READ**。<br/>對於多團隊共同使用同一個 Tracking Service 的情境, 建議設定為 **NO_PERMISSIONS**。|
+|`database_uri`|儲存權限和使用者資料的資料庫位置, 參考: [SqlAlchemy - Database URLs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls)|
 |`admin_username`|預設管理員使用者名稱|
 |`admin_password`|預設管理員使用者密碼|
 |`authorization_function`|驗證請求的配置函數|
