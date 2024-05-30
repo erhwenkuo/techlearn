@@ -310,7 +310,7 @@ auth_client.create_user(username="username", password="password")
 
 MLflow 身份驗證模組的配置檔案位於 [mlflow/server/auth/basic_auth.ini](https://github.com/mlflow/mlflow/blob/master/mlflow/server/auth/basic_auth.ini)：
 
-```ini "basic_auth.ini"
+```ini title="basic_auth.ini"
 [mlflow]
 default_permission = READ
 database_uri = sqlite:///basic_auth.db
@@ -385,7 +385,7 @@ def authenticate_request() -> Union[Authorization, Response]:
 
 **Example: `/path/to/my_auth_config.ini`**
 
-```ini
+```
 [mlflow]
 database_uri = postgresql://username:password@hostname:port/database
 ```
