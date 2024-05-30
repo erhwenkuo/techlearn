@@ -689,6 +689,8 @@ nav:
     - MLflow Model Registry:
       - 概念: mlflow/model-registry/concepts.md
       - 模型註冊 Workflow: mlflow/model-registry/model-registry-workflows.md
+    - MLflow Authentication:
+      - Index: mlflow/auth/index.md
   - LLMs:
     - Serving:
       - OpenLLM:
