@@ -716,91 +716,165 @@ nav:
           - PostgreSQL (pgvector) 擴展實作: llm/rag/vector_store/pgvector/setting-up-postgres-with-pgvector.md
       - Text Splitters:
         - 簡介: llm/rag/text_splitters/intro.md
-  - Huggingface:    
-    - Datasets:
-      - 開始使用:
-        - 概述: huggingface/datasets/get-started/index.md
-        - 快速上手: huggingface/datasets/get-started/quickstart.md
-        - 安裝: huggingface/datasets/get-started/installation.md
-      - 教學:
-        - 概述: huggingface/datasets/tutorial/index.md
-        - 載入 dataset: huggingface/datasets/tutorial/load_hub.md
-        - 了解 dataset: huggingface/datasets/tutorial/access.md
-        - 數據預處理: huggingface/datasets/tutorial/use_dataset.md
-        - 創建 dataset: huggingface/datasets/tutorial/create_dataset.md
-        - 公開與共享 dataset: huggingface/datasets/tutorial/upload_dataset.md
-      - 操作指南:
-        - 概述: huggingface/datasets/how_to/overview.md
-        - 基本用法:
-          - 載入 Dataset : huggingface/datasets/how_to/general_usage/loading.md
-          - 數據處理: huggingface/datasets/how_to/general_usage/process.md
-          - 數據串流: huggingface/datasets/how_to/general_usage/stream.md
-          - 結合 Tensorflow 使用: huggingface/datasets/how_to/general_usage/use_with_tensorflow.md
-          - 結合 PyTorch 使用: huggingface/datasets/how_to/general_usage/use_with_pytorch.md
-          - 結合 JAX 使用: huggingface/datasets/how_to/general_usage/use_with_jax.md
-          - 結合 Spark 使用: huggingface/datasets/how_to/general_usage/use_with_spark.md
-          - 緩存 management: huggingface/datasets/how_to/general_usage/cache.md
-          - 雲存儲服務整合: huggingface/datasets/how_to/general_usage/filesystems.md
-        - Audio 數據:
-          - 載入 audio data: huggingface/datasets/audio/audio_load.md
-          - 處理 audio data: huggingface/datasets/audio/audio_process.md
-          - 創建 audio dataset: huggingface/datasets/audio/audio_dataset.md
-        - Vision 數據:
-          - 載入 image data: huggingface/datasets/vision/image_load.md
-          - 處理 image data: huggingface/datasets/vision/image_process.md
-          - 創建 image dataset: huggingface/datasets/vision/image_dataset.md
-          - Depth estimation: huggingface/datasets/vision/depth_estimation.md
-          - Image classification: huggingface/datasets/vision/image_classification.md
-          - Semantic segmentation: huggingface/datasets/vision/semantic_segmentation.md
-          - Object detection: huggingface/datasets/vision/object_detection.md
-        - Text 數據:
-          - 載入 text data: huggingface/datasets/text/nlp_load.md
-          - 處理 text data: huggingface/datasets/text/nlp_process.md
-        - Tabular 數據:
-          - 載入 tabular data: huggingface/datasets/tabular/tabular_load.md
-      - 底層概念:
-        - Dataset 與 Arrow: huggingface/datasets/conceptual_guides/about_arrow.md
-        - Dataset 緩存與指紋: huggingface/datasets/conceptual_guides/about_cache.md
-        - Dataset 與 IterableDataset 的差異: huggingface/datasets/conceptual_guides/about_mapstyle_vs_iterable.md
-        - Dataset features: huggingface/datasets/conceptual_guides/about_dataset_features.md
-        - Dataset 構建並加載: huggingface/datasets/conceptual_guides/about_dataset_load.md
-        - 批次 mapping: huggingface/datasets/conceptual_guides/about_map_batch.md
-    - Finetuning:
-      - PEFT:
-        - LoRA:
-          - LoRA 實現大模型 LLM 微調: huggingface/finetune/peft/lora/llm-finetune-with-lora.md
-        - Adapter:
-          - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
-    - Tutorials:
-      - Tokenizer:
-        - 概念:
-            - LLM 微調步驟-Tokenizing: huggingface/tutorials/tokenizer/fine-tuning-step-tokenizing.md
-        - SentencePiece:
-          - SentencePiece 原理與實踐: huggingface/tutorials/tokenizer/sentencepiece-concept.md
-      - Transfomer模型:
-        - PyTorch Transformer 詳細指南: huggingface/tutorials/transformer/a-detailed-guide-to-pytorchs-nn-transformer-module.md
-      - 模型微調:
-        - Llama2-7B:
-          - 使用單一 GPU 微調 LLaMA2: huggingface/tutorials/llama2/fine-tuning-llama-2-models-using-a-single-gpu.md
-        - Falcon-7B:
-          - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
-          - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
-          - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
-  - Cohere:
-    - LEARN:
-      - 關鍵概念:
-        - Embeddings: cohere/learn/embeddings.md
-        - Prompt Engineering: cohere/learn/prompt-engineering.md
-        - Tokens: cohere/learn/tokens.md
-      - 生成:
-        - Likelihood: cohere/generation/likelihood.md
-        - Number of Generations: cohere/generation/number-of-generations.md
-        - Temperature: cohere/generation/temperature.md
-        - Top-k & Top-p: cohere/generation/top-k-top-p.md
-        - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
-  - Copilot:
-    - Continue:
-      - 簡介: copilot/continue/intro.md
+    - Huggingface:    
+      - Datasets:
+        - 開始使用:
+          - 概述: huggingface/datasets/get-started/index.md
+          - 快速上手: huggingface/datasets/get-started/quickstart.md
+          - 安裝: huggingface/datasets/get-started/installation.md
+        - 教學:
+          - 概述: huggingface/datasets/tutorial/index.md
+          - 載入 dataset: huggingface/datasets/tutorial/load_hub.md
+          - 了解 dataset: huggingface/datasets/tutorial/access.md
+          - 數據預處理: huggingface/datasets/tutorial/use_dataset.md
+          - 創建 dataset: huggingface/datasets/tutorial/create_dataset.md
+          - 公開與共享 dataset: huggingface/datasets/tutorial/upload_dataset.md
+        - 操作指南:
+          - 概述: huggingface/datasets/how_to/overview.md
+          - 基本用法:
+            - 載入 Dataset : huggingface/datasets/how_to/general_usage/loading.md
+            - 數據處理: huggingface/datasets/how_to/general_usage/process.md
+            - 數據串流: huggingface/datasets/how_to/general_usage/stream.md
+            - 結合 Tensorflow 使用: huggingface/datasets/how_to/general_usage/use_with_tensorflow.md
+            - 結合 PyTorch 使用: huggingface/datasets/how_to/general_usage/use_with_pytorch.md
+            - 結合 JAX 使用: huggingface/datasets/how_to/general_usage/use_with_jax.md
+            - 結合 Spark 使用: huggingface/datasets/how_to/general_usage/use_with_spark.md
+            - 緩存 management: huggingface/datasets/how_to/general_usage/cache.md
+            - 雲存儲服務整合: huggingface/datasets/how_to/general_usage/filesystems.md
+          - Audio 數據:
+            - 載入 audio data: huggingface/datasets/audio/audio_load.md
+            - 處理 audio data: huggingface/datasets/audio/audio_process.md
+            - 創建 audio dataset: huggingface/datasets/audio/audio_dataset.md
+          - Vision 數據:
+            - 載入 image data: huggingface/datasets/vision/image_load.md
+            - 處理 image data: huggingface/datasets/vision/image_process.md
+            - 創建 image dataset: huggingface/datasets/vision/image_dataset.md
+            - Depth estimation: huggingface/datasets/vision/depth_estimation.md
+            - Image classification: huggingface/datasets/vision/image_classification.md
+            - Semantic segmentation: huggingface/datasets/vision/semantic_segmentation.md
+            - Object detection: huggingface/datasets/vision/object_detection.md
+          - Text 數據:
+            - 載入 text data: huggingface/datasets/text/nlp_load.md
+            - 處理 text data: huggingface/datasets/text/nlp_process.md
+          - Tabular 數據:
+            - 載入 tabular data: huggingface/datasets/tabular/tabular_load.md
+        - 底層概念:
+          - Dataset 與 Arrow: huggingface/datasets/conceptual_guides/about_arrow.md
+          - Dataset 緩存與指紋: huggingface/datasets/conceptual_guides/about_cache.md
+          - Dataset 與 IterableDataset 的差異: huggingface/datasets/conceptual_guides/about_mapstyle_vs_iterable.md
+          - Dataset features: huggingface/datasets/conceptual_guides/about_dataset_features.md
+          - Dataset 構建並加載: huggingface/datasets/conceptual_guides/about_dataset_load.md
+          - 批次 mapping: huggingface/datasets/conceptual_guides/about_map_batch.md
+      - Finetuning:
+        - PEFT:
+          - LoRA:
+            - LoRA 實現大模型 LLM 微調: huggingface/finetune/peft/lora/llm-finetune-with-lora.md
+          - Adapter:
+            - 從 Prefix Tuning 到 LLaMA-Adapter: huggingface/finetune/peft/adapter/understanding-llama-adapters.md
+      - Tutorials:
+        - Tokenizer:
+          - 概念:
+              - LLM 微調步驟-Tokenizing: huggingface/tutorials/tokenizer/fine-tuning-step-tokenizing.md
+          - SentencePiece:
+            - SentencePiece 原理與實踐: huggingface/tutorials/tokenizer/sentencepiece-concept.md
+        - Transfomer模型:
+          - PyTorch Transformer 詳細指南: huggingface/tutorials/transformer/a-detailed-guide-to-pytorchs-nn-transformer-module.md
+        - 模型微調:
+          - Llama2-7B:
+            - 使用單一 GPU 微調 LLaMA2: huggingface/tutorials/llama2/fine-tuning-llama-2-models-using-a-single-gpu.md
+          - Falcon-7B:
+            - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
+            - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
+            - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
+    - Cohere:
+      - LEARN:
+        - 關鍵概念:
+          - Embeddings: cohere/learn/embeddings.md
+          - Prompt Engineering: cohere/learn/prompt-engineering.md
+          - Tokens: cohere/learn/tokens.md
+        - 生成:
+          - Likelihood: cohere/generation/likelihood.md
+          - Number of Generations: cohere/generation/number-of-generations.md
+          - Temperature: cohere/generation/temperature.md
+          - Top-k & Top-p: cohere/generation/top-k-top-p.md
+          - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
+    - OpenAI:
+      - Get Started:
+        - 簡介: openai/get_started/introduction.md
+        - 快速入門: openai/get_started/quickstart.md
+      - Capabilities:
+        - Text generation: openai/capabilities/text-generation.md
+        - Function calling:
+          - 簡介: openai/capabilities/function-calling/index.md
+          - 範例:
+            - Function calling 功能: openai/capabilities/function-calling/openai-function-calling-feature.md
+        - Embeddings: openai/capabilities/embeddings.md
+        - Text-to-speech: openai/capabilities/text-to-speech.md
+        - Speech-to-text: openai/capabilities/speech-to-text.md
+      - Guides:
+        - 提示工程:
+          - 提示工程指南: openai/guides/prompt-engineering/index.md
+          - 六個提示工程策略: openai/guides/prompt-engineering/six-strategies-for-getting-better-results.md
+          - 範例:
+            - 提示範例: openai/guides/prompt-engineering/examples/index.md
+            - Grammar correction: openai/guides/prompt-engineering/examples/default-grammar.md
+            - Parse unstructured data: openai/guides/prompt-engineering/examples/default-parse-data.md
+            - Calculate time complexity: openai/guides/prompt-engineering/examples/default-time-complexity.md
+            - Keywords: openai/guides/prompt-engineering/examples/default-keywords.md
+            - Python bug fixer: openai/guides/prompt-engineering/examples/default-fix-python-bugs.md
+            - Tweet classifier: openai/guides/prompt-engineering/examples/default-tweet-classifier.md
+            - Mood to color: openai/guides/prompt-engineering/examples/default-mood-color.md
+            - Marv the sarcastic chat bot: openai/guides/prompt-engineering/examples/default-marv-sarcastic-chat.md
+            - Interview questions: openai/guides/prompt-engineering/examples/default-interview-questions.md
+            - Improve code efficiency: openai/guides/prompt-engineering/examples/default-code-improvement.md
+            - Emoji chatbot: openai/guides/prompt-engineering/examples/default-emoji-chatbot.md
+            - Socratic tutor: openai/guides/prompt-engineering/examples/default-socratic-tutor.md
+            - Meeting notes summarizer: openai/guides/prompt-engineering/examples/default-meeting-notes-summarizer.md
+            - Pro and con discusser: openai/guides/prompt-engineering/examples/default-pro-con-discusser.md
+            - Summarize for a 2nd grader: openai/guides/prompt-engineering/examples/default-summarize.md
+            - Emoji Translation: openai/guides/prompt-engineering/examples/default-emoji-translation.md
+            - Explain code: openai/guides/prompt-engineering/examples/default-explain-code.md
+            - Product name generator: openai/guides/prompt-engineering/examples/default-product-name-gen.md
+            - Spreadsheet creator: openai/guides/prompt-engineering/examples/default-spreadsheet-gen.md
+            - Airport code extractor: openai/guides/prompt-engineering/examples/default-airport-codes.md
+            - VR fitness idea generator: openai/guides/prompt-engineering/examples/default-vr-fitness.md
+            - Turn by turn directions: openai/guides/prompt-engineering/examples/default-turn-by-turn-directions.md
+            - Function from specification: openai/guides/prompt-engineering/examples/default-function-from-spec.md
+            - Single page website creator: openai/guides/prompt-engineering/examples/default-single-page-website.md
+            - Memo writer: openai/guides/prompt-engineering/examples/default-memo-writer.md
+            - Translation: openai/guides/prompt-engineering/examples/default-translation.md
+            - Natural language to SQL: openai/guides/prompt-engineering/examples/default-sql-translate.md
+            - Review classifier: openai/guides/prompt-engineering/examples/default-review-classifier.md
+            - Lesson plan writer: openai/guides/prompt-engineering/examples/default-lesson-plan-writer.md
+        - 安全最佳實踐: openai/guides/safety-best-practices.md    
+    - Prompt:
+      - Prompt Engineering:
+        - 提示工程指南: prompt/prompt-engineering/index.md
+        - 提示工程簡介:
+          - 簡介: prompt/prompt-engineering/introduction/index.md
+          - 模型參數設定: prompt/prompt-engineering/introduction/settings.md
+          - 基本概念: prompt/prompt-engineering/introduction/basics.md
+          - 提示詞要素: prompt/prompt-engineering/introduction/elements.md
+          - 設計提示的通用技巧: prompt/prompt-engineering/introduction/tips.md
+          - 提示範例: prompt/prompt-engineering/introduction/examples.md
+        - 提示技術:
+          - 簡介: prompt/prompt-engineering/techniques/index.md
+          - 零樣本提示: prompt/prompt-engineering/techniques/zeroshot.md
+          - 少樣本提示: prompt/prompt-engineering/techniques/fewshot.md
+          - 鍊式思考(CoT): prompt/prompt-engineering/techniques/cot.md
+          - 自我一致性: prompt/prompt-engineering/techniques/consistency.md
+          - 生成知識提示: prompt/prompt-engineering/techniques/knowledge.md
+          - 思維樹(ToT): prompt/prompt-engineering/techniques/tot.md
+          - 檢索增強生成(RAG): prompt/prompt-engineering/techniques/rag.md
+          - 自動推理並使用工具(ART): prompt/prompt-engineering/techniques/art.md
+          - 自動提示工程(APE): prompt/prompt-engineering/techniques/ape.md
+          - 方向性刺激提示: prompt/prompt-engineering/techniques/dsp.md
+          - ReAct 框架: prompt/prompt-engineering/techniques/react.md
+          - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
+          - Active-Prompt: prompt/prompt-engineering/techniques/activeprompt.md
+      - Copilot:
+        - Continue:
+          - 簡介: copilot/continue/intro.md
   - LangChain:
     - 參考文件:
       - 開始使用:
@@ -899,81 +973,5 @@ nav:
       - 簡介: langchain/docs/langserve/index.md
     - LangGraph:
       - 簡介: langchain/docs/langgraph/langgraph.md
-  - OpenAI:
-    - Get Started:
-      - 簡介: openai/get_started/introduction.md
-      - 快速入門: openai/get_started/quickstart.md
-    - Capabilities:
-      - Text generation: openai/capabilities/text-generation.md
-      - Function calling:
-        - 簡介: openai/capabilities/function-calling/index.md
-        - 範例:
-          - Function calling 功能: openai/capabilities/function-calling/openai-function-calling-feature.md
-      - Embeddings: openai/capabilities/embeddings.md
-      - Text-to-speech: openai/capabilities/text-to-speech.md
-      - Speech-to-text: openai/capabilities/speech-to-text.md
-    - Guides:
-      - 提示工程:
-        - 提示工程指南: openai/guides/prompt-engineering/index.md
-        - 六個提示工程策略: openai/guides/prompt-engineering/six-strategies-for-getting-better-results.md
-        - 範例:
-          - 提示範例: openai/guides/prompt-engineering/examples/index.md
-          - Grammar correction: openai/guides/prompt-engineering/examples/default-grammar.md
-          - Parse unstructured data: openai/guides/prompt-engineering/examples/default-parse-data.md
-          - Calculate time complexity: openai/guides/prompt-engineering/examples/default-time-complexity.md
-          - Keywords: openai/guides/prompt-engineering/examples/default-keywords.md
-          - Python bug fixer: openai/guides/prompt-engineering/examples/default-fix-python-bugs.md
-          - Tweet classifier: openai/guides/prompt-engineering/examples/default-tweet-classifier.md
-          - Mood to color: openai/guides/prompt-engineering/examples/default-mood-color.md
-          - Marv the sarcastic chat bot: openai/guides/prompt-engineering/examples/default-marv-sarcastic-chat.md
-          - Interview questions: openai/guides/prompt-engineering/examples/default-interview-questions.md
-          - Improve code efficiency: openai/guides/prompt-engineering/examples/default-code-improvement.md
-          - Emoji chatbot: openai/guides/prompt-engineering/examples/default-emoji-chatbot.md
-          - Socratic tutor: openai/guides/prompt-engineering/examples/default-socratic-tutor.md
-          - Meeting notes summarizer: openai/guides/prompt-engineering/examples/default-meeting-notes-summarizer.md
-          - Pro and con discusser: openai/guides/prompt-engineering/examples/default-pro-con-discusser.md
-          - Summarize for a 2nd grader: openai/guides/prompt-engineering/examples/default-summarize.md
-          - Emoji Translation: openai/guides/prompt-engineering/examples/default-emoji-translation.md
-          - Explain code: openai/guides/prompt-engineering/examples/default-explain-code.md
-          - Product name generator: openai/guides/prompt-engineering/examples/default-product-name-gen.md
-          - Spreadsheet creator: openai/guides/prompt-engineering/examples/default-spreadsheet-gen.md
-          - Airport code extractor: openai/guides/prompt-engineering/examples/default-airport-codes.md
-          - VR fitness idea generator: openai/guides/prompt-engineering/examples/default-vr-fitness.md
-          - Turn by turn directions: openai/guides/prompt-engineering/examples/default-turn-by-turn-directions.md
-          - Function from specification: openai/guides/prompt-engineering/examples/default-function-from-spec.md
-          - Single page website creator: openai/guides/prompt-engineering/examples/default-single-page-website.md
-          - Memo writer: openai/guides/prompt-engineering/examples/default-memo-writer.md
-          - Translation: openai/guides/prompt-engineering/examples/default-translation.md
-          - Natural language to SQL: openai/guides/prompt-engineering/examples/default-sql-translate.md
-          - Review classifier: openai/guides/prompt-engineering/examples/default-review-classifier.md
-          - Lesson plan writer: openai/guides/prompt-engineering/examples/default-lesson-plan-writer.md
-
-      - 安全最佳實踐: openai/guides/safety-best-practices.md
-    
-  - Prompt:
-    - Prompt Engineering:
-      - 提示工程指南: prompt/prompt-engineering/index.md
-      - 提示工程簡介:
-        - 簡介: prompt/prompt-engineering/introduction/index.md
-        - 模型參數設定: prompt/prompt-engineering/introduction/settings.md
-        - 基本概念: prompt/prompt-engineering/introduction/basics.md
-        - 提示詞要素: prompt/prompt-engineering/introduction/elements.md
-        - 設計提示的通用技巧: prompt/prompt-engineering/introduction/tips.md
-        - 提示範例: prompt/prompt-engineering/introduction/examples.md
-      - 提示技術:
-        - 簡介: prompt/prompt-engineering/techniques/index.md
-        - 零樣本提示: prompt/prompt-engineering/techniques/zeroshot.md
-        - 少樣本提示: prompt/prompt-engineering/techniques/fewshot.md
-        - 鍊式思考(CoT): prompt/prompt-engineering/techniques/cot.md
-        - 自我一致性: prompt/prompt-engineering/techniques/consistency.md
-        - 生成知識提示: prompt/prompt-engineering/techniques/knowledge.md
-        - 思維樹(ToT): prompt/prompt-engineering/techniques/tot.md
-        - 檢索增強生成(RAG): prompt/prompt-engineering/techniques/rag.md
-        - 自動推理並使用工具(ART): prompt/prompt-engineering/techniques/art.md
-        - 自動提示工程(APE): prompt/prompt-engineering/techniques/ape.md
-        - 方向性刺激提示: prompt/prompt-engineering/techniques/dsp.md
-        - ReAct 框架: prompt/prompt-engineering/techniques/react.md
-        - 多模態思維鏈提示: prompt/prompt-engineering/techniques/multimodalcot.md
-        - Active-Prompt: prompt/prompt-engineering/techniques/activeprompt.md
   - Blog:
     - blog/index.md
