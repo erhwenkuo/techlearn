@@ -672,6 +672,8 @@ nav:
         - 元件: mlflow/tracking/tracking-server.md
         - 使用本地資料庫追蹤實驗: mlflow/tracking/local-database.md
         - 進行遠端實驗追蹤: mlflow/tracking/remote-server.md
+    - System Metrics:
+      - Index: mlflow/system-metrics/index.md
     - MLflow Models:
       - Index: mlflow/models/index.md
       - 模型存儲格式: mlflow/models/storage-format.md
