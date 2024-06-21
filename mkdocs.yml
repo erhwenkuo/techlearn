@@ -657,6 +657,8 @@ nav:
         - XGBoost: kserve/modelserving/serving_runtime/lightgbm.md
         - LightGBM: kserve/modelserving/serving_runtime/lightgbm.md
   - MLflow:
+    - Model Evaluation:
+      - Index: mlflow/model-evaluation/index.md
     - Deployment:
       - Index: mlflow/deployment/index.md
       - 佈署標的:
