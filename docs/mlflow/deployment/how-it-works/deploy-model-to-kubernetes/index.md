@@ -27,9 +27,71 @@
 
     ```bash
     mlflow models build-docker -m runs:/<run_id>/model -n <image_name> --enable-mlserver
+
+    mlflow models build-docker -m models:/<model_name>/<version> -n <image_name> --enable-mlserver
     ```
 
     如果您想使用基本的 Flask 伺服器而不是 MLServer，請刪除 `--enable-mlserver` 標誌。有關其他選項，請參閱 [build-docker](https://mlflow.org/docs/latest/cli.html#mlflow-models-build-docker) 命令文件。
+
+    **build-docker**
+
+    使用 python_function 風格建立一個 Docker 映像，其預設入口點在連接埠 `8080` 處提供 MLflow 模型。如果在呼叫 **build-docker** 時指定，容器將提供 `--model-uri` 引用的模型。如果在呼叫 **build_docker** 時未指定 `--model-uri`，則必須將 MLflow Model 目錄作為磁碟區安裝到容器中的 `/opt/ml/model` 目錄中。
+
+    使用 `--model-uri` 建置 Docker 映像：
+
+    ```bash
+    # Build a Docker image named 'my-image-name' that serves the model from run 'some-run-uuid'
+    # at run-relative artifact path 'my-model'
+    mlflow models build-docker --model-uri "runs:/some-run-uuid/my-model" --name "my-image-name"
+
+
+    # Serve the model
+    docker run -p 5001:8080 "my-image-name"
+    ```
+
+    建置不含 `--model-uri` 的 Docker 映像：
+
+    ```bash
+    # Build a generic Docker image named 'my-image-name'
+    mlflow models build-docker --name "my-image-name"
+
+    # Mount the model stored in '/local/path/to/artifacts/model' and serve it
+    docker run --rm -p 5001:8080 -v /local/path/to/artifacts/model:/opt/ml/model "my-image-name"
+    ```
+
+    Options:
+
+    - `-m, --model-uri <URI>` 模型的 URI。local path、'runs:/' URI、'models:/{model_name}/{version}' 或遠端儲存 URI（例如 's3://' URI）。
+    - `-n, --name <name>` 用於建立映像的名稱
+    - `--env-manager <env_manager>` 如果指定，則使用指定的環境管理器為 MLmodel 建立環境。支援以下值：
+        - `local` 使用本地環境
+        - `virtualenv` 使用 virtualenv （和 pyenv 用於 Python 版本管理）
+        - `conda` 使用 conda
+
+        如果未指定，則預設為 `virtualenv`。
+
+    - `--enable-mlserver` 透過 v2 推理協定啟用 MLServer 服務。您可以使用環境變數來設定 MLServer。
+
+    **generate-dockerfile**
+
+    產生一個目錄並構建一個 `Dockerfile` (其預設入口點使用 `python_function` 風格在連接埠 `8080` 處提供 MLflow 模型)。產生的 `Dockerfile` 與模型（如果指定）一起寫入指定的輸出目錄。此 `Dockerfile` 定義了一個與 mlflow 模型 `build-docker` 產生的映像等效的映像。
+
+    ```bash
+    mlflow models generate-dockerfile [OPTIONS]
+    ```
+
+    Options:
+
+    - `-m, --model-uri <URI>` 模型的 URI。local path、'runs:/' URI、'models:/{model_name}/{version}' 或遠端儲存 URI（例如 's3://' URI）。
+    - `-d, --output-directory <output_director>` 儲存產生的 Dockerfile 的輸出目錄。
+    - `--env-manager <env_manager>` 如果指定，則使用指定的環境管理器為 MLmodel 建立環境。支援以下值：
+        - `local` 使用本地環境
+        - `virtualenv` 使用 virtualenv （和 pyenv 用於 Python 版本管理）
+        - `conda` 使用 conda
+
+        如果未指定，則預設為 `virtualenv`。
+
+    - `--enable-mlserver` 透過 v2 推理協定啟用 MLServer 服務。您可以使用環境變數來設定 MLServer。
 
 === "Python"
 
