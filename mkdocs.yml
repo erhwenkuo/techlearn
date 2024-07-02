@@ -659,6 +659,17 @@ nav:
   - MLflow:
     - Model Evaluation:
       - Index: mlflow/model-evaluation/index.md
+    - TraditionalML:
+      - Index: mlflow/traditional-ml/index.md
+      - 教程和指南:
+        - 構建客制 Python Function 模型:
+          - Index: mlflow/traditional-ml/creating-custom-pyfunc/index.md
+          - Models, Flavors, and PyFuncs: mlflow/traditional-ml/creating-custom-pyfunc/part1-named-flavors.md
+          - Understanding PyFunc: mlflow/traditional-ml/creating-custom-pyfunc/part2-pyfunc-components.md
+          - 範例:
+            - 建立自訂模型 "Add N": mlflow/traditional-ml/creating-custom-pyfunc/add-n.md
+            - 利薩茹 Lissajous 曲線自訂模型: mlflow/traditional-ml/creating-custom-pyfunc/basic-pyfunc.md
+            - 自訂模型的 predict 方法: mlflow/traditional-ml/creating-custom-pyfunc/override-predict.md
     - Deployment:
       - Index: mlflow/deployment/index.md
       - 佈署標的:
