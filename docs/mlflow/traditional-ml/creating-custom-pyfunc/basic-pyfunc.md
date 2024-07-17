@@ -193,4 +193,4 @@ fig2 = loaded_pyfunc_model.predict(
 fig2
 ```
 
-![](./assets/traditional-ml_creating-custom-pyfunc_notebooks_basic-pyfunc_11_0.png)
+![](./assets/traditional-ml_creating-custom-pyfunc_notebooks_basic-pyfunc_10_0.png)
