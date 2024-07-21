@@ -988,5 +988,14 @@ nav:
       - 簡介: langchain/docs/langserve/index.md
     - LangGraph:
       - 簡介: langchain/docs/langgraph/langgraph.md
+  - AutoGluon:
+    - GET STARTED:
+      - Install: autogluon/install.md
+      - Tabular Quick Start: autogluon/tutorials/tabular/tabular-quick-start.md
+      - Time Series Quick Start: autogluon/tutorials/timeseries/forecasting-quick-start.md
+    - TUTORIALS:
+      - Time Series:
+        - Quick Start: autogluon/tutorials/timeseries/forecasting-quick-start.md
+        - In Depth: autogluon/tutorials/timeseries/forecasting-indepth.md
   - Blog:
     - blog/index.md
