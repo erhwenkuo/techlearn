@@ -997,5 +997,9 @@ nav:
       - Time Series:
         - Quick Start: autogluon/tutorials/timeseries/forecasting-quick-start.md
         - In Depth: autogluon/tutorials/timeseries/forecasting-indepth.md
+  - MLServer:
+    - Getting Started: mlserver/getting-started.md
+    - User Guide:
+        Content Type: mlserver/user-guide/content-type.md
   - Blog:
     - blog/index.md
