@@ -401,9 +401,9 @@ foo = ["bar", "bar2"]
     # We can use the `StringCodec` to encode a single input head with name `foo`
     # within a larger request
     inference_request = InferenceRequest(
-    inputs=[
-        StringCodec.encode_input("foo", foo, use_bytes=False)
-    ]
+      inputs=[
+          StringCodec.encode_input("foo", foo, use_bytes=False)
+      ]
     )
     ```
 
