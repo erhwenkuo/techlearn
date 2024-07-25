@@ -1000,6 +1000,11 @@ nav:
   - MLServer:
     - Getting Started: mlserver/getting-started.md
     - User Guide:
-        Content Type: mlserver/user-guide/content-type.md
+      - Content Type: mlserver/user-guide/content-type.md
+    - Examples:
+      - Serving Scikit-Learn models: mlserver/examples/sklearn.md
+      - Serving XGBoost models: mlserver/examples/xgboost.md
+      - Serving LightGBM models: mlserver/examples/lightgbm.md
+      - Content Type Decoding: mlserver/examples/content-type.md
   - Blog:
     - blog/index.md
