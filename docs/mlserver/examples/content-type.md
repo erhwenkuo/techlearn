@@ -257,7 +257,7 @@ response = requests.post(
 
 在這些場景中，可以擴展 `Codec` 介面來編寫我們的自訂編碼邏輯。編解碼器只是一個定義了 `decode()` 和 `encode()` 方法的物件。為了說明這是如何工作的，我們將擴展自訂運行時以添加自訂 `PillowCodec`。
 
-```python title-"runtime.py"
+```python title="runtime.py"
 import io
 import json
 
