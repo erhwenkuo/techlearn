@@ -219,7 +219,7 @@ MLServer 開箱即用，支援以下內容類型清單。但是，這可以透�
 |[Pandas DataFrame](https://mlserver.readthedocs.io/en/latest/user-guide/content-type.html#pandas-dataframe)|`pd`|✅|`mlserver.codecs.PandasCodec`|❌||
 |[UTF-8 String](https://mlserver.readthedocs.io/en/latest/user-guide/content-type.html#utf-8-string)|`str`|✅|`mlserver.codecs.string.StringRequestCodec`|✅|`mlserver.codecs.StringCodec`|
 |[Base64](https://mlserver.readthedocs.io/en/latest/user-guide/content-type.html#base64)|`base64`|❌||✅|`mlserver.codecs.Base64Codec`|
-|[Datetime](https://mlserver.readthedocs.io/en/latest/user-guide/content-type.html#datetime)|``datetime`|❌||✅|`mlserver.codecs.DatetimeCodec`|
+|[Datetime](https://mlserver.readthedocs.io/en/latest/user-guide/content-type.html#datetime)|`datetime`|❌||✅|`mlserver.codecs.DatetimeCodec`|
 
 ### NumPy Array
 
