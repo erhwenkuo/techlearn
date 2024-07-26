@@ -166,7 +166,7 @@ import requests
 
 請注意，以下的請求使用了我們先前根據 Barbie 和 Oppenheimer 的摘要建立的變數。如果您從新的 python 檔案發送此 POST 請求，請確保將上面的這些程式碼行移至請求檔案中。
 
-```python "app_infer.py"
+```python title="app_infer.py"
 inference_request = {
     "inputs": [
         StringCodec.encode_input(name='docs', payload=[barbie, oppenheimer], use_bytes=False).model_dump()
