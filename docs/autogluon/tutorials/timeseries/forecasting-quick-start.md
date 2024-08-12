@@ -34,7 +34,7 @@ from autogluon.timeseries import TimeSeriesDataFrame, TimeSeriesPredictor
 
 本教學課程示範如何快速開始使用 AutoGluon 為 [M4 預測競賽資料集](https://www.sciencedirect.com/science/article/pii/S0169207019301128)產生每小時預測。
 
-```info
+!!! info
     2018年，Spyros Makridakis 等人進行 M4 競賽，其中包含 10 萬個涉及更多領域的時間序列預測任務。
     - [M4 Forecasting Competition Dataset](https://www.kaggle.com/datasets/yogesh94/m4-forecasting-competition-dataset)
 
