@@ -708,6 +708,11 @@ nav:
       - Index: mlflow/auth/index.md
   - LLMs:
     - Serving:
+      - Ollama:
+        - 簡介: ollama/introduction.md
+        - 導入客制模型: ollama/import.md
+        - FAQ: ollama/faq.md
+        - 環境變數: ollama/env_variables.md
       - OpenLLM:
         - 簡介: llm/serving/openllm/introduction.md
         - 基本使用: llm/serving/openllm/get_started.md
