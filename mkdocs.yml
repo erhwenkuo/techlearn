@@ -134,6 +134,16 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - AI Agent:
+    - Dev 程式語言:
+      - Python:
+        - uv:
+          - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md
+    - Tools:
+      - WebSearch:
+        - SearXng:
+          - 簡介: ai_agent/tools/web_search/searxng/index.md
+          - 安裝: ai_agent/tools/web_search/searxng/setup.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
