@@ -139,6 +139,9 @@ nav:
       - Python:
         - uv:
           - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md
+    - DeepResearch:
+      - Jina AI:
+        - 實作指南: ai_agent/deep_research/jina_ai/index.md
     - Tools:
       - WebSearch:
         - SearXng:
