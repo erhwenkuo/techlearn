@@ -147,6 +147,16 @@ nav:
         - SearXng:
           - 簡介: ai_agent/tools/web_search/searxng/index.md
           - 安裝: ai_agent/tools/web_search/searxng/setup.md
+    - LiveKit:
+      - AI Agents:
+        - 簡介: livekit/agents/index.md
+        - 快速上手:          
+          - Voice AI quickstart: livekit/agents/start/voice-ai.md
+          - Web and mobile frontends: livekit/agents/start/frontend.md
+          - Agents playground: livekit/agents/start/playground.md
+        - 構建語音助理:
+          - Overview: livekit/agents/build/overview.md
+          - Workflows: livekit/agents/build/workflows.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
