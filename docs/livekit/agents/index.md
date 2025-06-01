@@ -8,11 +8,11 @@ Agents framework 可讓您將 Python 或 Node.js 程式新增至任何 LiveKit �
 
 如果您想立即體驗範例程式碼，請遵循此快速入門指南。只需幾分鐘即可建立您的第一個語音代理。
 
-- **[Voice AI quickstart](https://docs.livekit.io/agents/start/voice-ai.md)**: 在不到 10 分鐘的時間內使用 Python 建立一個簡單的語音助理。
+- **[Voice AI quickstart](./start/voice-ai.md)**: 在不到 10 分鐘的時間內使用 Python 建立一個簡單的語音助理。
 
 - **[GitHub repository](https://github.com/livekit/agents)**: LiveKit Agents SDK 的 Python 原始碼和範例。
 
-- **[SDK reference](https://docs.livekit.io/reference/python/v1/livekit/agents/index.html.md)**: LiveKit Agents SDK 的 Python 參考文件。
+- **[SDK reference](https://docs.livekit.io/reference/python/v1/livekit/agents/index.html)**: LiveKit Agents SDK 的 Python 參考文件。
 
 ## Use cases
 
