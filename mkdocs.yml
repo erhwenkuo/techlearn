@@ -208,7 +208,11 @@ nav:
         - Worker 生命周期: 
           - Overview: livekit/agents/worker/overview.md
           - Agent dispatch: livekit/agents/worker/agent-dispatch.md
-          - Worker options: livekit/agents/worker/job.md
+          - Job lifecycle: livekit/agents/worker/job.md
+          - Worker options: livekit/agents/worker/options.md
+        - 佈署與運維:
+          - Deploying to production: livekit/agents/ops/deployment.md
+          - Session recording & transcripts: livekit/agents/ops/recording.md
   - Kubernetes:
     - Getting started:
       - 學習環境:
