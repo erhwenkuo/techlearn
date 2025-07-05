@@ -139,6 +139,9 @@ nav:
       - Python:
         - uv:
           - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md
+    - OpenAI:
+      - 核心概念:
+        - Structured Outputs: openai/guides/structured-outputs.md
     - LangGraph:
       - Quickstart:
         - 簡介: langgraph/quickstart/introduction.md

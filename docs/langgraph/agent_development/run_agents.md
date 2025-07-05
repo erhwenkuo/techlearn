@@ -118,22 +118,22 @@ Streaming 可在同步和非同步模式下使用：
 
 === ".with_config()"
 
-```python hl_lines="5 10"
-from langgraph.errors import GraphRecursionError
-from langgraph.prebuilt import create_react_agent
+    ```python hl_lines="5 10"
+    from langgraph.errors import GraphRecursionError
+    from langgraph.prebuilt import create_react_agent
 
-max_iterations = 3
-recursion_limit = 2 * max_iterations + 1
-agent = create_react_agent(
-    model="anthropic:claude-3-5-haiku-latest",
-    tools=[get_weather]
-)
-agent_with_recursion_limit = agent.with_config(recursion_limit=recursion_limit)
-
-try:
-    response = agent_with_recursion_limit.invoke(
-        {"messages": [{"role": "user", "content": "what's the weather in sf"}]},
+    max_iterations = 3
+    recursion_limit = 2 * max_iterations + 1
+    agent = create_react_agent(
+        model="anthropic:claude-3-5-haiku-latest",
+        tools=[get_weather]
     )
-except GraphRecursionError:
-    print("Agent stopped due to max iterations.")
-```
+    agent_with_recursion_limit = agent.with_config(recursion_limit=recursion_limit)
+
+    try:
+        response = agent_with_recursion_limit.invoke(
+            {"messages": [{"role": "user", "content": "what's the weather in sf"}]},
+        )
+    except GraphRecursionError:
+        print("Agent stopped due to max iterations.")
+    ```
