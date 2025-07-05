@@ -139,7 +139,23 @@ nav:
       - Python:
         - uv:
           - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md
-    - DeepResearch:
+    - LangGraph:
+      - Quickstart:
+        - 簡介: langgraph/quickstart/introduction.md
+        - 使用 prebuilt agent: langgraph/quickstart/prebuild_agent.md
+        - 構建客制化的 agent: 
+          - 簡介: langgraph/quickstart/custom_workflow/overview.md
+          - 1. 構建基礎 chatbot: langgraph/quickstart/custom_workflow/1-build-basic-chatbot.md
+          - 2. 增加 tool: langgraph/quickstart/custom_workflow/2-add-tools.md
+          - 3. 增加 memory: langgraph/quickstart/custom_workflow/3-add-memory.md
+          - 4. 增加 human-in-the-loop: langgraph/quickstart/custom_workflow/4-human-in-the-loop.md
+          - 5. 客製化 state: langgraph/quickstart/custom_workflow/5-customize-state.md
+          - 6. 時間旅行: langgraph/quickstart/custom_workflow/6-time-travel.md
+        - 啟動一個 local server: langgraph/quickstart/local-server.md
+      - Agent 開發:
+        - Workflows 與 agents: langgraph/agent_development/workflows.md
+        - Prebuilt 元件: langgraph/agent_development/prebuilt_components.md
+        - 執行一個 agent: langgraph/agent_development/run_agents.md
       - Jina AI:
         - 實作指南: ai_agent/deep_research/jina_ai/index.md
     - Tools:
