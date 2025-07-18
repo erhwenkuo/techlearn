@@ -58,23 +58,23 @@ JSON 是世界上應用程式交換資料最廣泛的格式之一。
     const openai = new OpenAI();
 
     const CalendarEvent = z.object({
-    name: z.string(),
-    date: z.string(),
-    participants: z.array(z.string()),
+        name: z.string(),
+        date: z.string(),
+        participants: z.array(z.string()),
     });
 
     const response = await openai.responses.parse({
-    model: "gpt-4o-2024-08-06",
-    input: [
-        { role: "system", content: "Extract the event information." },
-        {
-        role: "user",
-        content: "Alice and Bob are going to a science fair on Friday.",
+        model: "gpt-4o-2024-08-06",
+        input: [
+            { role: "system", content: "Extract the event information." },
+            {
+                role: "user",
+                content: "Alice and Bob are going to a science fair on Friday.",
+            },
+        ],
+        text: {
+            format: zodTextFormat(CalendarEvent, "event"),
         },
-    ],
-    text: {
-        format: zodTextFormat(CalendarEvent, "event"),
-    },
     });
 
     const event = response.output_parsed;
@@ -130,9 +130,9 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
 
 **Structured Outputs for chain-of-thought math tutoring**
 
-=== "curl" hl_lines="16-41"
+=== "curl"
 
-    ```bash title="curl"
+    ```bash title="curl" hl_lines="16-41"
     curl https://api.openai.com/v1/responses \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-Type: application/json" \
@@ -178,9 +178,9 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     }'
     ```
 
-=== "python" hl_lines="23 26"
+=== "python"
 
-    ```python
+    ```python hl_lines="23 26"
     from openai import OpenAI
     from pydantic import BaseModel
 
@@ -209,9 +209,9 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     math_reasoning = response.output_parsed
     ```
 
-=== "javascript" hl_lines="27-29 32"
+=== "javascript"
 
-    ```javascript
+    ```javascript  hl_lines="27-29 32"
     import OpenAI from "openai";
     import { zodTextFormat } from "openai/helpers/zod";
     import { z } from "zod";
@@ -219,28 +219,28 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     const openai = new OpenAI();
 
     const Step = z.object({
-    explanation: z.string(),
-    output: z.string(),
+        explanation: z.string(),
+        output: z.string(),
     });
 
     const MathReasoning = z.object({
-    steps: z.array(Step),
-    final_answer: z.string(),
+    '    steps: z.array(Step),
+        final_answer: z.string(),'
     });
 
     const response = await openai.responses.parse({
-    model: "gpt-4o-2024-08-06",
-    input: [
-        {
-        role: "system",
-        content:
-            "You are a helpful math tutor. Guide the user through the solution step by step.",
+        model: "gpt-4o-2024-08-06",
+        input: [
+            {
+            role: "system",
+            content:
+                "You are a helpful math tutor. Guide the user through the solution step by step.",
+            },
+            { role: "user", content: "how can I solve 8x + 7 = -23" },
+        ],
+        text: {
+            format: zodTextFormat(MathReasoning, "math_reasoning"),
         },
-        { role: "user", content: "how can I solve 8x + 7 = -23" },
-    ],
-    text: {
-        format: zodTextFormat(MathReasoning, "math_reasoning"),
-    },
     });
 
     const math_reasoning = response.output_parsed;
@@ -366,25 +366,25 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     const openai = new OpenAI();
 
     const ResearchPaperExtraction = z.object({
-    title: z.string(),
-    authors: z.array(z.string()),
-    abstract: z.string(),
-    keywords: z.array(z.string()),
+        title: z.string(),
+        authors: z.array(z.string()),
+        abstract: z.string(),
+        keywords: z.array(z.string()),
     });
 
     const response = await openai.responses.parse({
-    model: "gpt-4o-2024-08-06",
-    input: [
-        {
-        role: "system",
-        content:
-            "You are an expert at structured data extraction. You will be given unstructured text from a research paper and should convert it into the given structure.",
+        model: "gpt-4o-2024-08-06",
+        input: [
+            {
+            role: "system",
+            content:
+                "You are an expert at structured data extraction. You will be given unstructured text from a research paper and should convert it into the given structure.",
+            },
+            { role: "user", content: "..." },
+        ],
+        text: {
+            format: zodTextFormat(ResearchPaperExtraction, "research_paper_extraction"),
         },
-        { role: "user", content: "..." },
-    ],
-    text: {
-        format: zodTextFormat(ResearchPaperExtraction, "research_paper_extraction"),
-    },
     });
 
     const research_paper = response.output_parsed;
@@ -546,34 +546,34 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     const openai = new OpenAI();
 
     const UI = z.lazy(() =>
-    z.object({
-        type: z.enum(["div", "button", "header", "section", "field", "form"]),
-        label: z.string(),
-        children: z.array(UI),
-        attributes: z.array(
         z.object({
-            name: z.string(),
-            value: z.string(),
+            type: z.enum(["div", "button", "header", "section", "field", "form"]),
+            label: z.string(),
+            children: z.array(UI),
+            attributes: z.array(
+                z.object({
+                    name: z.string(),
+                    value: z.string(),
+                })
+            ),
         })
-        ),
-    })
     );
 
     const response = await openai.responses.parse({
-    model: "gpt-4o-2024-08-06",
-    input: [
-        {
-        role: "system",
-        content: "You are a UI generator AI. Convert the user input into a UI.",
+        model: "gpt-4o-2024-08-06",
+        input: [
+            {
+                role: "system",
+                content: "You are a UI generator AI. Convert the user input into a UI.",
+            },
+            {
+                role: "user",
+                content: "Make a User Profile Form",
+            },
+        ],
+        text: {
+            format: zodTextFormat(UI, "ui"),
         },
-        {
-        role: "user",
-        content: "Make a User Profile Form",
-        },
-    ],
-    text: {
-        format: zodTextFormat(UI, "ui"),
-    },
     });
 
     const ui = response.output_parsed;
@@ -739,7 +739,9 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
                 "role": "system",
                 "content": "Determine if the user input violates specific guidelines and explain if they do.",
             },
-            {"role": "user", "content": "How do I prepare for a job interview?"},
+            {   "role": "user", 
+                "content": "How do I prepare for a job interview?"
+            },
         ],
         text_format=ContentCompliance,
     )
@@ -757,22 +759,22 @@ OpenAI 建議盡可能使用 Structured Outputs 而不是 JSON mode。
     const openai = new OpenAI();
 
     const ContentCompliance = z.object({
-    is_violating: z.boolean(),
-    category: z.enum(["violence", "sexual", "self_harm"]).nullable(),
-    explanation_if_violating: z.string().nullable(),
+        is_violating: z.boolean(),
+        category: z.enum(["violence", "sexual", "self_harm"]).nullable(),
+        explanation_if_violating: z.string().nullable(),
     });
 
     const response = await openai.responses.parse({
         model: "gpt-4o-2024-08-06",
         input: [
-        {
-            "role": "system",
-            "content": "Determine if the user input violates specific guidelines and explain if they do."
-        },
-        {
-            "role": "user",
-            "content": "How do I prepare for a job interview?"
-        }
+            {
+                "role": "system",
+                "content": "Determine if the user input violates specific guidelines and explain if they do."
+            },
+            {
+                "role": "user",
+                "content": "How do I prepare for a job interview?"
+            }
         ],
         text: {
             format: zodTextFormat(ContentCompliance, "content_compliance"),
@@ -1118,31 +1120,31 @@ try {
 
     ```javascript
     const Step = z.object({
-    explanation: z.string(),
-    output: z.string(),
+        explanation: z.string(),
+        output: z.string(),
     });
 
     const MathReasoning = z.object({
-    steps: z.array(Step),
-    final_answer: z.string(),
+        steps: z.array(Step),
+        final_answer: z.string(),
     });
 
     const completion = await openai.chat.completions.parse({
-    model: "gpt-4o-2024-08-06",
-    messages: [
-        { role: "system", content: "You are a helpful math tutor. Guide the user through the solution step by step." },
-        { role: "user", content: "how can I solve 8x + 7 = -23" },
-    ],
-    response_format: zodResponseFormat(MathReasoning, "math_reasoning"),
+        model: "gpt-4o-2024-08-06",
+        messages: [
+            { role: "system", content: "You are a helpful math tutor. Guide the user through the solution step by step." },
+            { role: "user", content: "how can I solve 8x + 7 = -23" },
+        ],
+        response_format: zodResponseFormat(MathReasoning, "math_reasoning"),
     });
 
     const math_reasoning = completion.choices[0].message
 
     // If the model refuses to respond, you will get a refusal message
     if (math_reasoning.refusal) {
-    console.log(math_reasoning.refusal);
+        console.log(math_reasoning.refusal);
     } else {
-    console.log(math_reasoning.parsed);
+        console.log(math_reasoning.parsed);
     }
     ```
 
@@ -1228,7 +1230,7 @@ try {
     with client.responses.stream(
         model="gpt-4.1",
         input=[
-            {"role": "system", "content": "Extract entities from the input text"},
+            {   "role": "system", "content": "Extract entities from the input text"},
             {
                 "role": "user",
                 "content": "The quick brown fox jumps over the lazy dog with piercing blue eyes",
@@ -1259,9 +1261,9 @@ try {
     import { z } from "zod";
 
     const EntitiesSchema = z.object({
-    attributes: z.array(z.string()),
-    colors: z.array(z.string()),
-    animals: z.array(z.string()),
+        attributes: z.array(z.string()),
+        colors: z.array(z.string()),
+        animals: z.array(z.string()),
     });
 
     const openai = new OpenAI();
@@ -1269,10 +1271,10 @@ try {
     .stream({
         model: "gpt-4.1",
         input: [
-        { role: "user", content: "What's the weather like in Paris today?" },
+            { role: "user", content: "What's the weather like in Paris today?" },
         ],
         text: {
-        format: zodTextFormat(EntitiesSchema, "entities"),
+            format: zodTextFormat(EntitiesSchema, "entities"),
         },
     })
     .on("response.refusal.delta", (event) => {
@@ -1420,8 +1422,8 @@ const BaseResponseSchema = z.object({/* ... */});
 const UnsuccessfulResponseSchema = z.object({/* ... */});
 
 const finalSchema = z.discriminatedUnion('status', [
-BaseResponseSchema,
-UnsuccessfulResponseSchema,
+    BaseResponseSchema,
+    UnsuccessfulResponseSchema,
 ]);
 
 // Invalid JSON Schema for Structured Outputs
@@ -1607,11 +1609,12 @@ const json = zodResponseFormat(finalSchema, 'final_schema');
     const response = await openai.responses.create({
         model: "gpt-3.5-turbo-0125",
         input: [
-        {
-            role: "system",
-            content: "You are a helpful assistant designed to output JSON.",
-        },
-        { role: "user", content: "Who won the world series in 2020? Please respond in the format {winner: ...}" },
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output JSON.",
+            },
+            {   role: "user", 
+                content: "Who won the world series in 2020? Please respond in the format {winner: ...}" },
         ],
         text: { format: { type: "json_object" } },
     });
@@ -1637,16 +1640,16 @@ const json = zodResponseFormat(finalSchema, 'final_schema');
         // In this case the model has either successfully finished generating the JSON object according to your schema, or the model generated one of the tokens you provided as a "stop token"
 
         if (we_did_not_specify_stop_tokens) {
-        // If you didn't specify any stop tokens, then the generation is complete and the content key will contain the serialized JSON object
-        // This will parse successfully and should now contain  {"winner": "Los Angeles Dodgers"}
-        console.log(JSON.parse(response.output_text))
+            // If you didn't specify any stop tokens, then the generation is complete and the content key will contain the serialized JSON object
+            // This will parse successfully and should now contain  {"winner": "Los Angeles Dodgers"}
+            console.log(JSON.parse(response.output_text))
         } else {
-        // Check if the response.output_text ends with one of your stop tokens and handle appropriately
+            // Check if the response.output_text ends with one of your stop tokens and handle appropriately
         }
     }
     } catch (e) {
-    // Your code should handle errors here, for example a network error calling the API
-    console.error(e)
+        // Your code should handle errors here, for example a network error calling the API
+        console.error(e)
     }
     ```
 
