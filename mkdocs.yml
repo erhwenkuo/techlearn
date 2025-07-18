@@ -144,9 +144,9 @@ nav:
         - Structured Outputs: openai/guides/structured-outputs.md
     - LangChain:
       - 概念指南:
-        - Structured Outputs: lanchain/concepts/structured_outputs.md
+        - Structured Outputs: langchain/concepts/structured_outputs.md
       - 操作指南:
-        - Structured Outputs: lanchain/how_to/structured_output.md
+        - Structured Outputs: langchain/how_to/structured_output.md
     - LangGraph:
       - Quickstart:
         - 簡介: langgraph/quickstart/introduction.md
