@@ -28,7 +28,7 @@ LiveKit Agents 提供了一個統一的介面，用於使用 `STT-LLM-TTS` 管�
 
 > 💡 **Realtime models and TTS**
 > 
-> `say` 方法需要 TTS 插件。如果您使用的是即時模型，則需要在會話中新增 TTS 外掛程式或使用 [`generate_reply()`](#manually-interrupt-and-generate-responses) 方法。
+> `say` 方法需要 TTS 插件。如果您使用的是即時模型，則需要在會話中新增 TTS 外掛程式或使用 `generate_reply()` 方法。
 
 ```python
 await session.say(
@@ -453,7 +453,7 @@ async def entrypoint(ctx: agents.JobContext):
 
 - **`loop`** _(boolean)_ (optional) - Default: `False`: 設定為 `True` 以循環播放音訊來源。
 
-例如，如果您在[上一個範例](#publishing-background-audio)中建立了 `background_audio`，則可以像這樣播放音訊檔案：
+例如，如果您在上一個範例中建立了 `background_audio`，則可以像這樣播放音訊檔案：
 
 ```python
 MY_AUDIO_FILE = "<PATH_TO_AUDIO_FILE>"

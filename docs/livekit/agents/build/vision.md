@@ -112,7 +112,7 @@ from livekit.agents.llm import ImageContent
 
 ### Sample video frames
 
-LLM 可以處理靜止影像形式的視頻，但許多 LLM 並未針對此用例進行訓練，並且在透過視訊來源理解運動和其他變化時會產生次優結果。即時模型，例如 [Gemini Live](https://docs.livekit.io/agents/integrations/realtime/gemini.md)，是在視訊上進行訓練的，您可以啟用 [即時視訊輸入](#video) 以獲得自動支援。
+LLM 可以處理靜止影像形式的視頻，但許多 LLM 並未針對此用例進行訓練，並且在透過視訊來源理解運動和其他變化時會產生次優結果。即時模型，例如 [Gemini Live](https://docs.livekit.io/agents/integrations/realtime/gemini.md)，是在視訊上進行訓練的，您可以啟用即時視訊輸入以獲得自動支援。
 
 如果您使用 `STT-LLM-TTS` 管道，您仍然可以透過在適當的時間對視訊軌道進行取樣來處理影片。例如，在下面的範例中，代理程式始終在使用者每次對話時包含最新的視訊幀。這為模型提供了額外的上下文，而不會使其被資料淹沒，也不會期望它一次解釋許多連續的幀：
 

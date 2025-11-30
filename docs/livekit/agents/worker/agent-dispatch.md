@@ -131,7 +131,7 @@
 
 元資料(metadata)欄位是一個字串。 LiveKit 建議使用 JSON 傳遞結構化資料。
 
-上一節的 [examples](#via-api) 示範如何在排程期間傳遞作業元資料(job metadata)。
+上一節的 examples 示範如何在排程期間傳遞作業元資料(job metadata)。
 
 有關在代理程式中使用作業元資料(job metadata)的信息，請參閱以下指南：
 

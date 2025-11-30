@@ -148,7 +148,7 @@ setuptools.setup(
 option = value
 ```
 
-下面顯示了使用一些 metadata 和 options 的 `setup.cfg` 範例。您可以在[這裡](options)找到各種 metadata 和 options：
+下面顯示了使用一些 metadata 和 options 的 `setup.cfg` 範例。您可以在 options 找到各種 metadata 和 options：
 
 ```bash title="setup.cfg"
 [metadata]
