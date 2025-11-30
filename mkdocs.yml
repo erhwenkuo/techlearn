@@ -134,6 +134,10 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - LangGraph:
+    - Get started:
+      - Install: langgraph/install.md
+      - Quickstart: langgraph/quickstart.md
   - AI Agent:
     - Dev 程式語言:
       - Python:
