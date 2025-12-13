@@ -134,10 +134,24 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - NanoBanan:
+    - 教學:
+      - Nano Banana Pro 使用黃金法則: nano_banana/google-nano-banana-pro-prompts.md
   - LangGraph:
     - Get started:
       - Install: langgraph/install.md
       - Quickstart: langgraph/quickstart.md
+      - Local server: langgraph/local-server.md
+    - Capabilities:
+      - Persistence: langgraph/persistence.md
+  - LangSmith:
+    - Deployment:
+      - Deployment guides:
+        - Standalone servers: langsmith/deploy-standalone-server.md
+    - Reference:
+      - LangSmith Deployment:
+        - LangGraph CLI: langsmith/cli.md
+
   - AI Agent:
     - Dev 程式語言:
       - Python:
