@@ -134,7 +134,12 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
-  - NanoBanan:
+  - Python:
+    - Alembic:
+      - 簡介: alembic/front.md
+      - 教學: alembic/tutorial.md
+      - 自動產生遷移: alembic/autogenerate.md
+  - NanoBanana:
     - 教學:
       - Nano Banana Pro 使用黃金法則: nano_banana/google-nano-banana-pro-prompts.md
   - LangGraph:
@@ -147,7 +152,8 @@ nav:
   - LangSmith:
     - Deployment:
       - Deployment guides:
-        - Standalone servers: langsmith/deploy-standalone-server.md
+        - Standalone servers:
+          - 佈署自託管 Agent Servers: langsmith/deploy-standalone-server.md
     - Reference:
       - LangSmith Deployment:
         - LangGraph CLI: langsmith/cli.md
