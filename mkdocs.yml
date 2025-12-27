@@ -157,7 +157,20 @@ nav:
     - Reference:
       - LangSmith Deployment:
         - LangGraph CLI: langsmith/cli.md
-
+  - Deep Agents:
+    - Overview: deepagents/overview.md
+    - Get started:
+      - Quickstart: deepagents/quickstart.md
+      - Customization: deepagents/customization.md
+    - Core capabilities:
+      - Agent harness: deepagents/harness.md
+      - Backends: deepagents/backends.md
+      - Subagents: deepagents/subagents.md
+      - Human-in-the-loop: deepagents/human-in-the-loop.md
+      - Long-term memory: deepagents/long-term-memory.md
+      - Middleware: deepagents/middleware.md
+    - Command line interface:
+      - Use the CLI: deepagents/cli.md
   - AI Agent:
     - Dev 程式語言:
       - Python:
