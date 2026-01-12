@@ -145,11 +145,12 @@ nav:
   - LangChain:
     - Middleware:
       - Overview: langchain/middleware/overview.md
-      - Built-in middleware: langchain/middleware/built-in.md
+      - Built-in middleware: 
+        - Built-in: langchain/middleware/built-in.md
         - 補充:
-          - Todo:
-            - 自動管理任務清單: langchain/middleware/todo/auto_manage_todo_list.md
-            - 如何使用 TODO 來規劃任務: langchain/middleware/todo/how-agents-plan-tasks-with-to-do-lists.md
+            - Todo:
+              - 自動管理任務清單: langchain/middleware/todo/auto_manage_todo_list.md
+              - 如何使用 TODO 來規劃任務: langchain/middleware/todo/how-agents-plan-tasks-with-to-do-lists.md
   - LangGraph:
     - Get started:
       - Install: langgraph/install.md
