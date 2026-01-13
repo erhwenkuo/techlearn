@@ -10,20 +10,20 @@ LangChain 提供常見用例的預先建置中間件。每個中間件都已準�
 
 | Middleware | Description  |
 | ---------- | ------------ |
-| [Summarization](#summarization)         | 當接近會話次數上限時，自動匯總對話歷史記錄。|
-| [Human-in-the-loop](#human-in-the-loop) | 暫停執行，等待人工審核工具呼叫。          |
-| [Model call limit](#model-call-limit)   | 限制模型呼叫次數，以防止成本過高。        |
-| [Tool call limit](#tool-call-limit)     | 透過限制呼叫次數來控制工具執行。          |
-| [Model fallback](#model-fallback)       | 當主模型發生故障時，自動回退到備用模型。   |
-| [PII detection](#pii-detection)         | 偵測和處理個人識別資訊 (PII)。           |
-| [To-do list](#to-do-list)               | 為 agent 配備任務規劃和追蹤功能。        |
-| [LLM tool selector](#llm-tool-selector) | 使用 LLM 在呼叫主模型之前選擇相關工具。   |
-| [Tool retry](#tool-retry)               | 使用指數退避演算法自動重試失敗的工具呼叫。  |
-| [Model retry](#model-retry)             | 使用指數退避演算法自動重試失敗的模型呼叫。  |
-| [LLM tool emulator](#llm-tool-emulator) | 使用 LLM 模擬工具執行以進行測試。         |
-| [Context editing](#context-editing)     | 透過精簡或清除工具使用情況來管理對話上下文。 |
-| [Shell tool](#shell-tool)               | 向 agent 公開持久 shell 會話以執行命令。  |
-| [File search](#file-search)             | 提供檔案系統檔案的 Glob 和 Grep 搜尋工具。 |
+| `Summarization`     | 當接近會話次數上限時，自動匯總對話歷史記錄。|
+| `Human-in-the-loop` | 暫停執行，等待人工審核工具呼叫。          |
+| `Model call limit`  | 限制模型呼叫次數，以防止成本過高。        |
+| `Tool call limit`   | 透過限制呼叫次數來控制工具執行。          |
+| `Model fallback`    | 當主模型發生故障時，自動回退到備用模型。   |
+| `PII detection`     | 偵測和處理個人識別資訊 (PII)。           |
+| `To-do list`        | 為 agent 配備任務規劃和追蹤功能。        |
+| `LLM tool selector` | 使用 LLM 在呼叫主模型之前選擇相關工具。   |
+| `Tool retry`        | 使用指數退避演算法自動重試失敗的工具呼叫。  |
+| `Model retry`       | 使用指數退避演算法自動重試失敗的模型呼叫。  |
+| `LLM tool emulator` | 使用 LLM 模擬工具執行以進行測試。         |
+| `Context editing`   | 透過精簡或清除工具使用情況來管理對話上下文。 |
+| `Shell tool`        | 向 agent 公開持久 shell 會話以執行命令。  |
+| `File search`       | 提供檔案系統檔案的 Glob 和 Grep 搜尋工具。 |
 
 
 ### Summarization
