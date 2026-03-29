@@ -134,6 +134,21 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - OpenShell:
+    - 簡介: openshell/intro.md
+    - About NVIDIA OpenShell:
+      - 概述: openshell/about/overview.md
+      - 架構: openshell/about/architecture.md
+      - 支援的 Agent: openshell/about/supported-agents.md
+      - 版本發布: openshell/about/release-notes.md
+    - Get Started:
+      - 快速入門: openshell/get-started/quickstart.md
+      - 教學:
+        - 編寫網路策略: openshell/tutorials/first-network-policy.md
+        - 推程試碼到 Github: openshell/tutorials/github-sandbox.md
+    - Gateways and Sandboxed:
+      - 網關與沙箱: openshell/sandboxes/intro.md
+      - 沙箱: openshell/sandboxes/manage-sandboxes.md
   - Python:
     - Alembic:
       - 簡介: alembic/front.md
