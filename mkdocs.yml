@@ -178,8 +178,14 @@ nav:
       - Human-in-the-loop: deepagents/human-in-the-loop.md
       - Long-term memory: deepagents/long-term-memory.md
       - Middleware: deepagents/middleware.md
+      - Skills: deepagents/skills.md
     - Command line interface:
       - Use the CLI: deepagents/cli.md
+      - Agent Skills:
+        - Overview: deepagents/skills/intro.md
+        - What are skills?: deepagents/skills/what-are-skills.md
+        - Specification: deepagents/skills/specification.md
+        - Integrate skills: deepagents/skills/integrate-skills.md
   - AI Agent:
     - Dev 程式語言:
       - Python:

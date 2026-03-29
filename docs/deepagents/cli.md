@@ -1,8 +1,10 @@
 # Deep Agents CLI
 
-用於建立 Deep Agents 的互動式命令列介面。
+> 用於建立 Deep Agents 的互動式命令列介面。
 
 一個用於建立具有持久記憶體的 agent 的終端介面。agent 能夠在 session 之間保持上下文，學習專案約定，並在批准控制下執行程式碼。
+
+![](./assets/deepagents-cli.avif)
 
 Deep Agents CLI 有以下內建功能：
 
@@ -13,31 +15,82 @@ Deep Agents CLI 有以下內建功能：
  - :octicons-tasklist-16: **Task planning and tracking** - 將複雜任務分解成離散步驟，並透過內建的待辦事項系統追蹤進度。
  - :material-memory: **Memory storage and retrieval** - 跨會話儲存和檢索訊息，使代理能夠記住專案約定和學習模式。
  - :octicons-people-16: **Human-in-the-loop** - 敏感工具操作需要人工核准。
+ - :material-puzzle-outline: **Skills** - 利用儲存在技能目錄中的自訂專業知識和指令，擴展代理的功能。
 
 !!! tip
     [觀看演示視頻](https://youtu.be/IrnacLa9PJc?si=3yUnPbxnm2yaqVQb)，了解 Deep Agents CLI 的工作原理。
+
+## Built-in tools
+
+此代理程式自備以下無需配置即可使用的內建工具：
+
+| Tool          | Description | Human-in-the-Loop    |
+| ------------- | ----------- | -------------------- |
+| `ls`          | 列出檔案和目錄 | - |
+| `read_file`   | 讀取檔案內容；支援將影像（`.png`、`.jpg`、`.jpeg`、`.gif`、`.webp`）作為多模態內容。 | - |
+| `write_file`  | 建立或覆蓋文件 | Required<sup>1</sup> |
+| `edit_file`   | 對現有文件進行針對性編輯  | Required<sup>1</sup> |
+| `glob`        | 尋找與特定模式相符的檔案（例如，`**/*.py`）| -                    |
+| `grep`        | 在文件中搜尋文字模式          | -                    |
+| `shell`       | 執行 shell 命令（本地模式）   | Required<sup>1</sup> |
+| `execute`     | 在遠端沙箱中執行指令（沙箱模式）| Required<sup>1</sup> |
+| `web_search`  | 使用 Tavily API 搜尋網絡    | Required<sup>1</sup> |
+| `fetch_url`   | 取得網頁並將其轉換為 Markdown 格式 | Required<sup>1</sup> |
+| `task`        | 將工作委託給子代理以進行並行執行 | Required<sup>1</sup> |
+| `write_todos` | 建立和管理複雜工作的任務清單    | -                    |
+
+!!! tip
+    1：可能具有破壞性的操作需要使用者批准才能執行。若要繞過人工批准，您可以切換自動批准功能，或使用自動批准選項啟動深度代理：
+
+    ```bash
+    deepagents --auto-approve
+    ```
 
 ## Quick start
 
 :octicons-key-16: **Set your API key**
 
-設定環境變數:
+選擇您要使用的模型提供者，並將您的 API 金鑰設定為環境變數。
 
-```bash
-export ANTHROPIC_API_KEY="your-api-key"
-```
+=== "OpenAI"
 
-或在專案根目錄下建立一個 `.env` 檔案：
+    設定環境變數:
 
-```ini
-ANTHROPIC_API_KEY=your-api-key
-```
+    ```bash
+    export OPENAI_API_KEY="your-api-key"
+    ```
+
+=== "Anthropic"
+
+    設定環境變數:
+
+    ```bash
+    export ANTHROPIC_API_KEY="your-api-key"
+    ```
+
+=== "Google"
+
+    設定環境變數:
+
+    ```bash
+    export GOOGLE_API_KEY="your-api-key"
+    ```
+
 
 :octicons-terminal-16: **Run the CLI**
 
-```bash
-uvx deepagents-cli
-```
+=== "Install globally"
+
+    ```bash
+    uv tool install deepagents-cli
+    deepagents
+    ```
+
+=== "Run (without global install)"
+
+    ```bash
+    uvx deepagents-cli
+    ```
 
 :material-code-tags-check: **Give the agent a task**
 
