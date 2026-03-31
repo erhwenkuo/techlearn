@@ -149,6 +149,15 @@ nav:
     - Gateways and Sandboxed:
       - 網關與沙箱: openshell/sandboxes/intro.md
       - 沙箱: openshell/sandboxes/manage-sandboxes.md
+      - 網關: openshell/sandboxes/manage-gateways.md
+      - 金鑰提供者: openshell/sandboxes/manage-providers.md
+      - 安全政策: openshell/sandboxes/policies.md
+      - 社群沙箱: openshell/sandboxes/community-sandboxes.md
+    - Inference Routing:
+      - 關於模型推論路由: openshell/inference/intro.md
+      - 配置模型推論路由: openshell/inference/configure.md
+    - Reference:
+      - 網關認證: openshell/reference/gateway-auth.md
   - Python:
     - Alembic:
       - 簡介: alembic/front.md
