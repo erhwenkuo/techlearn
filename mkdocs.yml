@@ -158,6 +158,7 @@ nav:
       - 配置模型推論路由: openshell/inference/configure.md
     - Reference:
       - 網關認證: openshell/reference/gateway-auth.md
+      - 預設策略: openshell/reference/default-policy.md
   - Python:
     - Alembic:
       - 簡介: alembic/front.md
