@@ -39,5 +39,5 @@ OpenShell 可以運行在本機、遠端主機或雲端代理程式之後。所�
 |**Remote**|Gateway 透過 `SSH` 在遠端主機上運行。遠端機器上只需要有 Docker 即可。|`openshell gateway start --remote user@host`|
 |**Cloud**|Gateway 已運行在雲端的反向代理（例如 Cloudflare Access）之後。透過瀏覽器註冊並進行身份驗證。|`openshell gateway add https://gateway.example.com`|
 
-您可以註冊多個 gateway，並使用 `openshell gateway select` 指令在它們之間切換。有關完整的部署和管理工作流程，請參閱 [gateway](./gateway.md)。
+您可以註冊多個 gateway，並使用 `openshell gateway select` 指令在它們之間切換。有關完整的部署和管理工作流程，請參閱 [gateway](https://docs.nvidia.com/openshell/latest/sandboxes/manage-gateways)。
 

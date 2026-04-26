@@ -134,6 +134,23 @@ nav:
       - Learn YAML: yaml/yaml-tutorial.md
     - CI/CD:
       - GitOps 的概念: cicd/gitops.md
+  - AI Agent:
+    - Skills:
+      - 財務:
+        - stock_skills:
+          - vol1.自動化股票篩選: ai_agent/skills/usecases/stock_skills/stock_filter_automation.md
+          - vol2.越用越聰明的投資分析: ai_agent/skills/usecases/stock_skills/stock_smarter_neo4j.md
+          - vol3.投資分析進階: ai_agent/skills/usecases/stock_skills/stock_analysis.md
+    - Dev 程式語言:
+      - Python:
+        - uv:
+          - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md 
+    - Tools:
+      - WebSearch:
+        - SearXng:
+          - 簡介: ai_agent/tools/web_search/searxng/index.md
+          - 安裝: ai_agent/tools/web_search/searxng/setup.md
+          - API介詔: ai_agent/tools/web_search/searxng/search_api.md
   - OpenShell:
     - 簡介: openshell/intro.md
     - About NVIDIA OpenShell:
@@ -159,6 +176,7 @@ nav:
     - Reference:
       - 網關認證: openshell/reference/gateway-auth.md
       - 預設策略: openshell/reference/default-policy.md
+      - Policy Shcema: openshell/reference/policy-schema.md
   - Python:
     - Alembic:
       - 簡介: alembic/front.md
@@ -167,30 +185,6 @@ nav:
   - NanoBanana:
     - 教學:
       - Nano Banana Pro 使用黃金法則: nano_banana/google-nano-banana-pro-prompts.md
-  - LangChain:
-    - Middleware:
-      - Overview: langchain/middleware/overview.md
-      - Built-in middleware: 
-        - Built-in: langchain/middleware/built-in.md
-        - 補充:
-            - Todo:
-              - 自動管理任務清單: langchain/middleware/todo/auto_manage_todo_list.md
-              - 如何使用 TODO 來規劃任務: langchain/middleware/todo/how-agents-plan-tasks-with-to-do-lists.md
-  - LangGraph:
-    - Get started:
-      - Install: langgraph/install.md
-      - Quickstart: langgraph/quickstart.md
-      - Local server: langgraph/local-server.md
-    - Capabilities:
-      - Persistence: langgraph/persistence.md
-  - LangSmith:
-    - Deployment:
-      - Deployment guides:
-        - Standalone servers:
-          - 佈署自託管 Agent Servers: langsmith/deploy-standalone-server.md
-    - Reference:
-      - LangSmith Deployment:
-        - LangGraph CLI: langsmith/cli.md
   - Deep Agents:
     - Overview: deepagents/overview.md
     - Get started:
@@ -211,94 +205,7 @@ nav:
         - What are skills?: deepagents/skills/what-are-skills.md
         - Specification: deepagents/skills/specification.md
         - Integrate skills: deepagents/skills/integrate-skills.md
-  - AI Agent:
-    - Skills:
-      - 財務:
-        - stock_skills:
-          - vol1.自動化股票篩選: ai_agent/skills/usecases/stock_skills/stock_filter_automation.md
-          - vol2.越用越聰明的投資分析: ai_agent/skills/usecases/stock_skills/stock_smarter_neo4j.md
-          - vol3.投資分析進階: ai_agent/skills/usecases/stock_skills/stock_analysis.md
-    - Dev 程式語言:
-      - Python:
-        - uv:
-          - 如何使用 uv: ai_agent/dev_lang/python/uv_howto.md
-    - OpenAI:
-      - 核心概念:
-        - Structured Outputs: openai/guides/structured-outputs.md    
-      - Jina AI:
-        - 實作指南: ai_agent/deep_research/jina_ai/index.md
-    - Tools:
-      - WebSearch:
-        - SearXng:
-          - 簡介: ai_agent/tools/web_search/searxng/index.md
-          - 安裝: ai_agent/tools/web_search/searxng/setup.md
-          - API介詔: ai_agent/tools/web_search/searxng/search_api.md
-    - LiveKit:
-      - 核心概述:
-        - 快速上手:
-          - LiveKit 簡介: livekit/home/get-started/intro-to-livekit.md
-          - Rooms,participants & tracks: livekit/home/get-started/api-primitives.md
-          - Authentication: livekit/home/get-started/authentication.md
-        - CLI:
-          - 安裝 CLI: livekit/home/cli/cli-setup.md
-          - Bootstrapping 應用: livekit/home/cli/templates.md
-        - LiveKit SDKs:
-          - 連接至 LiveKit: livekit/home/client/connect.md
-          - Realtime media:
-            - Overview: livekit/home/client/track/overview.md
-            - Camera & microphone: livekit/home/client/track/publish.md
-            - Screen sharing: livekit/home/client/track/screenshare.md
-            - Subscribing to tracks: livekit/home/client/track/subscribe.md
-            - Noise & echo cancellation: livekit/home/client/track/noise-cancellation.md
-            - End-to-end encryption: livekit/home/client/track/encryption.md
-            - Codecs & more: livekit/home/client/track/advanced.md
-          - Realtime text & data: 
-            - Overview: livekit/home/client/data/overview.md
-            - Sending text: livekit/home/client/data/text-streams.md
-            - Sending files & bytes: livekit/home/client/data/byte-streams.md
-            - Remote method calls: livekit/home/client/data/rpc.md
-            - Data packets: livekit/home/client/data/packets.md
-          - State synchronization:
-            - Overview: livekit/home/client/state/overview.md
-            - Participant attributes: livekit/home/client/state/participant-attributes.md
-            - Room metadata: livekit/home/client/state/room-metadata.md
-          - Handling events: livekit/home/client/events.md
-        - Server APIs:
-          - Token generation: livekit/home/server/generating-tokens.md
-          - Room management: livekit/home/server/managing-rooms.md
-          - Participant management: livekit/home/server/managing-participants.md
-          - Webhooks: livekit/home/server/webhooks.md
-        - Self-Hosting:
-          - Running locally: livekit/home/self-hosting/local.md
-      - AI Agents:
-        - 簡介: livekit/agents/index.md
-        - 快速上手:          
-          - Voice AI quickstart: livekit/agents/start/voice-ai.md
-          - Web and mobile frontends: livekit/agents/start/frontend.md
-          - Agents playground: livekit/agents/start/playground.md
-        - 構建語音助理:
-          - Overview: livekit/agents/build/overview.md
-          - Workflows: livekit/agents/build/workflows.md
-          - Agent speech & audio: livekit/agents/build/audio.md
-          - Vision: livekit/agents/build/vision.md
-          - Tool 定義與使用: livekit/agents/build/tools.md
-          - Pipeline nodes & hooks: livekit/agents/build/nodes.md
-          - Text & transcriptions: livekit/agents/build/text.md
-          - 對話輪次偵測 & 中斷:
-            - Overview: livekit/agents/build/turns/overview.md
-            - Turn detector plugin: livekit/agents/build/turns/turn-detector.md
-            - Silero VAD plugin: livekit/agents/build/turns/vad.md
-          - 外部數據 & RAG: livekit/agents/build/external-data.md
-          - 指標捕獲: livekit/agents/build/metrics.md
-          - 事件與錯誤處理: livekit/agents/build/events.md
-        - Worker 生命周期: 
-          - Overview: livekit/agents/worker/overview.md
-          - Agent dispatch: livekit/agents/worker/agent-dispatch.md
-          - Job lifecycle: livekit/agents/worker/job.md
-          - Worker options: livekit/agents/worker/options.md
-        - 佈署與運維:
-          - Deploying to production: livekit/agents/ops/deployment.md
-          - Session recording & transcripts: livekit/agents/ops/recording.md
+
   - Kubernetes:
     - Getting started:
       - 學習環境:
@@ -934,67 +841,6 @@ nav:
             - 運行 Falcon-7B-Instruct 使用 4bit 量化: huggingface/tutorials/falcon/falcon-7b-instruct-using-4-bit-quantization.md
             - Falcon 模型提供推論服務使用 🤗 TGI: huggingface/tutorials/falcon/serving-falcon-models-with-tgi.md
             - LLM 分片(sharding): huggingface/tutorials/falcon/sharding-large-models.md
-    - Cohere:
-      - LEARN:
-        - 關鍵概念:
-          - Embeddings: cohere/learn/embeddings.md
-          - Prompt Engineering: cohere/learn/prompt-engineering.md
-          - Tokens: cohere/learn/tokens.md
-        - 生成:
-          - Likelihood: cohere/generation/likelihood.md
-          - Number of Generations: cohere/generation/number-of-generations.md
-          - Temperature: cohere/generation/temperature.md
-          - Top-k & Top-p: cohere/generation/top-k-top-p.md
-          - Retrieval Augmented Generation (RAG): cohere/generation/rag.md
-    - OpenAI:
-      - Get Started:
-        - 簡介: openai/get_started/introduction.md
-        - 快速入門: openai/get_started/quickstart.md
-      - Capabilities:
-        - Text generation: openai/capabilities/text-generation.md
-        - Function calling:
-          - 簡介: openai/capabilities/function-calling/index.md
-          - 範例:
-            - Function calling 功能: openai/capabilities/function-calling/openai-function-calling-feature.md
-        - Embeddings: openai/capabilities/embeddings.md
-        - Text-to-speech: openai/capabilities/text-to-speech.md
-        - Speech-to-text: openai/capabilities/speech-to-text.md
-      - Guides:
-        - 提示工程:
-          - 提示工程指南: openai/guides/prompt-engineering/index.md
-          - 六個提示工程策略: openai/guides/prompt-engineering/six-strategies-for-getting-better-results.md
-          - 範例:
-            - 提示範例: openai/guides/prompt-engineering/examples/index.md
-            - Grammar correction: openai/guides/prompt-engineering/examples/default-grammar.md
-            - Parse unstructured data: openai/guides/prompt-engineering/examples/default-parse-data.md
-            - Calculate time complexity: openai/guides/prompt-engineering/examples/default-time-complexity.md
-            - Keywords: openai/guides/prompt-engineering/examples/default-keywords.md
-            - Python bug fixer: openai/guides/prompt-engineering/examples/default-fix-python-bugs.md
-            - Tweet classifier: openai/guides/prompt-engineering/examples/default-tweet-classifier.md
-            - Mood to color: openai/guides/prompt-engineering/examples/default-mood-color.md
-            - Marv the sarcastic chat bot: openai/guides/prompt-engineering/examples/default-marv-sarcastic-chat.md
-            - Interview questions: openai/guides/prompt-engineering/examples/default-interview-questions.md
-            - Improve code efficiency: openai/guides/prompt-engineering/examples/default-code-improvement.md
-            - Emoji chatbot: openai/guides/prompt-engineering/examples/default-emoji-chatbot.md
-            - Socratic tutor: openai/guides/prompt-engineering/examples/default-socratic-tutor.md
-            - Meeting notes summarizer: openai/guides/prompt-engineering/examples/default-meeting-notes-summarizer.md
-            - Pro and con discusser: openai/guides/prompt-engineering/examples/default-pro-con-discusser.md
-            - Summarize for a 2nd grader: openai/guides/prompt-engineering/examples/default-summarize.md
-            - Emoji Translation: openai/guides/prompt-engineering/examples/default-emoji-translation.md
-            - Explain code: openai/guides/prompt-engineering/examples/default-explain-code.md
-            - Product name generator: openai/guides/prompt-engineering/examples/default-product-name-gen.md
-            - Spreadsheet creator: openai/guides/prompt-engineering/examples/default-spreadsheet-gen.md
-            - Airport code extractor: openai/guides/prompt-engineering/examples/default-airport-codes.md
-            - VR fitness idea generator: openai/guides/prompt-engineering/examples/default-vr-fitness.md
-            - Turn by turn directions: openai/guides/prompt-engineering/examples/default-turn-by-turn-directions.md
-            - Function from specification: openai/guides/prompt-engineering/examples/default-function-from-spec.md
-            - Single page website creator: openai/guides/prompt-engineering/examples/default-single-page-website.md
-            - Memo writer: openai/guides/prompt-engineering/examples/default-memo-writer.md
-            - Translation: openai/guides/prompt-engineering/examples/default-translation.md
-            - Natural language to SQL: openai/guides/prompt-engineering/examples/default-sql-translate.md
-            - Review classifier: openai/guides/prompt-engineering/examples/default-review-classifier.md
-            - Lesson plan writer: openai/guides/prompt-engineering/examples/default-lesson-plan-writer.md
-        - 安全最佳實踐: openai/guides/safety-best-practices.md    
     - Prompt:
       - Prompt Engineering:
         - 提示工程指南: prompt/prompt-engineering/index.md
