@@ -215,7 +215,9 @@ nav:
     - Skills:
       - 財務:
         - stock_skills:
-          - 自動化股票篩選: ai_agent/skills/usecases/stock_skills/stock_filter_automation.md
+          - vol1.自動化股票篩選: ai_agent/skills/usecases/stock_skills/stock_filter_automation.md
+          - vol2.越用越聰明的投資分析: ai_agent/skills/usecases/stock_skills/stock_smarter_neo4j.md
+          - vol3.投資分析進階: ai_agent/skills/usecases/stock_skills/stock_analysis.md
     - Dev 程式語言:
       - Python:
         - uv:
