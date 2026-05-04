@@ -136,6 +136,11 @@ nav:
       - GitOps 的概念: cicd/gitops.md
   - AI Agent:
     - Skills:
+      - 程式開發:
+        - superpowers:
+          - 打造可靠的AI開發工作流程: ai_agent/skills/usecases/superpowers/reliable_vibe_coding.md
+          - brainstorming 技能說明: ai_agent/skills/usecases/superpowers/brainstorming.md
+          - brainstorming 設計模式: ai_agent/skills/usecases/superpowers/brainstorming_patterns.md
       - 財務:
         - stock_skills:
           - vol1.自動化股票篩選: ai_agent/skills/usecases/stock_skills/stock_filter_automation.md
